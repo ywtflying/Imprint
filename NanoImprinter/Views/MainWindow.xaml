@@ -1,0 +1,292 @@
+﻿<Window x:Class="NanoImprinter.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ces="clr-namespace:NanoImprinter.ControlExtensions"
+        xmlns:local="clr-namespace:NanoImprinter.Views"
+        xmlns:prism="http://prismlibrary.com/"
+        Title="MainWindow"
+        Width="1920"
+        Height="1080"
+        prism:ViewModelLocator.AutoWireViewModel="True"
+        MouseDown="Window_MouseDown"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None">
+    <Window.Effect>
+        <DropShadowEffect BlurRadius="12"
+                          Direction="90"
+                          ShadowDepth="3"
+                          Color="#FF858484" />
+    </Window.Effect>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="37" />
+            <RowDefinition />
+            <RowDefinition Height="33" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <!--  标题栏  -->
+        <Grid x:Name="gridTitle"
+              Grid.ColumnSpan="2"
+              Background="{StaticResource Color.WindowTitle.Background}">
+            <TextBlock Margin="20,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"
+                       FontFamily="{StaticResource Harmony.Regular}"
+                       FontSize="18"
+                       Foreground="#D1D1D1"
+                       Text="西湖微纳科技(杭州)有限公司" />
+
+            <TextBlock HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontFamily="{StaticResource Harmony.Black}"
+                       FontSize="22"
+                       Foreground="White"
+                       Text="纳米压印（低负载高精度步进式）V1.0" />
+
+            <ces:IconButton x:Name="btnClose"
+                            Width="27"
+                            Margin="0,5,24,5"
+                            HorizontalAlignment="Right"
+                            Background="Transparent"
+                            PathData="{StaticResource Icon.Window.Close}"
+                            PathFill="White"
+                            Style="{StaticResource IconButton.WindowOperator}" />
+
+            <ces:IconButton x:Name="btnMax"
+                            Width="27"
+                            Margin="0,5,78,5"
+                            HorizontalAlignment="Right"
+                            Background="Transparent"
+                            PathData="{StaticResource Icon.Window.Max}"
+                            PathFill="White"
+                            Style="{StaticResource IconButton.WindowOperator}" />
+
+            <ces:IconButton x:Name="btnMin"
+                            Width="27"
+                            Margin="0,5,132,5"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            PathData="{StaticResource Icon.Window.Min}"
+                            PathFill="White"
+                            Style="{StaticResource IconButton.WindowOperator}" />
+
+            <ces:IconButton Width="90"
+                            Margin="0,5,190,5"
+                            HorizontalAlignment="Right"
+                            FontSize="18"
+                            Foreground="White"
+                            PathData="{StaticResource Icon.Login}"
+                            PathFill="White"
+                            Style="{StaticResource IconButton.LoginStyle}"
+                            TextContent="Login" />
+        </Grid>
+
+        <UniformGrid Grid.Row="1"
+                     Background="{StaticResource Color.Navigation.Background}"
+                     Rows="8">
+            <ces:IconButton x:Name="MainView"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="MainView"
+                            IsChecked="True"
+                            PathData="{StaticResource Icon.Main}"
+                            PathFill="Black"
+                            Style="{StaticResource IconButton.Navigation}"
+                            TextContent="主界面" />
+            <ces:IconButton x:Name="ImprintView"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="ImprintView"
+                            PathData="{StaticResource Icon.Press}"
+                            PathFill="Black"
+                            Style="{StaticResource IconButton.Navigation}"
+                            TextContent="压印模块" />
+            <ces:IconButton x:Name="GlueView"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="GlueView"
+                            PathData="{StaticResource Icon.Glue}"
+                            PathFill="Black"
+                            Style="{StaticResource IconButton.Navigation}"
+                            TextContent="点胶模块" />
+            <ces:IconButton x:Name="MacroView"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="MacroView"
+                            PathData="{StaticResource Icon.BasePlate}"
+                            PathFill="Black"
+                            Style="{StaticResource IconButton.Navigation}"
+                            TextContent="宏动平台" />
+            <ces:IconButton x:Name="MicroView"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="MicroView"
+                            PathData="{StaticResource Icon.MicroPlate}"
+                            PathFill="Black"
+                            Style="{StaticResource IconButton.Navigation}"
+                            TextContent="微动平台" />
+            <ces:IconButton x:Name="CameraView"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="CameraView"
+                            PathData="{StaticResource Icon.Camera}"
+                            PathFill="Black"
+                            Style="{StaticResource IconButton.Navigation}"
+                            TextContent="相机模块" />
+            <ces:IconButton x:Name="AFMCameraView"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="AfmCameraView"
+                            PathData="{StaticResource Icon.Camera}"
+                            PathFill="Black"
+                            Style="{StaticResource IconButton.Navigation}"
+                            TextContent="AFM模块" />
+            <ces:IconButton x:Name="OtherView"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="OtherView"
+                            PathData="{StaticResource Icon.OtherModule}"
+                            PathFill="Black"
+                            Style="{StaticResource IconButton.Navigation}"
+                            TextContent="其他模块" />
+
+        </UniformGrid>
+
+        <ContentControl Grid.Row="1"
+                        Grid.Column="1"
+                        Margin="0"
+                        prism:RegionManager.RegionName="ContentRegion" />
+        <!--  底部栏  -->
+        <StackPanel Grid.Row="2"
+                    Grid.ColumnSpan="2"
+                    Margin="0"
+                    VerticalAlignment="Center"
+                    Background="#3B445A"
+                    Orientation="Horizontal">
+            <Label Content="宏X:"
+                   FontSize="18"
+                   Foreground="#848484" />
+            <Label Width="95"
+                   Content="{Binding MacroPlatform.CurrentPositionX}"
+                   FontSize="18"
+                   Foreground="#C9C9C9" />
+            <Border Width="1" Background="White" />
+
+            <Label Content="宏Y:"
+                   FontSize="18"
+                   Foreground="#848484" />
+            <Label Width="95"
+                   Content="{Binding MacroPlatform.CurrentPositionY}"
+                   FontSize="18"
+                   Foreground="#C9C9C9" />
+            <Border Width="1" Background="White" />
+
+            <Label Content="宏R:"
+                   FontSize="18"
+                   Foreground="#848484" />
+            <Label Width="80"
+                   Content="{Binding MacroPlatform.CurrentPositionR}"
+                   FontSize="18"
+                   Foreground="#C9C9C9" />
+            <Border Width="1" Background="White" />
+
+            <Label Content="微Z:"
+                   FontSize="18"
+                   Foreground="#848484" />
+            <Label Width="75"
+                   Content="{Binding MicroPlatform.CurrentPositionZ}"
+                   FontSize="18"
+                   Foreground="#C9C9C9" />
+            <Border Width="1" Background="White" />
+
+            <Label Content="微RX:"
+                   FontSize="18"
+                   Foreground="#848484" />
+            <Label Width="75"
+                   Content="{Binding MicroPlatform.CurrentPositionRX}"
+                   FontSize="18"
+                   Foreground="#C9C9C9" />
+            <Border Width="1" Background="White" />
+
+            <Label Content="微RY:"
+                   FontSize="18"
+                   Foreground="#848484" />
+            <Label Width="75"
+                   Content="{Binding MicroPlatform.CurrentPositionRY}"
+                   FontSize="18"
+                   Foreground="#C9C9C9" />
+            <Border Width="1" Background="White" />
+
+            <Label Content="掩膜Z:"
+                   FontSize="18"
+                   Foreground="#848484" />
+            <Label Width="80"
+                   Content="{Binding ImprintPlatform.CurrentPositionMaskZ}"
+                   FontSize="18"
+                   Foreground="#C9C9C9" />
+            <Border Width="1" Background="White" />
+
+            <Label Content="相机Z:"
+                   FontSize="18"
+                   Foreground="#848484" />
+            <Label Width="80"
+                   Content="{Binding ImprintPlatform.CurrentPositionCameraZ}"
+                   FontSize="18"
+                   Foreground="#C9C9C9" />
+            <Border Width="1" Background="White" />
+
+            <Label Content="UV-X:"
+                   FontSize="18"
+                   Foreground="#848484" />
+            <Label Width="80"
+                   Content="{Binding ImprintPlatform.CurrentPositionUVX}"
+                   FontSize="18"
+                   Foreground="#C9C9C9" />
+            <Border Width="1" Background="White" />
+
+            <Label Content="UV-Z:"
+                   FontSize="18"
+                   Foreground="#848484" />
+            <Label Width="80"
+                   Content="{Binding ImprintPlatform.CurrentPositionUVZ}"
+                   FontSize="18"
+                   Foreground="#C9C9C9" />
+            <Border Width="1" Background="White" />
+
+            <Label Content="点胶-Z:"
+                   FontSize="18"
+                   Foreground="#848484" />
+            <Label Width="80"
+                   Content="{Binding GluePlatform.CurrentPositionGlueZ}"
+                   FontSize="18"
+                   Foreground="#C9C9C9" />
+            <Border Width="1" Background="White" />
+
+            <Label Content="压力1:"
+                   FontSize="18"
+                   Foreground="#848484" />
+            <Label Width="85"
+                   Content="{Binding ImprintPlatform.ForceValue0}"
+                   FontSize="18"
+                   Foreground="#C9C9C9" />
+            <Border Width="1" Background="White" />
+
+            <Label Content="压力2:"
+                   FontSize="18"
+                   Foreground="#848484" />
+            <Label Width="85"
+                   Content="{Binding ImprintPlatform.ForceValue1}"
+                   FontSize="18"
+                   Foreground="#C9C9C9" />
+            <Border Width="1" Background="White" />
+
+            <Label Content="压力3:"
+                   FontSize="18"
+                   Foreground="#848484" />
+            <Label Width="85"
+                   Content="{Binding ImprintPlatform.ForceValue2}"
+                   FontSize="18"
+                   Foreground="#C9C9C9" />
+            <Border Width="1" Background="White" />
+        </StackPanel>
+    </Grid>
+</Window>

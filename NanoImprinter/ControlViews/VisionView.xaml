@@ -1,0 +1,156 @@
+﻿<UserControl x:Class="NanoImprinter.ControlViews.VisionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:NanoImprinter.ControlViews"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             d:DesignHeight="530"
+             d:DesignWidth="500"
+             Background="Black"
+             mc:Ignorable="d">
+    <Grid ShowGridLines="True">
+        <Border Width="500"
+                Height="30"
+                Margin="0,0,0,500"
+                Background="LightBlue"
+                CornerRadius="1">
+            <TextBlock HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontSize="18"
+                       Foreground="#4A4A4A"
+                       Text="相机图像"
+                       TextAlignment="Center" />
+        </Border>
+
+        <Menu Width="500"
+              Height="25"
+              Margin="0,30,0,0"
+              HorizontalAlignment="Left"
+              VerticalAlignment="Top"
+              Panel.ZIndex="0"
+              Background="#FF35F2E9">
+            <MenuItem Margin="12,0,4,0"
+                      HorizontalAlignment="Center"
+                      FontSize="14"
+                      Header="连接相机">
+                <MenuItem x:Name="ConnectCamera" Header="连接" />
+                <Separator />
+                <MenuItem x:Name="DisconnectCamera" Header="断开" />
+            </MenuItem>
+
+            <MenuItem x:Name="MenuItemView"
+                      Margin="12,0"
+                      FontSize="14"
+                      Header="实时采集">
+                <MenuItem x:Name="LiveShot" Header="实时采集" />
+                <Separator />
+                <MenuItem x:Name="StopShot" Header="停止采集" />
+            </MenuItem>
+            <MenuItem x:Name="MenuItemMeasurement"
+                      FontSize="14"
+                      Header="测量图像">
+                <MenuItem x:Name="MenuItemGetImage"
+                          Command="{Binding GetSharpenessCommand}"
+                          Header="检测图案" />
+                <Separator />
+                <MenuItem x:Name="MenuItemGetMask"
+                          Command="{Binding GetSharpenessCommand}"
+                          Header="检测掩膜" />
+                <Separator />
+                <MenuItem x:Name="SubAutoExposure"
+                          Command="{Binding AutoExposureCommand}"
+                          Header="AutoExposure" />
+            </MenuItem>
+            <MenuItem FontSize="14" Header="图像存储">
+
+                <MenuItem x:Name="MenuItemSave"
+                          Command="{Binding ImageSavebtnClick}"
+                          Header="保存" />
+                <MenuItem x:Name="MenuItemLoad"
+                          Command="{Binding ImageLoadbtnClick}"
+                          Header="加载" />
+            </MenuItem>
+
+            <MenuItem x:Name="ExposureItem"
+                      Height="25"
+                      MaxHeight="200"
+                      Margin="12,0"
+                      FontSize="14"
+                      Header="曝光设置">
+                <Grid Background="#FFE5E5E5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition Height="30" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80" />
+                        <ColumnDefinition Width="80" />
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0"
+                           Grid.Column="0"
+                           Content="Shutter" />
+                    <Label Grid.Row="0"
+                           Grid.Column="1"
+                           Content="Gain" />
+                    <Slider Grid.Row="1"
+                            Grid.Column="0"
+                            Height="200"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Maximum="200"
+                            Minimum="1"
+                            Orientation="Vertical"
+                            SmallChange="1"
+                            TabIndex="11"
+                            TickFrequency="20"
+                            TickPlacement="BottomRight"
+                            Value="{Binding ShutterValue}" />
+                    <Slider Grid.Row="1"
+                            Grid.Column="1"
+                            Height="200"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Maximum="200"
+                            Minimum="1"
+                            Orientation="Vertical"
+                            SmallChange="1"
+                            TabIndex="11"
+                            TickFrequency="20"
+                            TickPlacement="BottomRight"
+                            Value="{Binding GainValue}" />
+                    <TextBox Grid.Row="2"
+                             Grid.Column="0"
+                             Width="50"
+                             Height="20"
+                             Text="{Binding ShutterValue}"
+                             TextAlignment="Center" />
+                    <TextBox Grid.Row="2"
+                             Grid.Column="1"
+                             Width="50"
+                             Height="20"
+                             Text="{Binding GainValue}"
+                             TextAlignment="Center" />
+                </Grid>
+            </MenuItem>
+            <ComboBox SelectedIndex="0">
+                <ComboBoxItem Content="1X" Tag="1" />
+                <ComboBoxItem Content="2X" Tag="2" />
+                <ComboBoxItem Content="4X" Tag="4" />
+                <ComboBoxItem Content="8X" Tag="8" />
+                <!--<ia:Interaction.Triggers>
+                    <ia:EventTrigger EventName="SelectionChanged">
+                        <ia:InvokeCommandAction Command="{Binding VisionSizeSelectionChangedCommand}"
+                                                       CommandParameter="{Binding ElementName=Zoom}"/>
+                    </ia:EventTrigger>
+                </ia:Interaction.Triggers>-->
+            </ComboBox>
+        </Menu>
+
+        <ContentControl x:Name="MyWinform"
+                        Width="500"
+                        Height="400"
+                        Margin="0,53,0,0"
+                        Content="{Binding MyWindowsFormsHost}" />
+    </Grid>
+</UserControl>

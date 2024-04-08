@@ -1,0 +1,107 @@
+﻿<UserControl x:Class="NanoImprinter.ControlViews.WorkFlowView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:NanoImprinter.ControlViews"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             d:DesignHeight="250"
+             d:DesignWidth="500"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <Style x:Key="StateStyle" TargetType="TextBlock">
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="FontFamily" Value="{StaticResource Harmony.Light}" />
+                <Setter Property="Foreground" Value="Black" />
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Viewbox>
+        <Canvas Width="600" Height="300">
+            <Border Canvas.Left="0"
+                    Canvas.Top="0"
+                    Background="#C3C3C3"
+                    BorderThickness="5"
+                    CornerRadius="10">
+                <Image Name="ProcessStatusImage"
+                       Width="590"
+                       Height="290"
+                       Source="/NanoImprinter;component/Images/ProcessStatusImage.png"
+                       Stretch="Fill" />
+            </Border>
+
+            <TextBlock Canvas.Left="70"
+                       Canvas.Top="100"
+                       Background="{Binding LoadColor, RelativeSource={RelativeSource AncestorType={x:Type local:WorkFlowView}}}"
+                       Style="{StaticResource StateStyle}"
+                       Text="Ready" />
+            <TextBlock Canvas.Left="210"
+                       Canvas.Top="100"
+                       Background="{Binding GlueColor, RelativeSource={RelativeSource AncestorType={x:Type local:WorkFlowView}}}"
+                       Style="{StaticResource StateStyle}"
+                       Text="Ready" />
+            <TextBlock Canvas.Left="370"
+                       Canvas.Top="100"
+                       Background="{Binding PreprintColor, RelativeSource={RelativeSource AncestorType={x:Type local:WorkFlowView}}}"
+                       Style="{StaticResource StateStyle}"
+                       Text="Ready" />
+            <TextBlock Canvas.Left="540"
+                       Canvas.Top="100"
+                       Background="{Binding ImprintColor, RelativeSource={RelativeSource AncestorType={x:Type local:WorkFlowView}}}"
+                       Style="{StaticResource StateStyle}"
+                       Text="Ready" />
+            <TextBlock Canvas.Left="540"
+                       Canvas.Top="270"
+                       Background="{Binding UVColor, RelativeSource={RelativeSource AncestorType={x:Type local:WorkFlowView}}}"
+                       Foreground="Orange"
+                       Style="{StaticResource StateStyle}"
+                       Text="Stop" />
+            <TextBlock Canvas.Left="380"
+                       Canvas.Top="270"
+                       Background="{Binding DemoldColor, RelativeSource={RelativeSource AncestorType={x:Type local:WorkFlowView}}}"
+                       Foreground="Green"
+                       Style="{StaticResource StateStyle}"
+                       Text="Run" />
+
+            <TextBlock Canvas.Left="210"
+                       Canvas.Top="270"
+                       Background="{Binding PositionColor, RelativeSource={RelativeSource AncestorType={x:Type local:WorkFlowView}}}"
+                       Style="{StaticResource StateStyle}"
+                       Text="Ready" />
+
+            <Label Canvas.Left="20"
+                   Canvas.Top="165"
+                   Background="#FF2C3842"
+                   Content="掩膜寿命:"
+                   FontSize="16"
+                   Foreground="White" />
+            <Label Canvas.Left="20"
+                   Canvas.Top="200"
+                   Background="#FF2C3842"
+                   Content="压印次数:"
+                   FontSize="16"
+                   Foreground="White" />
+            <TextBlock Canvas.Left="100"
+                       Canvas.Top="165"
+                       MinWidth="45"
+                       MinHeight="30"
+                       Background="Gray"
+                       FontSize="18"
+                       Foreground="White"
+                       Text="{Binding MaskLifetimeCount, RelativeSource={RelativeSource AncestorType={x:Type local:WorkFlowView}}}"
+                       TextAlignment="Center" />
+            <TextBlock Canvas.Left="100"
+                       Canvas.Top="200"
+                       MinWidth="45"
+                       MinHeight="30"
+                       Background="Gray"
+                       FontSize="18"
+                       Foreground="White"
+                       Text="{Binding MaskUsageCount, RelativeSource={RelativeSource AncestorType={x:Type local:WorkFlowView}}}"
+                       TextAlignment="Center" />
+        </Canvas>
+    </Viewbox>
+</UserControl>

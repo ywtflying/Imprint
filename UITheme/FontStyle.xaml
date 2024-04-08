@@ -1,0 +1,27 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--<FontFamily x:Key="Harmony.Black">
+        HarmonyOS Sans SC Black
+    </FontFamily>
+    <FontFamily x:Key="Harmony.Bold">
+        HarmonyOS Sans SC Bold
+    </FontFamily>
+    <FontFamily x:Key="Harmony.Light">
+        HarmonyOS Sans SC Light
+    </FontFamily>
+    <FontFamily x:Key="Harmony.Medium">
+        HarmonyOS Sans SC Medium
+    </FontFamily>
+    <FontFamily x:Key="Harmony.Regular">
+        HarmonyOS Sans SC Regular
+    </FontFamily>
+    -->
+    <!--<FontFamily x:Key="Harmony.FontFamily">
+        HarmonyOS Sans SC Regular, Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,
+        Microsoft YaHei, 微软雅黑, Arial, sans-serif
+    </FontFamily>-->
+    <!--
+    <FontFamily x:Key="Harmony.Thin">
+        HarmonyOS Sans SC Thin
+    </FontFamily>-->
+
+</ResourceDictionary>

@@ -1,0 +1,81 @@
+﻿<UserControl x:Class="NanoImprinter.ControlViews.SystemOperatorView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ces="clr-namespace:NanoImprinter.ControlExtensions"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:NanoImprinter.ControlViews"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             mc:Ignorable="d">
+    <Border BorderBrush="#979797" BorderThickness="2">
+        <Grid Background="White">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="100" />
+                <RowDefinition Height="80" />
+                <RowDefinition Height="80" />
+                <RowDefinition Height="80" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+
+            <ces:SwitchButton Grid.Row="1"
+                              Grid.ColumnSpan="2"
+                              Margin="80,10"
+                              IsChecked="{Binding IsAuto, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type local:SystemOperatorView}}}"
+                              Style="{StaticResource SwitchButton.AutoAndManul}"
+                              TextA="自动"
+                              TextABackground="Green"
+                              TextB="手动"
+                              TextBBackground="Orange" />
+            <ces:IconButton Grid.Row="2"
+                            Margin="40,10"
+                            Command="{Binding StartCommand}"
+                            PathData="{StaticResource Icon.Start}"
+                            PathFill="Black"
+                            Style="{StaticResource IconButton.LeftRight}"
+                            TextContent="{Binding StartContent}" />
+            <ces:IconButton Grid.Row="2"
+                            Grid.Column="1"
+                            Margin="40,10"
+                            Command="{Binding StartCommand}"
+                            PathData="{StaticResource Icon.Start}"
+                            PathFill="Black"
+                            Style="{StaticResource IconButton.LeftRight}"
+                            TextContent="急停" />
+            <ces:IconButton Grid.Row="3"
+                            Margin="40,10"
+                            Command="{Binding ResetCommand}"
+                            PathData="{StaticResource Icon.Reset}"
+                            PathFill="Black"
+                            Style="{StaticResource IconButton.LeftRight}"
+                            TextContent="复位" />
+            <ces:IconButton Grid.Row="3"
+                            Grid.Column="1"
+                            Margin="40,10"
+                            Command="{Binding GoHomeCommand}"
+                            PathData="{StaticResource Icon.GoZero}"
+                            PathFill="Black"
+                            Style="{StaticResource IconButton.LeftRight}"
+                            TextContent="回零" />
+            <ces:IconButton Grid.Row="4"
+                            Margin="40,10"
+                            Command="{Binding VacuumCommand}"
+                            PathData="{StaticResource Icon.OpenAir}"
+                            PathFill="Black"
+                            Style="{StaticResource IconButton.LeftRight}"
+                            TextContent="通气" />
+            <ces:IconButton Grid.Row="4"
+                            Grid.Column="1"
+                            Margin="40,10"
+                            Command="{Binding EvacuateCommand}"
+                            PathData="{StaticResource Icon.CloseAir}"
+                            PathFill="Black"
+                            Style="{StaticResource IconButton.LeftRight}"
+                            TextContent="断气" />
+        </Grid>
+    </Border>
+</UserControl>

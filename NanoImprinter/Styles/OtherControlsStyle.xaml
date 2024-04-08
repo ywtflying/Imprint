@@ -1,0 +1,69 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <SolidColorBrush x:Key="Color.ViewTitle.Background" Color="LightBlue" />
+
+    <!--  页面头部标题的样式  -->
+    <Style x:Key="Grid.ViewTitle.BorderTextBlock" TargetType="Grid">
+        <Setter Property="Height" Value="40" />
+        <Setter Property="Margin" Value="0" />
+        <Style.Resources>
+            <Style TargetType="Border">
+                <Setter Property="Background" Value="{StaticResource Color.ViewTitle.Background}" />
+                <Setter Property="CornerRadius" Value="1" />
+            </Style>
+            <Style TargetType="TextBlock">
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="Margin" Value="5" />
+                <Setter Property="FontSize" Value="24" />
+                <Setter Property="Foreground" Value="Black" />
+                <Setter Property="FontWeight" Value="Bold" />
+            </Style>
+        </Style.Resources>
+    </Style>
+
+    <!--  jog速度和距离切换  -->
+    <ControlTemplate x:Key="ToggleButtonTemplate" TargetType="ToggleButton">
+        <!--  Control Template view define  -->
+        <Viewbox>
+            <Grid>
+                <Border Name="Border"
+                        MinWidth="30"
+                        MinHeight="15"
+                        Background="Orange"
+                        BorderBrush="Gray"
+                        BorderThickness="1"
+                        CornerRadius="7.5"
+                        TextBlock.Foreground="White" />
+                <Ellipse Name="Circle"
+                         MinWidth="13"
+                         MinHeight="13"
+                         HorizontalAlignment="Right"
+                         VerticalAlignment="Center"
+                         Fill="White"
+                         Stroke="Gray"
+                         StrokeThickness="0.5" />
+                <ContentPresenter Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" />
+            </Grid>
+        </Viewbox>
+
+        <!--  Control Template style define  -->
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="Circle" Property="Fill" Value="DarkGray" />
+            </Trigger>
+
+            <!--  For toggle button to change the view when click the button (after click the IsChecked status will change between True or false)  -->
+            <Trigger Property="IsChecked" Value="false">
+                <Setter TargetName="Circle" Property="HorizontalAlignment" Value="Left" />
+                <Setter TargetName="Border" Property="Background" Value="Gray" />
+            </Trigger>
+
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter TargetName="Circle" Property="HorizontalAlignment" Value="Left" />
+                <Setter TargetName="Border" Property="Background" Value="White" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+</ResourceDictionary>

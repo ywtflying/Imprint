@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.34301.259
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NanoImprinter", "NanoImprinter\NanoImprinter.csproj", "{3463DAE9-7808-44CD-B468-1BF4E0F93E54}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WestLakeShape.Common", "WestLakeShape.Common\WestLakeShape.Common.csproj", "{CD6A8D56-17C6-48DF-9504-4CAA4D8E016F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WestLakeShape.Motion", "WestLakeShape.Motion\WestLakeShape.Motion.csproj", "{98148470-F5DD-40EF-98B7-AC31382F9B16}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UITheme", "UITheme\UITheme.csproj", "{7B02F047-5D60-4388-91AE-02FF1F200157}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3463DAE9-7808-44CD-B468-1BF4E0F93E54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3463DAE9-7808-44CD-B468-1BF4E0F93E54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3463DAE9-7808-44CD-B468-1BF4E0F93E54}.Debug|x64.ActiveCfg = Debug|x64
+		{3463DAE9-7808-44CD-B468-1BF4E0F93E54}.Debug|x64.Build.0 = Debug|x64
+		{3463DAE9-7808-44CD-B468-1BF4E0F93E54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3463DAE9-7808-44CD-B468-1BF4E0F93E54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3463DAE9-7808-44CD-B468-1BF4E0F93E54}.Release|x64.ActiveCfg = Release|x64
+		{3463DAE9-7808-44CD-B468-1BF4E0F93E54}.Release|x64.Build.0 = Release|x64
+		{CD6A8D56-17C6-48DF-9504-4CAA4D8E016F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD6A8D56-17C6-48DF-9504-4CAA4D8E016F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD6A8D56-17C6-48DF-9504-4CAA4D8E016F}.Debug|x64.ActiveCfg = Debug|x64
+		{CD6A8D56-17C6-48DF-9504-4CAA4D8E016F}.Debug|x64.Build.0 = Debug|x64
+		{CD6A8D56-17C6-48DF-9504-4CAA4D8E016F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD6A8D56-17C6-48DF-9504-4CAA4D8E016F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD6A8D56-17C6-48DF-9504-4CAA4D8E016F}.Release|x64.ActiveCfg = Release|x64
+		{CD6A8D56-17C6-48DF-9504-4CAA4D8E016F}.Release|x64.Build.0 = Release|x64
+		{98148470-F5DD-40EF-98B7-AC31382F9B16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98148470-F5DD-40EF-98B7-AC31382F9B16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98148470-F5DD-40EF-98B7-AC31382F9B16}.Debug|x64.ActiveCfg = Debug|x64
+		{98148470-F5DD-40EF-98B7-AC31382F9B16}.Debug|x64.Build.0 = Debug|x64
+		{98148470-F5DD-40EF-98B7-AC31382F9B16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98148470-F5DD-40EF-98B7-AC31382F9B16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98148470-F5DD-40EF-98B7-AC31382F9B16}.Release|x64.ActiveCfg = Release|x64
+		{98148470-F5DD-40EF-98B7-AC31382F9B16}.Release|x64.Build.0 = Release|x64
+		{7B02F047-5D60-4388-91AE-02FF1F200157}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B02F047-5D60-4388-91AE-02FF1F200157}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B02F047-5D60-4388-91AE-02FF1F200157}.Debug|x64.ActiveCfg = Debug|x64
+		{7B02F047-5D60-4388-91AE-02FF1F200157}.Debug|x64.Build.0 = Debug|x64
+		{7B02F047-5D60-4388-91AE-02FF1F200157}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B02F047-5D60-4388-91AE-02FF1F200157}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B02F047-5D60-4388-91AE-02FF1F200157}.Release|x64.ActiveCfg = Release|x64
+		{7B02F047-5D60-4388-91AE-02FF1F200157}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DD0995F2-B40A-4545-9A31-D2A60246A210}
+	EndGlobalSection
+EndGlobal

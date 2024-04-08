@@ -1,0 +1,19 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="ColorStyle.xaml" />
+        <ResourceDictionary Source="IconGeometryStyle.xaml" />
+        <!--<ResourceDictionary Source="FontStyle.xaml" />-->
+
+        <!--  避免重新生成解决方案的时候ui显示问题  -->
+        <ResourceDictionary>
+            <FontFamily x:Key="Harmony.Black">pack://application:,,,/HarmonyFont/HarmonyOS_Sans_SC_Black.ttf#HarmonyOS Sans SC Black</FontFamily>
+            <FontFamily x:Key="Harmony.Bold">pack://application:,,,/HarmonyFont/HarmonyOS_Sans_SC_Bold.ttf#HarmonyOS Sans SC Bold</FontFamily>
+            <FontFamily x:Key="Harmony.Light">pack://application:,,,/HarmonyFont/HarmonyOS_Sans_SC_Light.ttf#HarmonyOS Sans SC Light</FontFamily>
+            <FontFamily x:Key="Harmony.Medium">pack://application:,,,/HarmonyFont/HarmonyOS_Sans_SC_Medium.ttf#HarmonyOS Sans SC Medium</FontFamily>
+            <FontFamily x:Key="Harmony.Regular">pack://application:,,,/HarmonyFont/HarmonyOS_Sans_SC_Regular.ttf#HarmonyOS Sans SC Regular</FontFamily>
+            <FontFamily x:Key="Harmony.Thin">pack://application:,,,/HarmonyFont/HarmonyOS_Sans_SC_Thin.ttf#HarmonyOS Sans SC Thin</FontFamily>
+        </ResourceDictionary>
+    </ResourceDictionary.MergedDictionaries>
+
+</ResourceDictionary>
