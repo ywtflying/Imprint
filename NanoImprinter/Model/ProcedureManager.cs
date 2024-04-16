@@ -17,12 +17,12 @@ namespace NanoImprinter.Model
         /// </summary>
         private readonly Dictionary<string, WorkProcedure> _procedures;
         private List<WorkProcedure> _autoProcedures;
-        private readonly IMachineModel _machine;
+        private readonly IDeviceManager _machine;
         private IEventAggregator _eventAggregator;
         public int AutoPorcedureCount => _autoProcedures.Count;
         public List<WorkProcedure> AutoProcedures => _autoProcedures;
         
-        public ProcedureManager(IMachineModel machine, IEventAggregator eventAggregator)
+        public ProcedureManager(IDeviceManager machine, IEventAggregator eventAggregator)
         {
             _machine = machine;
             _eventAggregator = eventAggregator;

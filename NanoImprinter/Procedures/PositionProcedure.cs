@@ -19,7 +19,7 @@ namespace NanoImprinter.Procedures
         private MacroPlatform _macroPlatform;
         private ImprinterIO _io;
 
-        public PositionProcedure(IMachineModel machine, IEventAggregator eventAggregator) :base(machine,eventAggregator)
+        public PositionProcedure(IDeviceManager machine, IEventAggregator eventAggregator) :base(machine,eventAggregator)
         {
             _name = "定位流程";
             _imprintPlatform = _machine.GetPlatform(typeof(ImprintPlatform).Name) as ImprintPlatform;

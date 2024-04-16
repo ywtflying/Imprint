@@ -33,12 +33,9 @@
                         <RowDefinition Height="1*" />
                         <RowDefinition Height="1*" />
                     </Grid.RowDefinitions>
-                    <UniformGrid Columns="2"
-                                 Grid.Row="0">
-                        <StackPanel Margin="0"
-                                    Orientation="Horizontal">
-                            <Label VerticalAlignment="Center"
-                                   Content="晶圆尺寸" />
+                    <UniformGrid Grid.Row="0" Columns="2">
+                        <StackPanel Margin="0" Orientation="Horizontal">
+                            <Label VerticalAlignment="Center" Content="晶圆尺寸" />
                             <ComboBox>
                                 <ComboBoxItem Content="4寸" />
                                 <ComboBoxItem Content="8寸" />
@@ -49,11 +46,11 @@
                                                      IsReadOnly="True"
                                                      ParamName="容量" />
                     </UniformGrid>
-                    <ces:ParameterDisplayControl MinWidth="280"
-                                                 Grid.Row="1"
+                    <ces:ParameterDisplayControl Grid.Row="1"
+                                                 MinWidth="280"
+                                                 Margin="0"
                                                  IsReadOnly="True"
-                                                 ParamName="Mask尺寸"
-                                                 Margin="0"/>
+                                                 ParamName="Mask尺寸" />
 
 
                 </Grid>

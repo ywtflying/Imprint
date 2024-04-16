@@ -16,10 +16,9 @@ using WestLakeShape.Motion.Device;
 
 namespace NanoImprinter.Model
 {
-    public interface IMachineModel: INotifyPropertyChanged
+    public interface IDeviceManager: INotifyPropertyChanged
     {
-        Dictionary<string, IPlatform> Platforms { get; }
-        
+        Dictionary<string, IPlatform> Platforms { get; }      
         /// <summary>
         /// 上次流程执行到的步骤
         /// </summary>
@@ -33,10 +32,9 @@ namespace NanoImprinter.Model
         void SaveParam();
         IPlatform GetPlatform(string name);
         void ConnectedPlatform();
-        void DisconnectedPlatform();
     }
 
-    public class DeviceModel : IMachineModel
+    public class DeviceManager : IDeviceManager
     {
         //private readonly string Config_File_Name = "MachineConfig.config";
         //private readonly string _rootFolder = @"D:\NanoImprinterConfig\";
@@ -83,7 +81,7 @@ namespace NanoImprinter.Model
             set => _configFileName = value;
         }
 
-        public DeviceModel()
+        public DeviceManager()
         {
             Platforms = new Dictionary<string, IPlatform>();
             //获取config的文件名
@@ -189,25 +187,26 @@ namespace NanoImprinter.Model
 
         public void ConnectedPlatform()
         {
-            Axes.Connected();
-            //foreach (var pairs in Platforms)
-            //{
-            //    pairs.Value.Connected();
-            //}
-            
-            _isConnected = true;
-        }
-
-        public void DisconnectedPlatform()
-        {
-            Axes.Disconnected();
-
-            foreach (var pairs in Platforms)
+            if (!_isConnected)
             {
-                pairs.Value.Disconnected();
-            }
+                Axes.Connected();
+                //foreach (var pairs in Platforms)
+                //{
+                //    pairs.Value.Connected();
+                //}
 
-            _isConnected = false;
+                _isConnected = true;
+            }
+            else
+            {
+                Axes.Disconnected();
+
+                foreach (var pairs in Platforms)
+                {
+                    pairs.Value.Disconnected();
+                }
+                _isConnected = false;
+            }
         }
 
         public void LoadParamFileName()
@@ -259,11 +258,11 @@ namespace NanoImprinter.Model
         }
     }
 
+
     public class MachineModelConfig
     {
         public WafeInfo WafeInfo { get; set; } = new WafeInfo();
         public MaskInfo MaskInfo { get; set; } = new MaskInfo();
-
         public ImprinterAxisConfig ImprinterAxis { get; set; } = new ImprinterAxisConfig();
         public ImprinterIOConfig ImprinterIO { get; set; } = new ImprinterIOConfig();
 
@@ -272,17 +271,16 @@ namespace NanoImprinter.Model
         public MacroPlatformConfig MacroPlatform { get; set; } = new MacroPlatformConfig();
         public MicroPlatformConfig MicroPlatform { get; set; } = new MicroPlatformConfig();
         public ImprintPlatformConfig ImprintPlatform { get; set; } = new ImprintPlatformConfig();
-      
     }
 
+
     /// <summary>
-    /// 内部电路文件，不能随意修改。
+    /// 硬件固定参数，不能随意修改。
     /// </summary>
     public class HardwareConfig
     {
         public ImprinterAxisConfig ImprinterAxis { get; set; } = new ImprinterAxisConfig();
         public ImprinterIOConfig ImprinterIO { get; set; } = new ImprinterIOConfig();
-
     }
 
 }

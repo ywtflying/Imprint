@@ -28,7 +28,7 @@ namespace NanoImprinter.Procedures
         
 
         protected string _name;
-        protected IMachineModel _machine;
+        protected IDeviceManager _machine;
         protected WorkStatus _workStatus;
         protected readonly IEventAggregator _eventAggregator;
 
@@ -43,7 +43,7 @@ namespace NanoImprinter.Procedures
             set => _workStatus = value;
         }
 
-        public WorkProcedure(IMachineModel machine,IEventAggregator eventAggregator)
+        public WorkProcedure(IDeviceManager machine,IEventAggregator eventAggregator)
         {
             _machine = machine;
             _eventAggregator = eventAggregator;

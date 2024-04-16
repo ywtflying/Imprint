@@ -18,7 +18,7 @@ namespace NanoImprinter.ViewModels
 {
     public class OtherViewModel : BindableBase
     {
-        private readonly IMachineModel _machine;
+        private readonly IDeviceManager _deviceManager;
         private MaskInfo _maskInfo;
         private string _configFileName;
 
@@ -35,12 +35,12 @@ namespace NanoImprinter.ViewModels
         public DelegateCommand SaveConfigFileNameCommand => new DelegateCommand(SaveConfigFileName);
         public ImprinterIO IOStates { get;private set; }
         
-        public OtherViewModel(IMachineModel machine)
+        public OtherViewModel(IDeviceManager deviceManager)
         {
-            _machine = machine;
-            IOStates = machine.IOStates;
-            _maskInfo = _machine.Config.MaskInfo;
-            ConfigFileName = _machine.ConfigFileName;
+            _deviceManager = deviceManager;
+            IOStates = deviceManager.IOStates;
+            _maskInfo = _deviceManager.Config.MaskInfo;
+            ConfigFileName = _deviceManager.ConfigFileName;
         }
 
         private void SetOutputValue(string stateName)
@@ -64,12 +64,12 @@ namespace NanoImprinter.ViewModels
 
         private void LoadParam()
         {
-            _machine.LoadParam();
+            _deviceManager.LoadParam();
         }
 
         private void SaveParam()
         {
-            _machine.SaveParam();
+            _deviceManager.SaveParam();
         }
         private void SaveConfigFileName()
         {
@@ -85,7 +85,7 @@ namespace NanoImprinter.ViewModels
                     ConfigFileName = _configFileName.Substring(0, dotIndex) + ".config";
                 }
             }
-            _machine.ConfigFileName = ConfigFileName;
+            _deviceManager.ConfigFileName = ConfigFileName;
         }
     }
 }

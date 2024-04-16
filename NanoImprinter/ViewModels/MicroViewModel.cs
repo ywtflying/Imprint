@@ -16,7 +16,7 @@ namespace NanoImprinter.ViewModels
 {
     public class MicroViewModel : BindableBase
     {
-        private readonly IMachineModel _machine;
+        private readonly IDeviceManager _deviceManager;
         private MicroPlatform _microPlatform;
         private MicroPlatformConfig _microPlatformConfig;
         private double _currentPressure;
@@ -150,12 +150,12 @@ namespace NanoImprinter.ViewModels
 
 
 
-        public MicroViewModel(IMachineModel machine)
+        public MicroViewModel(IDeviceManager deviceManager)
         {
-            _machine = machine;
-            _microPlatform = _machine.GetPlatform(typeof(MicroPlatform).Name) as MicroPlatform;
+            _deviceManager = deviceManager;
+            _microPlatform = _deviceManager.GetPlatform(typeof(MicroPlatform).Name) as MicroPlatform;
             _microPlatform.OnMessage += ShowMessage;
-            _microPlatformConfig = _machine.Config.MicroPlatform;
+            _microPlatformConfig = _deviceManager.Config.MicroPlatform;
             ChannelIndex = Enum.GetValues(typeof(ChannelNo)).Cast<ChannelNo>().ToList();
             PortNames = new ObservableCollection<string>(SerialPort.GetPortNames());
             RefreshPortNames();
@@ -165,31 +165,31 @@ namespace NanoImprinter.ViewModels
 
         private void GoHome()
         {
-            _microPlatform.GoHome();
+           Task.Run(() => _microPlatform.GoHome());
         }
 
         private void MoveToLevelPosition()
         {
-            _microPlatform.MoveTo(new PointZRXY(_levelPositionZ, _levelPositionRX, _levelPositionRY));
+            Task.Run(() => _microPlatform.MoveTo(new PointZRXY(_levelPositionZ, _levelPositionRX, _levelPositionRY)));
         }
 
         private void MoveToDemoldPosition()
         {
-            _microPlatform.MoveTo(new PointZRXY(_demoldPositionZ, _demoldPositionRX, _demoldPositionRY));
+            Task.Run(() => _microPlatform.MoveTo(new PointZRXY(_demoldPositionZ, _demoldPositionRX, _demoldPositionRY)));
         }
 
         private void Creep()
         {
-            _microPlatform.Creep(SelectedChannel, MoveDistance);
+            Task.Run(() => _microPlatform.Creep(SelectedChannel, MoveDistance));
         }
 
         private void JogForward()
         {
-            _microPlatform.JogForward(SelectedChannel, MoveDistance);
+            Task.Run(() => _microPlatform.JogForward(SelectedChannel, MoveDistance));
         }
         private void JogBackward()
         {
-            _microPlatform.JogBackward(SelectedChannel, MoveDistance);
+            Task.Run(() => _microPlatform.JogBackward(SelectedChannel, MoveDistance));
         }
 
         private void RefreshPortNames()
@@ -210,7 +210,7 @@ namespace NanoImprinter.ViewModels
             _microPlatformConfig.LevelPosition = new PointZRXY(_levelPositionZ, _levelPositionRX, _levelPositionRY);
             _microPlatformConfig.MaxPressure = MaxPressure;
             _microPlatformConfig.MinPressure = MinPressure;
-            _machine.SaveParam();
+            _deviceManager.SaveParam();
             _microPlatform.ReloadConfig();
         }
         private void ReloadParam()

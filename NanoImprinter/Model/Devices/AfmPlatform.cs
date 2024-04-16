@@ -14,7 +14,6 @@ namespace NanoImprinter.Model
     public interface IAfmPlatform: IPlatform, INotifyPropertyChanged
     {
         void Run();
-        //bool GoHome();
     }
     public class AfmPlatform : IAfmPlatform
     {

@@ -18,7 +18,7 @@ namespace NanoImprinter.Procedures
     {
         private MacroPlatform _platform;
         private ImprinterIO _io;
-        public LoadProcedure(IMachineModel machine, IEventAggregator eventAggregator) :base(machine,eventAggregator)
+        public LoadProcedure(IDeviceManager machine, IEventAggregator eventAggregator) :base(machine,eventAggregator)
         {
             _name = "取料流程";
             _platform = _machine.GetPlatform(typeof(MacroPlatform).Name) as MacroPlatform;
@@ -30,7 +30,7 @@ namespace NanoImprinter.Procedures
             if (!CheckWorkStatus())
                 return false;
 
-            var model = new DeviceModel();
+            var model = new DeviceManager();
             //移动到放料位
             _platform.MoveToLoadPosition();
 

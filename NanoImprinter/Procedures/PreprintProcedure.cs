@@ -17,7 +17,7 @@ namespace NanoImprinter.Procedures
     {
         private ImprintPlatform _imprintPlatform;
         private MacroPlatform _macroPlatform;
-        public PreprintProcedure(IMachineModel machine, IEventAggregator eventAggregator) :base(machine,eventAggregator)
+        public PreprintProcedure(IDeviceManager machine, IEventAggregator eventAggregator) :base(machine,eventAggregator)
         {
             _name = "预压印流程";
             _machine = machine;

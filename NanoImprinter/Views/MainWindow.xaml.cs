@@ -11,8 +11,8 @@ namespace NanoImprinter.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-        private IMachineModel _machine;
-        public MainWindow(IRegionManager regionManager, IMachineModel machine)
+        private IDeviceManager _machine;
+        public MainWindow(IRegionManager regionManager, IDeviceManager machine)
         {
             InitializeComponent();
             _machine = machine;

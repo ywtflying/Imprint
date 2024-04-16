@@ -212,7 +212,7 @@
     <Compile Include="Model\Devices\MicroPlatform.cs" />
     <Compile Include="Model\Devices\MicroPlatformAsync.cs" />
     <Compile Include="Model\Devices\ImprintPlatform.cs" />
-    <Compile Include="Model\DeviceModel.cs" />
+    <Compile Include="Model\DeviceManager.cs" />
     <Compile Include="Model\MaskInfo.cs" />
     <Compile Include="Model\ProcedureManager.cs" />
     <Compile Include="Procedures\CalibPrecedure.cs" />

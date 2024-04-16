@@ -11,26 +11,17 @@ namespace NanoImprinter.Model
 {
     public class ImprinterAxis
     {
-        private TrioAxis _imprintPlatformMaskZAxis;// 压印Z轴
-        private TrioAxis _imprintPlatformCameraAxis;//压印相机轴
-        //private ZmcAxis _gluePlatformXAxis;//点胶X轴
-        //private ZmcAxis _gluePlatformYAxis;//点胶Y轴
-        private TrioAxis _gluePlatformZAxis;// 点胶平台
-
-        private TrioAxis _afmPlatformXAxis;// AFM平台
-        private TrioAxis _afmPlatformYAxis;
-        private TrioAxis _afmPlatformZAxis;//
-
-        private TrioAxis _uvPlatformXAxis;//UV平台轴
-        
         private TrioAxis _macroPlatformRAxis;// 宏动平台
         private TrioAxis _macroPlatformYAxis;
         private TrioAxis _macroPlatformXAxis;
-        
-        //private TrioAxis _microPlatformRXAxis;// 微动平台
-        //private TrioAxis _microPlatformRYAxis;
-        //private TrioAxis _microPlatformZAxis;
-
+        private TrioAxis _imprintPlatformCameraAxis;//压印相机轴
+        private TrioAxis _imprintPlatformMaskZAxis;// 压印Z轴      
+        private TrioAxis _gluePlatformZAxis;// 点胶平台Z轴    
+        private TrioAxis _afmPlatformXAxis;// AFM平台X轴
+        private TrioAxis _afmPlatformYAxis;
+        private TrioAxis _uvPlatformXAxis;//UV平台X轴
+        private TrioAxis _afmPlatformZAxis;//
+      
         private TrioControl _trioControl;
         private ImprinterAxisConfig _config;
         private bool _isConnected;
@@ -46,10 +37,10 @@ namespace NanoImprinter.Model
             _macroPlatformRAxis = new TrioAxis(config.MacroPlatformRAxis);
             _imprintPlatformCameraAxis = new DCAxis(config.ImprintPlatformCameraZAxis);
             _imprintPlatformMaskZAxis = new DCAxis(config.ImprintPlatformMaskZAxis);
-            _gluePlatformZAxis = new DCAxis(config.GluePlatformZAxis);
-            _uvPlatformXAxis = new DCAxis(config.UVPlatformXAxis);
+            _gluePlatformZAxis = new DCAxis(config.GluePlatformZAxis);           
             _afmPlatformXAxis = new DCAxis(config.AfmPlatformXAxis);
             _afmPlatformYAxis = new DCAxis(config.AfmPlatformYAxis);
+            _uvPlatformXAxis = new DCAxis(config.UVPlatformXAxis);
             _afmPlatformZAxis = new DCAxis(config.AfmPlatformZAxis);
 
             _trioControl = TrioControl.Instance;
@@ -58,8 +49,8 @@ namespace NanoImprinter.Model
         public void Connected()
         {
            //打开控制器
-           var isOpened = _trioControl.Connected();
-            if (isOpened)
+           _isConnected = _trioControl.Connected();
+            if (_isConnected)
             {
                 var axes = All();
                 axes.ForEach(o =>
@@ -90,9 +81,9 @@ namespace NanoImprinter.Model
              _imprintPlatformCameraAxis,
              _imprintPlatformMaskZAxis,
              _gluePlatformZAxis,
-             _uvPlatformXAxis,
              _afmPlatformXAxis,
              _afmPlatformYAxis,
+             _uvPlatformXAxis,
              _afmPlatformZAxis,//原来UV2轴更改为AFM3轴
              };
         }
@@ -200,16 +191,17 @@ namespace NanoImprinter.Model
         //public ZmcAxisConfig GluePlatformXAxis { get; set; }
         //public ZmcAxisConfig GluePlatformYAxis { get; set; }
         public DCAxisConfig GluePlatformZAxis { get; set; } = new DCAxisConfig() { Name = "点胶平台Z轴", Index = 6 };
-        /// <summary>
-        /// UV平台
-        /// </summary>
-        public DCAxisConfig UVPlatformXAxis { get; set; } = new DCAxisConfig() { Name = "UV平台X轴", Index = 7 };
-
+      
         /// <summary>
         /// AFM平台
         /// </summary>
-        public DCAxisConfig AfmPlatformXAxis { get; set; } = new DCAxisConfig() { Name = "AFM平台X轴",Index= 8 };
-        public DCAxisConfig AfmPlatformYAxis { get; set; } = new DCAxisConfig() { Name = "AFM平台Y轴",Index=9 };
+        public DCAxisConfig AfmPlatformXAxis { get; set; } = new DCAxisConfig() { Name = "AFM平台X轴",Index= 7 };
+        public DCAxisConfig AfmPlatformYAxis { get; set; } = new DCAxisConfig() { Name = "AFM平台Y轴",Index=8 };
+        /// <summary>
+        /// UV平台
+        /// </summary>
+        public DCAxisConfig UVPlatformXAxis { get; set; } = new DCAxisConfig() { Name = "UV平台X轴", Index = 9 };
+
         public DCAxisConfig AfmPlatformZAxis { get; set; } = new DCAxisConfig() { Name = "AFM平台Z轴", Index = 10 };
     }
 

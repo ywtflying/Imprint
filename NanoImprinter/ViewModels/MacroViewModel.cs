@@ -14,7 +14,7 @@ namespace NanoImprinter.ViewModels
 {
     public class MacroViewModel : BindableBase
     {
-        private readonly IMachineModel _machine;
+        private readonly IDeviceManager _deviceManager;
         private MacroPlatform _macroPlatform;
         private double _xWorkVel;
         private double _yWorkVel;
@@ -104,10 +104,10 @@ namespace NanoImprinter.ViewModels
         #endregion
 
 
-        public MacroViewModel(IMachineModel machine)
+        public MacroViewModel(IDeviceManager machine)
         {
-            _machine = machine;
-            _macroPlatform = _machine.GetPlatform(typeof(MacroPlatform).Name) as MacroPlatform;
+            _deviceManager = machine;
+            _macroPlatform = _deviceManager.GetPlatform(typeof(MacroPlatform).Name) as MacroPlatform;
             Axes = new ObservableCollection<IAxis>();
             Axes.Add(_macroPlatform.XAxis);
             Axes.Add(_macroPlatform.YAxis);
@@ -115,54 +115,65 @@ namespace NanoImprinter.ViewModels
             ReloadParam();
         }
 
-
         private void GoHome()
         {
-            _macroPlatform.GoHome();
+            var task = Task.Run(() =>
+            {
+                _macroPlatform.GoHome();
+            });
         }
 
         private void MoveToLoadPosition()
         {
-            _macroPlatform.MoveToLoadPosition();
+            var task = Task.Run(() =>
+            {
+                _macroPlatform.MoveToLoadPosition();
+            });
         }
         private void MoveToGluePosition()
         {
-            _macroPlatform.MoveToGluePosition();
+            var task = Task.Run(() =>
+            {
+                _macroPlatform.MoveToGluePosition();
+            });
         }
         private void ResetAlarm()
         {
-            _macroPlatform.XAxis.ResetAlarm();
-            _macroPlatform.YAxis.ResetAlarm();
-            _macroPlatform.RAxis.ResetAlarm();
+            var task = Task.Run(() =>
+            {
+                _macroPlatform.XAxis.ResetAlarm();
+                _macroPlatform.YAxis.ResetAlarm();
+                _macroPlatform.RAxis.ResetAlarm();
+            });
         }
 
         private void SaveParam()
         {
-            _machine.Config.MacroPlatform.XWorkVel = XWorkVel;
-            _machine.Config.MacroPlatform.YWorkVel = YWorkVel;
-            _machine.Config.MacroPlatform.RWorkVel = RWorkVel;
-            _machine.Config.MacroPlatform.LoadPosition = LoadPosition;
-            _machine.Config.MacroPlatform.GluePosition = GluePosition;
-            _machine.Config.MacroPlatform.ImprintPosition = ImprintPosition;
-            _machine.Config.MacroPlatform.LeftCenterPosition = LeftCenterPosition;
-            _machine.Config.MacroPlatform.RightCenterPosition = RightCenterPosition;
-            _machine.Config.MacroPlatform.UpCenterPosition = UpCenterPosition;
-            _machine.Config.MacroPlatform.DownCenterPosition = DownCenterPosition;
-            _machine.SaveParam();
+            _deviceManager.Config.MacroPlatform.XWorkVel = XWorkVel;
+            _deviceManager.Config.MacroPlatform.YWorkVel = YWorkVel;
+            _deviceManager.Config.MacroPlatform.RWorkVel = RWorkVel;
+            _deviceManager.Config.MacroPlatform.LoadPosition = LoadPosition;
+            _deviceManager.Config.MacroPlatform.GluePosition = GluePosition;
+            _deviceManager.Config.MacroPlatform.ImprintPosition = ImprintPosition;
+            _deviceManager.Config.MacroPlatform.LeftCenterPosition = LeftCenterPosition;
+            _deviceManager.Config.MacroPlatform.RightCenterPosition = RightCenterPosition;
+            _deviceManager.Config.MacroPlatform.UpCenterPosition = UpCenterPosition;
+            _deviceManager.Config.MacroPlatform.DownCenterPosition = DownCenterPosition;
+            _deviceManager.SaveParam();
         }
 
         private void ReloadParam()
         {
-            XWorkVel = _machine.Config.MacroPlatform.XWorkVel;
-            YWorkVel = _machine.Config.MacroPlatform.YWorkVel;
-            RWorkVel = _machine.Config.MacroPlatform.RWorkVel;
-            LoadPosition = _machine.Config.MacroPlatform.LoadPosition;
-            GluePosition = _machine.Config.MacroPlatform.GluePosition;
-            ImprintPosition = _machine.Config.MacroPlatform.ImprintPosition;
-            LeftCenterPosition = _machine.Config.MacroPlatform.LeftCenterPosition;
-            RightCenterPosition = _machine.Config.MacroPlatform.RightCenterPosition;
-            UpCenterPosition = _machine.Config.MacroPlatform.UpCenterPosition;
-            DownCenterPosition = _machine.Config.MacroPlatform.DownCenterPosition;
+            XWorkVel = _deviceManager.Config.MacroPlatform.XWorkVel;
+            YWorkVel = _deviceManager.Config.MacroPlatform.YWorkVel;
+            RWorkVel = _deviceManager.Config.MacroPlatform.RWorkVel;
+            LoadPosition = _deviceManager.Config.MacroPlatform.LoadPosition;
+            GluePosition = _deviceManager.Config.MacroPlatform.GluePosition;
+            ImprintPosition = _deviceManager.Config.MacroPlatform.ImprintPosition;
+            LeftCenterPosition = _deviceManager.Config.MacroPlatform.LeftCenterPosition;
+            RightCenterPosition = _deviceManager.Config.MacroPlatform.RightCenterPosition;
+            UpCenterPosition = _deviceManager.Config.MacroPlatform.UpCenterPosition;
+            DownCenterPosition = _deviceManager.Config.MacroPlatform.DownCenterPosition;
         }
 
         private void MoveToImprintPosition()
@@ -199,7 +210,6 @@ namespace NanoImprinter.ViewModels
             {
                 _macroPlatform.MoveTo(DownCenterPosition);
             });
-            
         }
     }
 }

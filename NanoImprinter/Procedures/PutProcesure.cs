@@ -15,7 +15,7 @@ namespace NanoImprinter.Procedures
     public class PutProcesure : WorkProcedure
     {
 
-        public PutProcesure(IMachineModel machine, IEventAggregator eventAggregator) :base(machine,eventAggregator)
+        public PutProcesure(IDeviceManager machine, IEventAggregator eventAggregator) :base(machine,eventAggregator)
         {
             _name = "放料流程";
         }

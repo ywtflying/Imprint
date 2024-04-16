@@ -16,7 +16,7 @@ namespace NanoImprinter.Procedures
     {
         private MicroPlatform _microPlatform;
         private ImprintPlatform _imprintPlatform;
-        public DemoldProcedure(IMachineModel machine, IEventAggregator eventAggregator) :base(machine,eventAggregator)
+        public DemoldProcedure(IDeviceManager machine, IEventAggregator eventAggregator) :base(machine,eventAggregator)
         {
             _name = "脱模流程";
             _microPlatform = _machine.GetPlatform(typeof(MicroPlatform).Name) as MicroPlatform;

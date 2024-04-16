@@ -15,7 +15,7 @@ namespace NanoImprinter.Procedures
     {
         private Point2D _wafeCenter;
         private MacroPlatform _platform;
-        public FindRotateCenterProcedure(IMachineModel machine, IEventAggregator eventAggregator) :base(machine,eventAggregator)
+        public FindRotateCenterProcedure(IDeviceManager machine, IEventAggregator eventAggregator) :base(machine,eventAggregator)
         {
             _wafeCenter = new Point2D(0, 0);
             _platform = _machine.GetPlatform(typeof(MacroPlatform).Name) as MacroPlatform;
@@ -23,7 +23,7 @@ namespace NanoImprinter.Procedures
         }
         protected override bool OnExecute()
         {
-            var model = new DeviceModel();
+            var model = new DeviceManager();
             if (!CheckWorkStatus())
                 return false;
             //移动到圆心左监测点 

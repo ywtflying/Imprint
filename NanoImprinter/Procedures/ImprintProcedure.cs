@@ -18,7 +18,7 @@ namespace NanoImprinter.Procedures
         private ImprintPlatform _imprintPlatform;
         private double _maxValue;
         private double _minValue;
-        public ImprintProcedure(IMachineModel machine, IEventAggregator eventAggregator) :base(machine,eventAggregator)
+        public ImprintProcedure(IDeviceManager machine, IEventAggregator eventAggregator) :base(machine,eventAggregator)
         {
             _name = "压印流程";
             _microPlatform = _machine.GetPlatform(typeof(MicroPlatform).Name) as MicroPlatform;

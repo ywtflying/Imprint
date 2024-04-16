@@ -265,7 +265,8 @@ namespace WestLakeShape.Motion.Device
         /// </summary>
         public override void ResetAlarm()
         {
-            _trioPC.Datum(0);
+            var ret = _trioPC.Datum(0);
+            CheckException(ret);
             var command = $"datum({_config.Index})";
             _trioPC.Execute(command);
         }
@@ -343,7 +344,7 @@ namespace WestLakeShape.Motion.Device
 
         public override void LoadVelocity(double vel)
         {
-            var acc = vel / 10;
+            var acc = vel * 10;
             SetAxisParameter(AxisParameter.ACCEL, acc);
             SetAxisParameter(AxisParameter.DECEL, acc);
             SetAxisParameter(AxisParameter.SPEED, vel);

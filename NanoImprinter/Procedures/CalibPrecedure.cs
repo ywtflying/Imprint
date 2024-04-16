@@ -13,7 +13,7 @@ namespace NanoImprinter.Procedures
     /// </summary>
     public class CalibProcedure:WorkProcedure
     {
-        public CalibProcedure(IMachineModel machine, IEventAggregator eventAggregator) :base(machine,eventAggregator)
+        public CalibProcedure(IDeviceManager machine, IEventAggregator eventAggregator) :base(machine,eventAggregator)
         {
             _name = "标定流程";
         }

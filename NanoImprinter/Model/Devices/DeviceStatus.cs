@@ -14,13 +14,13 @@ namespace NanoImprinter
     public enum DeviceStatus
     {
         [Description("Orange")]
-        Value1,
+        Ready,
 
         [Description("Green")]
-        Value2,
+        Running,
 
-        [Description("Blue")]
-        Value3
+        [Description("Red")]
+        Alarm
     }
 
     public static class EnumExtensions

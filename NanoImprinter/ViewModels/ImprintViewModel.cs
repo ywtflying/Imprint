@@ -16,7 +16,7 @@ namespace NanoImprinter.ViewModels
 {
     public class ImprintViewModel : BindableBase
     {
-        private readonly IMachineModel _machine;
+        private readonly IDeviceManager _deviceManager;
         private ImprintPlatform _plate;
         private ImprintPlatformConfig _platformConfig;
         private string _uvPortName;
@@ -148,11 +148,11 @@ namespace NanoImprinter.ViewModels
         public ObservableCollection<string> PortNames { get; set; }
         public ObservableCollection<IAxis> Axes { get; set; }
 
-        public ImprintViewModel(IMachineModel machine)
+        public ImprintViewModel(IDeviceManager machine)
         {
-            _machine = machine;
+            _deviceManager = machine;
             _plate = machine.GetPlatform(typeof(ImprintPlatform).Name) as ImprintPlatform;
-            _platformConfig = _machine.Config.ImprintPlatform;
+            _platformConfig = _deviceManager.Config.ImprintPlatform;
             Axes = new ObservableCollection<IAxis>();
             PortNames = new ObservableCollection<string>();
             Axes.Add(_plate.MaskZAxis);
@@ -187,9 +187,12 @@ namespace NanoImprinter.ViewModels
         }
         private void ResetAlarm()
         {
-            _plate.MaskZAxis.ResetAlarm();
-            _plate.CameraZAxis.ResetAlarm();
-            _plate.UVXAxis.ResetAlarm();
+            var task = Task.Run(() =>
+            {
+                _plate.MaskZAxis.ResetAlarm();
+                _plate.CameraZAxis.ResetAlarm();
+                _plate.UVXAxis.ResetAlarm();
+            });
         }
 
         private void SaveParam()
@@ -210,7 +213,7 @@ namespace NanoImprinter.ViewModels
             _platformConfig.UVConfig.PortName = _uvPortName;
             _platformConfig.ForceSensorControlConfig.PortName = _forceSensorPortName;
             
-            _machine.SaveParam();
+            _deviceManager.SaveParam();
             _plate.ReloadConfig();
             
             //保存参数到UV控制器中
@@ -276,15 +279,24 @@ namespace NanoImprinter.ViewModels
 
         private void OpenUVLight()
         {
-            _plate.OpenUVLight();
+            var task = Task.Run(() =>
+            {
+                _plate.OpenUVLight();
+            });
         }
         private void CloseUVLight()
         {
-            _plate.CloseUVLight();
+            var task = Task.Run(() =>
+            {
+                _plate.CloseUVLight();
+            });
         }
         private void WriteUVParameter()
         {
-            _plate.WriteUVParam();
+            var task = Task.Run(() =>
+            {
+                _plate.WriteUVParam();
+            });
         }
     }
 }

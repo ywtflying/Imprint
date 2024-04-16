@@ -22,13 +22,12 @@ namespace NanoImprinter.ViewModels
 {
     public class MainViewModel : BindableBase
     {
-        private readonly IMachineModel _machine;
+        private readonly IDeviceManager _deviceManager;
         private readonly SemaphoreSlim _workDoneEvent = new SemaphoreSlim(1, 1);
         private static readonly ILogger Log = LogHelper.For<MainViewModel>();
         private const int Max_Log_Count = 15;
-        private DispatcherTimer _timer;
-
-        private ProcedureManager _manager;
+        
+        private ProcedureManager _procedureManager;
         //private IEventAggregator _eventAggregator;
         private ProcedureStatus _loadStatus;
         private ProcedureStatus _glueStatus;
@@ -39,8 +38,6 @@ namespace NanoImprinter.ViewModels
         private ProcedureStatus _positionStatus;
 
         private WorkStatus _status;
-
-        private bool _isConnected = false;
         private string _startContent = "启动";
 
         private int _currentRow;
@@ -49,12 +46,12 @@ namespace NanoImprinter.ViewModels
         #region property
         public int MaskUsageCount
         {
-            get => _machine.Config.MaskInfo.MaskUsageCount;
+            get => _deviceManager.Config.MaskInfo.MaskUsageCount;
             set
             {
-                if (_machine.Config.MaskInfo.MaskUsageCount != value)
+                if (_deviceManager.Config.MaskInfo.MaskUsageCount != value)
                 {
-                    _machine.Config.MaskInfo.MaskUsageCount = value;
+                    _deviceManager.Config.MaskInfo.MaskUsageCount = value;
                     RaisePropertyChanged(nameof(MaskUsageCount));
                 }
             }
@@ -62,12 +59,12 @@ namespace NanoImprinter.ViewModels
 
         public int MaskLifetimeCount
         {
-            get => _machine.Config.MaskInfo.MaskLifetimeCount;
+            get => _deviceManager.Config.MaskInfo.MaskLifetimeCount;
             set 
             {
-                if (_machine.Config.MaskInfo.MaskLifetimeCount != value)
+                if (_deviceManager.Config.MaskInfo.MaskLifetimeCount != value)
                 {
-                    _machine.Config.MaskInfo.MaskLifetimeCount = value;
+                    _deviceManager.Config.MaskInfo.MaskLifetimeCount = value;
                     RaisePropertyChanged(nameof(MaskLifetimeCount));
                 }
             }
@@ -75,12 +72,12 @@ namespace NanoImprinter.ViewModels
 
         public int ImprintCol
         {
-            get => _machine.Config.MaskInfo.ImprintCol;
+            get => _deviceManager.Config.MaskInfo.ImprintCol;
             set
             {
-                if (_machine.Config.MaskInfo.ImprintCol != value)
+                if (_deviceManager.Config.MaskInfo.ImprintCol != value)
                 {
-                    _machine.Config.MaskInfo.ImprintCol = value;
+                    _deviceManager.Config.MaskInfo.ImprintCol = value;
                     RaisePropertyChanged(nameof(ImprintCol));
                 }
             }
@@ -88,12 +85,12 @@ namespace NanoImprinter.ViewModels
         
         public int ImprintRow
         {
-            get => _machine.Config.MaskInfo.ImprintRow;
+            get => _deviceManager.Config.MaskInfo.ImprintRow;
             set
             {
-                if (_machine.Config.MaskInfo.ImprintRow != value)
+                if (_deviceManager.Config.MaskInfo.ImprintRow != value)
                 {
-                    _machine.Config.MaskInfo.ImprintRow = value;
+                    _deviceManager.Config.MaskInfo.ImprintRow = value;
                     RaisePropertyChanged(nameof(ImprintRow));
                 }
             }
@@ -101,12 +98,12 @@ namespace NanoImprinter.ViewModels
 
         public int ImprintCount
         {
-            get => _machine.Config.MaskInfo.ImprintCount;
+            get => _deviceManager.Config.MaskInfo.ImprintCount;
             set
             {
-                if (_machine.Config.MaskInfo.ImprintCount != value)
+                if (_deviceManager.Config.MaskInfo.ImprintCount != value)
                 {
-                    _machine.Config.MaskInfo.ImprintCount = value;
+                    _deviceManager.Config.MaskInfo.ImprintCount = value;
                     RaisePropertyChanged(nameof(ImprintCount));
                 }
             }
@@ -114,12 +111,12 @@ namespace NanoImprinter.ViewModels
        
         public int CurrentIndex
         {
-            get => _machine.Config.MaskInfo.CurrentIndex;
+            get => _deviceManager.Config.MaskInfo.CurrentIndex;
             set
             {
-                if (_machine.Config.MaskInfo.CurrentIndex != value)
+                if (_deviceManager.Config.MaskInfo.CurrentIndex != value)
                 {
-                    _machine.Config.MaskInfo.CurrentIndex = value;
+                    _deviceManager.Config.MaskInfo.CurrentIndex = value;
                     RaisePropertyChanged(nameof(CurrentIndex));
                 }
             }
@@ -141,13 +138,7 @@ namespace NanoImprinter.ViewModels
             get => _status;
             set => SetProperty(ref _status, value);
         }
-        
-        public bool IsConnected
-        {
-            get => _isConnected;
-            set => SetProperty(ref _isConnected, value);
-        }
-        
+      
         public string StartContent
         {
             get => _startContent;
@@ -240,11 +231,11 @@ namespace NanoImprinter.ViewModels
 
 
         public MainViewModel(IEventAggregator eventAggregator,
-            IMachineModel machine, 
-            ProcedureManager manager)
+            IDeviceManager deviceManager, 
+            ProcedureManager procedureManager)
         {
-            _machine = machine;
-            _manager = manager;
+            _deviceManager = deviceManager;
+            _procedureManager = procedureManager;
             eventAggregator.GetEvent<ProcedureInfoEvent>().Subscribe(ProcedureInfoChanged);
 
             LogEvents = new ObservableCollection<LogEvent>();
@@ -266,7 +257,7 @@ namespace NanoImprinter.ViewModels
 
         private void Emergency()
         {
-            _machine.Axes.All().ForEach(o => o.EmergencyStop());
+            _deviceManager.Axes.All().ForEach(o => o.EmergencyStop());
         }
 
         private void Start()
@@ -299,7 +290,7 @@ namespace NanoImprinter.ViewModels
             Log.Information("复位，所有任务终止");
             Status = WorkStatus.Terminated;
 
-            _machine.Axes.All().ForEach(o => o.ResetAlarm());
+            _deviceManager.Axes.All().ForEach(o => o.ResetAlarm());
         }
 
         private void GoHome()
@@ -308,10 +299,10 @@ namespace NanoImprinter.ViewModels
             Status = WorkStatus.Terminated;
 
             //先脱模
-            var microPlatform = _machine.GetPlatform(typeof(MicroPlatform).Name) as MicroPlatform;
+            var microPlatform = _deviceManager.GetPlatform(typeof(MicroPlatform).Name) as MicroPlatform;
             microPlatform.Demold();
 
-            foreach (var plate in _machine.Platforms)
+            foreach (var plate in _deviceManager.Platforms)
                 plate.Value.GoHome();
             
             Log.Information("系统回零完成");
@@ -339,13 +330,13 @@ namespace NanoImprinter.ViewModels
             {
                 //放wafe
                 Log.Information("放Wafe");
-                _manager.ExcuteProcedureByName(typeof(LoadProcedure).Name);
+                _procedureManager.ExcuteProcedureByName(typeof(LoadProcedure).Name);
                 //定位wafe圆心
                 Log.Information("定位Wafe圆心");
-                _manager.ExcuteProcedureByName(typeof(FindRotateCenterProcedure).Name);
+                _procedureManager.ExcuteProcedureByName(typeof(FindRotateCenterProcedure).Name);
                 //定位初次压印位置
                 Log.Information("定位Wafe初次压印位置");
-                _manager.ExcuteProcedureByName(typeof(PositionProcedure).Name);
+                _procedureManager.ExcuteProcedureByName(typeof(PositionProcedure).Name);
 
                 while (true)
                 {
@@ -393,24 +384,24 @@ namespace NanoImprinter.ViewModels
                 return;
             }
 
-            while (_machine.ProcedureIndex < _manager.AutoProcedures.Count)
+            while (_deviceManager.ProcedureIndex < _procedureManager.AutoProcedures.Count)
             {
-                var result = _manager.ExecuteAutoProcedureByIndex(_machine.ProcedureIndex);
+                var result = _procedureManager.ExecuteAutoProcedureByIndex(_deviceManager.ProcedureIndex);
                 if (result)
                 {
                     //记录当前流程的步骤，报错关机后下次继续执行
-                    _machine.ProcedureIndex++;
+                    _deviceManager.ProcedureIndex++;
 
                     //结束流程
-                    if (_machine.ProcedureIndex == _manager.AutoProcedures.Count)
+                    if (_deviceManager.ProcedureIndex == _procedureManager.AutoProcedures.Count)
                     {
-                        _machine.ProcedureIndex = 0;
+                        _deviceManager.ProcedureIndex = 0;
                         break;
                     } 
                 }
                 else
                 {
-                    var name = _manager.GetProcedureName(_machine.ProcedureIndex);
+                    var name = _procedureManager.GetProcedureName(_deviceManager.ProcedureIndex);
                     throw new Exception($"流程{name}未正确执行完");
                 }
             }
@@ -463,14 +454,7 @@ namespace NanoImprinter.ViewModels
         {
             var task = Task.Run(() =>
             {
-                _machine.ConnectedPlatform();
-            });
-        }
-        private void Disconnected()
-        {
-            var task = Task.Run(() =>
-            {
-                _machine.DisconnectedPlatform();
+                _deviceManager.ConnectedPlatform();
             });
         }
     }

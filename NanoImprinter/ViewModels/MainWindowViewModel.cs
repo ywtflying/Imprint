@@ -12,8 +12,8 @@ namespace NanoImprinter.ViewModels
     public class MainWindowViewModel : BindableBase
     {
         private readonly IRegionManager _regionManager;
-        private readonly IMachineModel _machine;
-        private readonly ProcedureManager _manager;
+        private readonly IDeviceManager _deviceManager;
+        private readonly ProcedureManager _procedureManager;
         
         public MicroPlatform MicroPlatform { get; private set; }
         public MacroPlatform MacroPlatform { get; private set; }
@@ -24,17 +24,17 @@ namespace NanoImprinter.ViewModels
 
 
         public MainWindowViewModel(IRegionManager regionManager,
-            IMachineModel machine,
-            ProcedureManager manager)
+            IDeviceManager deviceManager,
+            ProcedureManager procedureManager)
         {
             _regionManager = regionManager;
-            _machine = machine;
-            _manager = manager;
+            _deviceManager = deviceManager;
+            _procedureManager = procedureManager;
             NavigateCommand = new DelegateCommand<string>(Navigate);
-            MicroPlatform = _machine.GetPlatform(typeof(MicroPlatform).Name) as MicroPlatform;
-            MacroPlatform = _machine.GetPlatform(typeof(MacroPlatform).Name) as MacroPlatform;
-            ImprintPlatform = _machine.GetPlatform(typeof(ImprintPlatform).Name) as ImprintPlatform;
-            GluePlatform =_machine.GetPlatform(typeof(GluePlatform).Name) as GluePlatform;
+            MicroPlatform = _deviceManager.GetPlatform(typeof(MicroPlatform).Name) as MicroPlatform;
+            MacroPlatform = _deviceManager.GetPlatform(typeof(MacroPlatform).Name) as MacroPlatform;
+            ImprintPlatform = _deviceManager.GetPlatform(typeof(ImprintPlatform).Name) as ImprintPlatform;
+            GluePlatform =_deviceManager.GetPlatform(typeof(GluePlatform).Name) as GluePlatform;
         }
 
 

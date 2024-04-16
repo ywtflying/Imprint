@@ -14,7 +14,7 @@ namespace NanoImprinter.ViewModels
 {
     public class GlueViewModel : BindableBase
     {
-        private readonly IMachineModel _machine;
+        private readonly IDeviceManager _deviceManager;
         private GluePlatform _gluePlatform;
         private GluePlatformConfig _platformConfig;
 
@@ -107,16 +107,18 @@ namespace NanoImprinter.ViewModels
 
         #endregion
 
-        public GlueViewModel(IMachineModel machine)
+        public GlueViewModel(IDeviceManager deviceManager)
         {
-            _machine = machine;
-            _gluePlatform = _machine.GetPlatform(typeof(GluePlatform).Name) as GluePlatform;
-            _platformConfig = _machine.Config.GluePlatform;
+            _deviceManager = deviceManager;
+            _gluePlatform = _deviceManager.GetPlatform(typeof(GluePlatform).Name) as GluePlatform;
+            _platformConfig = _deviceManager.Config.GluePlatform;
             Axes = new ObservableCollection<IAxis>();
             PortNames = new ObservableCollection<string>();
             Axes.Add(_gluePlatform.GlueZAxis);
             RefreshPortNames(); 
             ReloadParam();
+
+            _isReady = true;
         }
 
 
@@ -129,7 +131,8 @@ namespace NanoImprinter.ViewModels
         }
         private void ResetAlarm()
         {
-            _gluePlatform.ResetAxesAlarm();
+           
+            //_gluePlatform.ResetAxesAlarm();
         }
 
         private void MoveToWaitPosition()
@@ -158,7 +161,7 @@ namespace NanoImprinter.ViewModels
             _platformConfig.GlueConfig.OpenValveIntensity = OpenIntensity;
             _platformConfig.GlueConfig.ClosedValveTime = CloseTime;
             _platformConfig.GlueConfig.TargetTemperatore = Temperature;
-            _machine.SaveParam();
+            _deviceManager.SaveParam();
             _gluePlatform.ReloadConfig();
         }
    
