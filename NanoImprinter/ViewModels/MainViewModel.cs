@@ -22,7 +22,7 @@ namespace NanoImprinter.ViewModels
 {
     public class MainViewModel : BindableBase
     {
-        private readonly IDeviceManager _deviceManager;
+        private IDeviceManager _deviceManager;
         private readonly SemaphoreSlim _workDoneEvent = new SemaphoreSlim(1, 1);
         private static readonly ILogger Log = LogHelper.For<MainViewModel>();
         private const int Max_Log_Count = 15;
@@ -145,6 +145,12 @@ namespace NanoImprinter.ViewModels
             set => SetProperty(ref _startContent, value);
         }
        
+        public IDeviceManager DeviceManager
+        {
+            get=> _deviceManager;
+            set => SetProperty(ref _deviceManager, value);
+        }
+
         public ObservableCollection<LogEvent> LogEvents { get; private set; }
         #endregion
 

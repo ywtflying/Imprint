@@ -16,14 +16,14 @@ using WestLakeShape.Motion.Device;
 
 namespace NanoImprinter.Model
 {
-    public interface IDeviceManager: INotifyPropertyChanged
+    public interface IDeviceManager
     {
         Dictionary<string, IPlatform> Platforms { get; }      
         /// <summary>
         /// 上次流程执行到的步骤
         /// </summary>
         int ProcedureIndex { get; set; }
-        bool IsConnected { get; }
+        bool IsConnected { get; set; }
         ImprinterIO IOStates { get;}
         ImprinterAxis Axes { get; }
         string ConfigFileName { get; set;}
@@ -34,7 +34,7 @@ namespace NanoImprinter.Model
         void ConnectedPlatform();
     }
 
-    public class DeviceManager : IDeviceManager
+    public class DeviceManager : NotifyPropertyChanged, IDeviceManager
     {
         //private readonly string Config_File_Name = "MachineConfig.config";
         //private readonly string _rootFolder = @"D:\NanoImprinterConfig\";
@@ -65,14 +65,7 @@ namespace NanoImprinter.Model
         public bool IsConnected
         {
             get => _isConnected;
-            set
-            {
-                if (_isConnected != value)
-                {
-                    _isConnected = value;
-                    OnPropertyChanged(nameof(_isConnected));
-                }
-            }
+            set => SetProperty(ref _isConnected, value);
         }
 
         public string ConfigFileName
@@ -152,10 +145,10 @@ namespace NanoImprinter.Model
                 }
                 else
                 {
-                    //HardwareConfig = new HardwareConfig();
-                    //HardwareConfig.ImprinterAxis = Config.ImprinterAxis;
-                    //HardwareConfig.ImprinterIO = Config.ImprinterIO;
-                    //SaveHardwareConfig();
+                    HardwareConfig = new HardwareConfig();
+                    HardwareConfig.ImprinterAxis = Config.ImprinterAxis;
+                    HardwareConfig.ImprinterIO = Config.ImprinterIO;
+                    SaveHardwareConfig();
                     throw new Exception("轴的基本参数文件不存在，请拷贝！同时：慎重修改，否则撞机！");
                 }
             }
@@ -187,25 +180,25 @@ namespace NanoImprinter.Model
 
         public void ConnectedPlatform()
         {
-            if (!_isConnected)
+            if (!IsConnected)
             {
-                Axes.Connected();
+                //Axes.Connected();
                 //foreach (var pairs in Platforms)
                 //{
                 //    pairs.Value.Connected();
                 //}
 
-                _isConnected = true;
+                IsConnected = true;
             }
             else
             {
-                Axes.Disconnected();
+                //Axes.Disconnected();
 
-                foreach (var pairs in Platforms)
-                {
-                    pairs.Value.Disconnected();
-                }
-                _isConnected = false;
+                //foreach (var pairs in Platforms)
+                //{
+                //    pairs.Value.Disconnected();
+                //}
+                IsConnected = false;
             }
         }
 
@@ -241,20 +234,7 @@ namespace NanoImprinter.Model
         private void RefreshRealtimeData()
         {
             var isAll = Platforms.Values.All(o => o.IsConnected);
-            IsConnected = isAll;
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            var handler = PropertyChanged;
-            if (handler != null)
-            {
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    handler(this, new PropertyChangedEventArgs(propertyName));
-                });
-            }
+            //IsConnected = isAll;
         }
     }
 

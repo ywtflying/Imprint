@@ -19,7 +19,6 @@ namespace NanoImprinter.ViewModels
     public class OtherViewModel : BindableBase
     {
         private readonly IDeviceManager _deviceManager;
-        private MaskInfo _maskInfo;
         private string _configFileName;
 
         public string ConfigFileName
@@ -39,7 +38,7 @@ namespace NanoImprinter.ViewModels
         {
             _deviceManager = deviceManager;
             IOStates = deviceManager.IOStates;
-            _maskInfo = _deviceManager.Config.MaskInfo;
+            
             ConfigFileName = _deviceManager.ConfigFileName;
         }
 

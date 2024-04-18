@@ -98,14 +98,18 @@
                               UVColor="{Binding UVStatus, Converter={StaticResource BackgroundConverter}}" />
 
             <UniformGrid Grid.Row="2" Columns="2">
-                <ces:IconButton Margin="40,10"
+                <!--<ces:IconButton Margin="40,10"
                                 Command="{Binding ConnectedCommand}"
                                 PathData="{StaticResource Icon.Connect}"
                                 PathFill="Black"
                                 Style="{StaticResource IconButton.LeftRight}"
                                 TextContent="{Binding IsChecked,RelativeSource={RelativeSource Self},Converter={StaticResource BoolConverter},ConverterParameter='连接:未连接'}"
-                                IsChecked="{Binding IsConnected}"/>
-             
+                                IsChecked="{Binding DeviceManager.IsConnected}" />-->
+                <Button Margin="20,10"
+                        Width="160"
+                        Height="80"
+                        Command="{Binding ConnectedCommand}"
+                        Content="{Binding DeviceManager.IsConnected,Converter={StaticResource BoolConverter},ConverterParameter='连接:未连接'}"/>
             </UniformGrid>
             <!--<cvs:SystemOperatorView Grid.Row="1"
                                     Margin="15,0"

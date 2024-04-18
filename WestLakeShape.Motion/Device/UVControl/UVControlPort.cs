@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace WestLakeShape.Motion
@@ -17,9 +18,9 @@ namespace WestLakeShape.Motion
         private bool _isConnected;
         private Stream _stream;
         private static int Head_Length = 1;
+        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
 
         public bool IsConnected => _isConnected;
-
         public string PortName
         {
             get => _port.PortName;
@@ -66,7 +67,7 @@ namespace WestLakeShape.Motion
             var bytes = new byte[2] { highByte,lowByte };
 
             var request = CreatePdu(slaveId, FunctionCodes.WriteSingleHoldingRegister, address, bytes);
-            SendRequest(request, 1);
+            SendData(request, 1);
 
             return true;
         }
@@ -87,18 +88,30 @@ namespace WestLakeShape.Motion
         public bool WriteMultiRegister(byte slaveId, int address, int registerNum,byte[] values)
         {
             var request = CreatePdu(slaveId, FunctionCodes.WriteRegisters, address, values);
-            var data = SendRequest(request, 1);
+            var data = SendData(request, 1);
 
             return true;
         }
 
-        private byte[] SendRequest(byte[] request, int registerNum)
+        private byte[] SendData(byte[] request, int registerNum)
         {
-            _stream.Write(request, 0, request.Length);
+            _semaphore.Wait();
+            try
+            {
+                _stream.Write(request, 0, request.Length);
 
-            var recvDataLength = 2 * registerNum + 6;
+                var recvDataLength = 2 * registerNum + 6;
 
-            return DataReceived(recvDataLength);
+                return DataReceived(recvDataLength);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            finally 
+            {
+                _semaphore.Release();
+            }
         }
 
         private byte[] CreatePdu(byte slaveId, byte command, int address,byte[] values)

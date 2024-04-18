@@ -115,12 +115,10 @@
                             Margin="30,0"
                             Command="{Binding OpenFileCommand}"
                             Content="浏览" />
-
                     <Button Width="150"
                             Margin="30,0"
                             Command="{Binding SaveConfigFileNameCommand}"
                             Content="保存文件名" />
-
                 </StackPanel>
                 <UniformGrid Grid.Row="1"
                              Columns="3">
@@ -155,8 +153,6 @@
                    Margin="0,0,100,0"
                    HorizontalAlignment="Right"
                    Content="IO值" />
-
-
             <ListBox Grid.Row="1"
                      Grid.ColumnSpan="2"
                      ItemsSource="{Binding IOStates.OutputIOs, Mode=TwoWay}">

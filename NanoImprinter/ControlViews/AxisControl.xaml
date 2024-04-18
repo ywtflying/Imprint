@@ -28,21 +28,22 @@
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
                 <ColumnDefinition Width="4*" />
-                <ColumnDefinition Width="5*" />
                 <ColumnDefinition Width="120" />
             </Grid.ColumnDefinitions>
 
             <StackPanel Orientation="Horizontal">
                 <Label HorizontalAlignment="Left"
                        VerticalAlignment="Center"
-                       Margin="20,0,0,0"
+                       Margin="5,0,0,0"
                        Content="定速" />
                 <ToggleButton x:Name="JogModeToggleButton"
                               Width="40"
                               Height="20"
                               HorizontalAlignment="Center"
                               VerticalAlignment="Center"
+                              IsChecked="True"
                               Checked="JogModeToggleButton_Checked"
                               Template="{StaticResource ToggleButtonTemplate}"
                               Unchecked="JogModeToggleButton_Unchecked" />
@@ -82,25 +83,27 @@
                      HorizontalAlignment="Center"
                      VerticalAlignment="Center"
                      IsReadOnly="False"
-                     Text="{Binding ElementName=sldJogValue, Path=Value, UpdateSourceTrigger=LostFocus, StringFormat=N2}" />
+                     Text="{Binding ElementName=sldJogValue, Path=Value, UpdateSourceTrigger=LostFocus, StringFormat=N4}" />
         </Grid>
 
-
-
         <UniformGrid Grid.Row="2" 
-                     Columns="3"
-                     Margin="0,5,50,0">
+                     Columns="4"
+                     Margin="10,5">
+            <Button x:Name="btnGoHome"
+                    Width="100"
+                    Click="btnGoHome_Click"
+                    Content="回零" />
             <Button x:Name="btnJogForward"
-                    Width="120"
+                    Width="100"
                     Click="btnJogForward_Click"
                     Content="Jog+" />
             <Button x:Name="btnJogBack"
-                    Width="120"
+                    Width="100"
                     Click="btnJogBack_Click"
                     Content="Jog-" />
 
             <Button x:Name="btnStop"
-                    Width="120"
+                    Width="100"
                     Click="btnStop_Click"
                     Content="停止" />
         </UniformGrid>

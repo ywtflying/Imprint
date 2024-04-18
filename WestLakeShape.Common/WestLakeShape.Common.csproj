@@ -93,9 +93,9 @@
     <Compile Include="LogService\LogHelper.cs" />
     <Compile Include="LogService\LogService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="LogService\WpfCommon\AsyncRelayCommand.cs" />
-    <Compile Include="LogService\WpfCommon\NotifyPropertyChanged.cs" />
-    <Compile Include="LogService\WpfCommon\RelayCommand.cs" />
+    <Compile Include="WpfCommon\AsyncRelayCommand.cs" />
+    <Compile Include="WpfCommon\NotifyPropertyChanged.cs" />
+    <Compile Include="WpfCommon\RelayCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

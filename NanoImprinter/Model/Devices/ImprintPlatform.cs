@@ -13,7 +13,7 @@ using WestLakeShape.Motion.Device;
 
 namespace NanoImprinter.Model
 {
-    public interface IImprintPlatform : INotifyPropertyChanged, IPlatform
+    public interface IImprintPlatform : IPlatform
     {
         ImprintPlatformConfig Config { get; set; }
         //bool GoHome();
@@ -22,7 +22,7 @@ namespace NanoImprinter.Model
         void ResetAxesAlarm();
     }
 
-    public class ImprintPlatform: IImprintPlatform
+    public class ImprintPlatform : NotifyPropertyChanged, IImprintPlatform
     {
         private ImprintPlatformConfig _config;
         private IAxis _maskZAxis;
@@ -50,93 +50,45 @@ namespace NanoImprinter.Model
         public IAxis UVXAxis => _uvXAxis;
         public bool IsConnected => _uvControl.IsConnected;
 
+
         #region 实时数据
         public double CurrentPositionMaskZ
         {
             get => _currentPositionMaskZ;
-            set
-            {
-                if (_currentPositionMaskZ != value)
-                {
-                    _currentPositionMaskZ = value;
-                    OnPropertyChanged(nameof(CurrentPositionMaskZ));
-                }
-            }
+            set => SetProperty(ref _currentPositionMaskZ, value);
         }
 
         public double CurrentPositionCameraZ
         {
             get => _currentPositionCameraZ;
-            set
-            {
-                if (_currentPositionCameraZ != value)
-                {
-                    _currentPositionCameraZ = value;
-                    OnPropertyChanged(nameof(CurrentPositionCameraZ));
-                }
-            }
+            set => SetProperty(ref _currentPositionCameraZ, value);
         }
 
         public double CurrentPositionUVX
         {
             get => _currentPositionUVX;
-            set
-            {
-                if (_currentPositionUVX != value)
-                {
-                    _currentPositionUVX = value;
-                    OnPropertyChanged(nameof(CurrentPositionUVX));
-                }
-            }
+            set => SetProperty(ref _currentPositionUVX, value);
         }
 
         public double ForceValue0
         {
             get => _forceValue0;
-            set
-            {
-                if (_forceValue0 != value)
-                {
-                    _forceValue0 = value;
-                    OnPropertyChanged(nameof(ForceValue0));
-                }
-            }
+            set => SetProperty(ref _forceValue0, value);
         }
         public double ForceValue1
         {
             get => _forceValue1;
-            set
-            {
-                if (_forceValue1 != value)
-                {
-                    _forceValue1 = value;
-                    OnPropertyChanged(nameof(ForceValue1));
-                }
-            }
+            set => SetProperty(ref _forceValue1, value);
         }
         public double ForceValue2
         {
             get => _forceValue2;
-            set
-            {
-                if (_forceValue2 != value)
-                {
-                    _forceValue2 = value;
-                    OnPropertyChanged(nameof(ForceValue2));
-                }
-            }
+            set => SetProperty(ref _forceValue2, value);
         }
         public double ForceValue3
         {
             get => _forceValue3;
-            set
-            {
-                if (_forceValue3 != value)
-                {
-                    _forceValue3 = value;
-                    OnPropertyChanged(nameof(ForceValue3));
-                }
-            }
+            set => SetProperty(ref _forceValue3, value);
         }
 
         #endregion
@@ -200,19 +152,29 @@ namespace NanoImprinter.Model
 
         public bool MoveToMaskPreprintHeight()
         {
+            if (_uvXAxis.Position <= _config.UVWaitPosition)
+                throw new Exception("UV未离开冲突区域，移动相机会发生碰撞");
+
             return MoveBy(_maskZAxis,_config.MaskPreprintHeight);
         }
         public bool MoveToMaskWaitHeight()
         {
+            //计算压头目标位置是否与相机存在碰撞可能
+            var safePosition = Math.Abs(_config.MaskWaitHeight) - Math.Abs(_config.SafeDistanceOfCameraAndMask);
+            if (Math.Abs(_cameraZAxis.Position) < safePosition)
+                throw new Exception("相机当前位置太低，移动压印头会发生碰撞");
+
             return MoveBy(_maskZAxis, _config.MaskWaitHeight);
         }
 
         public bool MoveToTakePictureHeight()
         {
-            if (_uvXAxis.Position > _config.CameraXDirSafePosition)
+            if (_uvXAxis.Position <= _config.UVWaitPosition)
                 throw new Exception("UV未离开冲突区域，移动相机会发生碰撞");
-            if (_maskZAxis.Position < _config.CameraTakePictureHeight)
-                throw new Exception("掩膜高度太低，移动相机会发生碰撞");
+            //计算相机目标位置是否与压头存在碰撞可能
+            var safePosition = Math.Abs(_config.CameraTakePictureHeight) + Math.Abs(_config.SafeDistanceOfCameraAndMask);
+            if (Math.Abs(_maskZAxis.Position) > safePosition)
+                throw new Exception("压头高度太高，移动相机会发生碰撞");
 
             return MoveBy(_cameraZAxis,_config.CameraTakePictureHeight);
         }
@@ -231,8 +193,12 @@ namespace NanoImprinter.Model
 
         public bool MoveToUVIrradiationPosition()
         {
-            if (_cameraZAxis.Position < _config.UVXDirSafePosition)
+            //相机和Mask的位置值为负值，
+            //后期可根据情况修改成相机和压头轴必须在等待位。
+            if (Math.Abs(_cameraZAxis.Position) < Math.Abs(_config.UVSafePositionForCamera))
                 throw new Exception("相机高度太低，移动UV会发生碰撞");
+            if (Math.Abs(_maskZAxis.Position) < Math.Abs(_config.UVSafePositionForMask))
+                throw new Exception("掩膜高度太低，移动UV会发生碰撞");
 
             var xTask = Task.Run(() => MoveBy(_uvXAxis, _config.UVIrradiationPosition));
             Task.WaitAll(xTask);
@@ -288,22 +254,9 @@ namespace NanoImprinter.Model
             ForceValue2 = _forceSensorControl.ForceValue2;
             ForceValue3 = _forceSensorControl.ForceValue3;
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            var handler = PropertyChanged;
-            if (handler != null)
-            {
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    handler(this, new PropertyChangedEventArgs(propertyName));
-                });
-            }
-        }
     }
 
-    public class ImprintPlatformConfig:NotifyPropertyChanged
+    public class ImprintPlatformConfig : NotifyPropertyChanged
     {
         private double _maskWaitHeight;
         private double _maskPrepintHeight;
@@ -311,14 +264,14 @@ namespace NanoImprinter.Model
         private double _cameraWaitHeight;
         private double _cameraTakePictureHeight;
         private double _cameraZWorkVel;
-        private double _cameraXDirSafePosition;
         private double _uvWaitPosition ;
         private double _uvIrradiationPosition;
         private double _uvXWorkVel;
-        private double _uvZWorkVel;
         private UVControlConfig _uvConfig = new UVControlConfig();
         private ForceSensorControlConfig _forceSensorConfig = new ForceSensorControlConfig();
-        private double _uvXDirSafePosition;
+        private double _uvSafePositionForCamera;
+        private double _uvSafePositionForMask;
+        private double _safeDistanceOfCameraAndMask;
 
         //掩膜组件
         [Category("ImprintPlatform"), Description("掩膜等待高度")]
@@ -371,14 +324,14 @@ namespace NanoImprinter.Model
             get => _cameraZWorkVel;
             set => SetProperty(ref _cameraZWorkVel, value);
         }
-
         [Category("ImprintPlatform"), Description("相机移动过程中，X方向UV发生碰撞的位置")]
         [DisplayName("X方向安全位置")]
-        public double CameraXDirSafePosition
+        public double SafeDistanceOfCameraAndMask
         {
-            get => _cameraXDirSafePosition;
-            set => SetProperty(ref _cameraXDirSafePosition, value);
+            get => _safeDistanceOfCameraAndMask;
+            set => SetProperty(ref _safeDistanceOfCameraAndMask, value);
         }
+
 
 
         //UV组件参数
@@ -423,30 +376,18 @@ namespace NanoImprinter.Model
 
 
         [Category("PrintPlatform"), Description("UV移动过程中，Z方向相机发生碰撞的位置")]
-        [DisplayName("Z方向安全位置")]
-        public double UVXDirSafePosition
+        [DisplayName("Z方向相机安全位置")]
+        public double UVSafePositionForCamera
         {
-            get => _uvXDirSafePosition;
-            set => SetProperty(ref _uvXDirSafePosition, value);
+            get => _uvSafePositionForCamera;
+            set => SetProperty(ref _uvSafePositionForCamera, value);
         }
-
-
-
-        //[Category("PrintPlatform"), Description("掩膜Z轴配置参数")]
-        //[DisplayName("掩膜Z轴配置参数")]
-        //public TrioAxisConfig MaskZAxisConfig { get; set; }
-
-        //[Category("PrintPlatform"), Description("相机Z轴配置参数")]
-        //[DisplayName("相机Z轴配置参数")]
-        //public TrioAxisConfig CameraZAxisConfig { get; set; }
-
-
-        //[Category("PrintPlatform"), Description("UVX轴配置参数")]
-        //[DisplayName("UVX轴配置参数")]
-        //public TrioAxisConfig UVXAxisConfig { get; set; }
-
-        //[Category("PrintPlatform"), Description("UVY轴配置参数")]
-        //[DisplayName("UVY轴配置参数")]
-        //public TrioAxisConfig UVYAxisConfig { get; set; }
+        [Category("PrintPlatform"), Description("UV移动过程中，Z方向掩膜发生碰撞的位置")]
+        [DisplayName("Z方向相机安全位置")]
+        public double UVSafePositionForMask
+        {
+            get => _uvSafePositionForMask;
+            set => SetProperty(ref _uvSafePositionForMask, value);
+        }
     }
 }

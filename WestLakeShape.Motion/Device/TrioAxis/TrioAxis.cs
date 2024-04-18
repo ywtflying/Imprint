@@ -20,17 +20,19 @@ namespace WestLakeShape.Motion.Device
     {
         private readonly TimeSpan _startWait = TimeSpan.FromMilliseconds(5);
         private static readonly ILogger _log = LogHelper.For<TrioAxis>();
-        protected static TrioPC _trioPC;
-        protected TrioAxisConfig _config;
         private Movement _currentMovement;
         private AxisState _state;
+
+        protected static TrioPC _trioPC;
+        protected TrioAxisConfig _config;
+        protected bool _isReturnHome;
 
         public int Index => _config.Index;
         public override double Position => _state.Position;
         public override double Speed => _state.Speed;
         public bool IsBusy => _state.IsBusy;
         public string Name => _config.Name;
-
+        public bool IsReturnHome => _isReturnHome;
 
         public TrioAxis(TrioAxisConfig config) : base(config)
         {
@@ -57,7 +59,9 @@ namespace WestLakeShape.Motion.Device
         {
             if (_config.HomeModel == TrioHomeModel.MoveToZero)
             {
-                return MoveTo(0);
+                MoveTo(0);
+                _isReturnHome = true;
+                return true;
             }
             else
             {
@@ -66,7 +70,9 @@ namespace WestLakeShape.Motion.Device
                 //执行回零动作
                 _trioPC.Datum((int)(_config.HomeModel), _config.Index);
                 //等待回零完成
-                return WaitGoHome();
+                WaitGoHome();
+                _isReturnHome = true;
+                return true ;
             }
         }
 
@@ -101,12 +107,11 @@ namespace WestLakeShape.Motion.Device
             var targetPosition = _state.Position + position;
             var movement = new Movement(targetPosition);
             _currentMovement = movement;
-            //var rt = _trioPC.MoveAbs(new double[] { position }, _config.Index);
+
             var rt = _trioPC.MoveRel(new double[] { position }, _config.Index);
             CheckException(rt);
 
             GetState();
-
             return true;
             //return await movement.TaskCompletionSource.Task.ConfigureAwait(false);
         }
@@ -265,10 +270,11 @@ namespace WestLakeShape.Motion.Device
         /// </summary>
         public override void ResetAlarm()
         {
-            var ret = _trioPC.Datum(0);
-            CheckException(ret);
-            var command = $"datum({_config.Index})";
-            _trioPC.Execute(command);
+            // Tbi_AxisAlarmReset(Axis, AlarmclrChannel)
+            //var ret = _trioPC.Datum(0);
+            //CheckException(ret);
+            //var command = $"datum({_config.Index})";
+            //_trioPC.Execute(command);
         }
 
         public string GetErrorCode()

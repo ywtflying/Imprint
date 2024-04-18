@@ -203,13 +203,13 @@ namespace NanoImprinter.ViewModels
             _platformConfig.CameraWaitHeight = CameraWaitHeight;
             _platformConfig.CameraTakePictureHeight = CameraTakePictureHeight;
             _platformConfig.CameraZWorkVel = CameraZWorkVel;
-            _platformConfig.CameraXDirSafePosition = XDirSafePosition;
+            _platformConfig.SafeDistanceOfCameraAndMask = XDirSafePosition;
             _platformConfig.UVWaitPosition = UVWaitPosition;
             _platformConfig.UVIrradiationPosition = UVIrradiationPosition;
             _platformConfig.UVXWorkVel = UVXWorkVel;
             _platformConfig.UVConfig.IrradiationTime = UVIrradiationTime;
             _platformConfig.UVConfig.PowerPercentage = UVPowerPercentage;
-            _platformConfig.UVXDirSafePosition = UVYDirSafePosition;
+            _platformConfig.UVSafePositionForCamera = UVYDirSafePosition;
             _platformConfig.UVConfig.PortName = _uvPortName;
             _platformConfig.ForceSensorControlConfig.PortName = _forceSensorPortName;
             
@@ -228,13 +228,13 @@ namespace NanoImprinter.ViewModels
             CameraWaitHeight = _platformConfig.CameraWaitHeight;
             CameraTakePictureHeight = _platformConfig.CameraTakePictureHeight;
             CameraZWorkVel = _platformConfig.CameraZWorkVel;
-            XDirSafePosition = _platformConfig.CameraXDirSafePosition;
+            XDirSafePosition = _platformConfig.SafeDistanceOfCameraAndMask;
             UVWaitPosition = _platformConfig.UVWaitPosition;
             UVIrradiationPosition = _platformConfig.UVIrradiationPosition;
             UVXWorkVel = _platformConfig.UVXWorkVel;
             UVIrradiationTime = _platformConfig.UVConfig.IrradiationTime;
             UVPowerPercentage = _platformConfig.UVConfig.PowerPercentage;
-            UVYDirSafePosition = _platformConfig.UVXDirSafePosition;
+            UVYDirSafePosition = _platformConfig.UVSafePositionForCamera;
             UVPortName = _platformConfig.UVConfig.PortName;
             ForceSensorPortName =_platformConfig.ForceSensorControlConfig.PortName;
         }

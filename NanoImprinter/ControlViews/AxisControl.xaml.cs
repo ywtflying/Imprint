@@ -27,6 +27,7 @@ namespace NanoImprinter.ControlViews
         public AxisControl()
         {
             InitializeComponent();
+            IsFixedSpeed = false;
         }
 
         public IAxis SelectedAxis {get; set;}
@@ -53,7 +54,7 @@ namespace NanoImprinter.ControlViews
             set
             {
                 SetValue(IsFxiedSpeedProperty, value);
-                UnitName =value? "mm" : "mm/s";
+                UnitName = value? "mm/s" : "mm";
             }
         }
         public IEnumerable<IAxis> Axes
@@ -112,6 +113,11 @@ namespace NanoImprinter.ControlViews
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
             SelectedAxis.Stop();
+        }
+
+        private void btnGoHome_Click(object sender, RoutedEventArgs e)
+        {
+            SelectedAxis.GoHome();
         }
     }
 }

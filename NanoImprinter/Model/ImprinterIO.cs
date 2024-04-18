@@ -36,7 +36,6 @@ namespace NanoImprinter.Model
             Initial();
 
             RefreshDataService.Instance.Register(RefreshIOState);
-
         }
 
         /// <summary>
@@ -44,7 +43,7 @@ namespace NanoImprinter.Model
         /// </summary>
         private void LoadIOStateSourceConfig()
         {
-            int bitIndex = 0;
+            int bitIndex = 13;
             var inputIOs = Enum.GetValues(typeof(InputIOName)).Cast<InputIOName>();
             
             foreach (var io in inputIOs)
@@ -153,12 +152,12 @@ namespace NanoImprinter.Model
     {
         public IOStateSourceConfig IOStateSourceConfig { get; set; } = new IOStateSourceConfig()
         {
-            Name="ImprintIO"
+            Name = "ImprintIO"
         };
     }
 
 
-    public class StateValue : INotifyPropertyChanged
+    public class StateValue : NotifyPropertyChanged
     {
         private string _name ;
         private bool _isOn;
@@ -170,40 +169,13 @@ namespace NanoImprinter.Model
         public string Name
         {
             get => _name;
-            set
-            {
-                if (_name != value)
-                {
-                    _name = value;
-                    OnPropertyChanged(nameof(Name));
-                }
-            }
+            set => SetProperty(ref _name, value);
         }
        
         public bool IsOn
         {
             get => _isOn;
-            set
-            {
-                if (_isOn != value)
-                {
-                    _isOn = value;
-                    OnPropertyChanged(nameof(IsOn));
-                }
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            var handler = PropertyChanged;
-            if (handler != null)
-            {
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    handler(this, new PropertyChangedEventArgs(propertyName));
-                });
-            }
+            set => SetProperty(ref _isOn, value);
         }
     }
 
@@ -217,7 +189,6 @@ namespace NanoImprinter.Model
         SaftDoor,
         LoadWafeDoor,
         HasWafe,
-        
     }
     public enum OutputIOName
     {
