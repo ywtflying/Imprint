@@ -19,6 +19,7 @@ namespace NanoImprinter.ViewModels
         public MacroPlatform MacroPlatform { get; private set; }
         public ImprintPlatform ImprintPlatform { get; private set; }
         public GluePlatform GluePlatform { get; private set; }
+        public AfmPlatform AfmPlatform { get; private set; }
 
         public DelegateCommand<string> NavigateCommand { get; private set; }
 
@@ -35,6 +36,7 @@ namespace NanoImprinter.ViewModels
             MacroPlatform = _deviceManager.GetPlatform(typeof(MacroPlatform).Name) as MacroPlatform;
             ImprintPlatform = _deviceManager.GetPlatform(typeof(ImprintPlatform).Name) as ImprintPlatform;
             GluePlatform =_deviceManager.GetPlatform(typeof(GluePlatform).Name) as GluePlatform;
+            AfmPlatform = _deviceManager.GetPlatform(typeof(AfmPlatform).Name) as AfmPlatform;
         }
 
 

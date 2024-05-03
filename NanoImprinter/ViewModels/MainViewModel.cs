@@ -23,12 +23,15 @@ namespace NanoImprinter.ViewModels
     public class MainViewModel : BindableBase
     {
         private IDeviceManager _deviceManager;
-        private readonly SemaphoreSlim _workDoneEvent = new SemaphoreSlim(1, 1);
+    
         private static readonly ILogger Log = LogHelper.For<MainViewModel>();
         private const int Max_Log_Count = 15;
         
         private ProcedureManager _procedureManager;
         //private IEventAggregator _eventAggregator;
+
+        private string _startContent = "启动";
+
         private ProcedureStatus _loadStatus;
         private ProcedureStatus _glueStatus;
         private ProcedureStatus _preprintStatus;
@@ -36,109 +39,11 @@ namespace NanoImprinter.ViewModels
         private ProcedureStatus _uvStatus;
         private ProcedureStatus _demoldStatus;
         private ProcedureStatus _positionStatus;
-
-        private WorkStatus _status;
-        private string _startContent = "启动";
-
-        private int _currentRow;
-        private int _currentCol;
-
         #region property
-        public int MaskUsageCount
-        {
-            get => _deviceManager.Config.MaskInfo.MaskUsageCount;
-            set
-            {
-                if (_deviceManager.Config.MaskInfo.MaskUsageCount != value)
-                {
-                    _deviceManager.Config.MaskInfo.MaskUsageCount = value;
-                    RaisePropertyChanged(nameof(MaskUsageCount));
-                }
-            }
-        }
-
-        public int MaskLifetimeCount
-        {
-            get => _deviceManager.Config.MaskInfo.MaskLifetimeCount;
-            set 
-            {
-                if (_deviceManager.Config.MaskInfo.MaskLifetimeCount != value)
-                {
-                    _deviceManager.Config.MaskInfo.MaskLifetimeCount = value;
-                    RaisePropertyChanged(nameof(MaskLifetimeCount));
-                }
-            }
-        }
-
-        public int ImprintCol
-        {
-            get => _deviceManager.Config.MaskInfo.ImprintCol;
-            set
-            {
-                if (_deviceManager.Config.MaskInfo.ImprintCol != value)
-                {
-                    _deviceManager.Config.MaskInfo.ImprintCol = value;
-                    RaisePropertyChanged(nameof(ImprintCol));
-                }
-            }
-        }
-        
-        public int ImprintRow
-        {
-            get => _deviceManager.Config.MaskInfo.ImprintRow;
-            set
-            {
-                if (_deviceManager.Config.MaskInfo.ImprintRow != value)
-                {
-                    _deviceManager.Config.MaskInfo.ImprintRow = value;
-                    RaisePropertyChanged(nameof(ImprintRow));
-                }
-            }
-        }
-
-        public int ImprintCount
-        {
-            get => _deviceManager.Config.MaskInfo.ImprintCount;
-            set
-            {
-                if (_deviceManager.Config.MaskInfo.ImprintCount != value)
-                {
-                    _deviceManager.Config.MaskInfo.ImprintCount = value;
-                    RaisePropertyChanged(nameof(ImprintCount));
-                }
-            }
-        }
-       
-        public int CurrentIndex
-        {
-            get => _deviceManager.Config.MaskInfo.CurrentIndex;
-            set
-            {
-                if (_deviceManager.Config.MaskInfo.CurrentIndex != value)
-                {
-                    _deviceManager.Config.MaskInfo.CurrentIndex = value;
-                    RaisePropertyChanged(nameof(CurrentIndex));
-                }
-            }
-        }
-
-        public int CurrentRow
-        {
-            get => _currentRow;
-            set => SetProperty(ref _currentRow, value);
-        }
-        public int CurrentCol
-        {
-            get => _currentCol;
-            set => SetProperty(ref _currentCol, value);
-        }
-
-        public WorkStatus Status
-        {
-            get => _status;
-            set => SetProperty(ref _status, value);
-        }
-      
+    
+        /// <summary>
+        /// 启动按钮显示文字
+        /// </summary>
         public string StartContent
         {
             get => _startContent;
@@ -159,65 +64,39 @@ namespace NanoImprinter.ViewModels
         public ProcedureStatus LoadStatus
         {
             get => _loadStatus;
-            set
-            {
-                _loadStatus = value;
-                SetProperty(ref _loadStatus, value);
-            }
+            set=>SetProperty(ref _loadStatus, value);
         }
         public ProcedureStatus GlueStatus
         {
             get => _glueStatus;
-            set
-            {
-                _glueStatus = value;
-                SetProperty(ref _glueStatus, value);
-            }
+            set=>SetProperty(ref _glueStatus, value);
+            
         }
         public ProcedureStatus PreprintStatus
         {
             get => _preprintStatus;
-            set
-            {
-                _preprintStatus = value;
-                SetProperty(ref _preprintStatus, value);
-            }
+            set=>SetProperty(ref _preprintStatus, value);
         }
         public ProcedureStatus ImprintStatus
         {
             get => _imprintStatus;
-            set
-            {
-                _imprintStatus = value;
-                SetProperty(ref _imprintStatus, value);
-            }
+            set => SetProperty(ref _imprintStatus, value);
         }
         public ProcedureStatus UVStatus
         {
             get => _uvStatus;
-            set
-            {
-                _uvStatus = value;
-                SetProperty(ref _uvStatus, value);
-            }
+            set => SetProperty(ref _uvStatus, value);
         }
         public ProcedureStatus DemoldStatus
         {
             get => _demoldStatus;
-            set
-            {
-                _uvStatus = value;
-                SetProperty(ref _demoldStatus, value);
-            }
+            set=> SetProperty(ref _demoldStatus, value);
+            
         }
         public ProcedureStatus PositionStatus
         {
             get => _positionStatus;
-            set
-            {
-                _positionStatus = value;
-                SetProperty(ref _positionStatus, value);
-            }
+            set => SetProperty(ref _positionStatus, value);
         }
         #endregion
 
@@ -226,13 +105,13 @@ namespace NanoImprinter.ViewModels
 
         public DelegateCommand ConnectedCommand => new DelegateCommand(Connected);
       
-        //后期考虑使用屏幕按钮
-        public DelegateCommand StartCommand => new DelegateCommand(Start);
-        public DelegateCommand EmergencyCommand => new DelegateCommand(Emergency);
-        public DelegateCommand ResetCommand => new DelegateCommand(Reset);
-        public DelegateCommand GoHomeCommand => new DelegateCommand(GoHome);
-        public DelegateCommand VacuumCommand => new DelegateCommand(Vacuum);
-        public DelegateCommand EvacuateCommand => new DelegateCommand(Evacuate);
+        ////原来使用的屏幕按钮
+        //public DelegateCommand StartCommand => new DelegateCommand(Start);
+        //public DelegateCommand EmergencyCommand => new DelegateCommand(Emergency);
+        //public DelegateCommand ResetCommand => new DelegateCommand(Reset);
+        //public DelegateCommand GoHomeCommand => new DelegateCommand(GoHome);
+        //public DelegateCommand VacuumCommand => new DelegateCommand(Vacuum);
+        //public DelegateCommand EvacuateCommand => new DelegateCommand(Evacuate);
         #endregion
 
 
@@ -260,165 +139,7 @@ namespace NanoImprinter.ViewModels
             }
         }
 
-
-        private void Emergency()
-        {
-            _deviceManager.Axes.All().ForEach(o => o.EmergencyStop());
-        }
-
-        private void Start()
-        {
-            switch (_status)
-            {
-                case WorkStatus.Emergency:
-                    Log.Information("进入急停状态");
-                    throw new InvalidOperationException("急停状态下，必须先复位才能再次启动");
-                case WorkStatus.Terminated:
-                    Log.Information("纳米压印启动");
-                    _workDoneEvent.Wait();
-                    Status = WorkStatus.Running;
-                    StartContent = "暂停";
-                    ThreadPool.QueueUserWorkItem(o => StartLoop());
-                    break;
-                case WorkStatus.Running:
-                    Log.Information("纳米压印暂停");
-                    Status = WorkStatus.Paused;
-                    StartContent = "启动";
-                    return;
-                case WorkStatus.Paused:
-                    Status = WorkStatus.Running;
-                    break;
-            }
-        }
-
-        private void Reset()
-        {
-            Log.Information("复位，所有任务终止");
-            Status = WorkStatus.Terminated;
-
-            _deviceManager.Axes.All().ForEach(o => o.ResetAlarm());
-        }
-
-        private void GoHome()
-        {
-            Log.Information("系统开始回零");
-            Status = WorkStatus.Terminated;
-
-            //先脱模
-            var microPlatform = _deviceManager.GetPlatform(typeof(MicroPlatform).Name) as MicroPlatform;
-            microPlatform.Demold();
-
-            foreach (var plate in _deviceManager.Platforms)
-                plate.Value.GoHome();
-            
-            Log.Information("系统回零完成");
-        }
-
-
-        private void Vacuum()
-        {
-            Log.Information("真空吸气");
-        }
-
-
-        private void Evacuate()
-        {
-            
-        }
-
-
-        /// <summary>
-        /// 开始执行自动流程
-        /// </summary>
-        private void StartLoop()
-        {
-            try
-            {
-                //放wafe
-                Log.Information("放Wafe");
-                _procedureManager.ExcuteProcedureByName(typeof(LoadProcedure).Name);
-                //定位wafe圆心
-                Log.Information("定位Wafe圆心");
-                _procedureManager.ExcuteProcedureByName(typeof(FindRotateCenterProcedure).Name);
-                //定位初次压印位置
-                Log.Information("定位Wafe初次压印位置");
-                _procedureManager.ExcuteProcedureByName(typeof(PositionProcedure).Name);
-
-                while (true)
-                {
-                    switch (_status)
-                    {
-                        case WorkStatus.Emergency:
-                            return;
-                        case WorkStatus.Terminated:
-                            return;
-                        case WorkStatus.Running:
-                            SingleLoop();
-                            break;
-                        case WorkStatus.Paused:
-                            Thread.Sleep(10);
-                            break;
-                        default:
-                            throw new Exception("未知");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Information(ex.Message);
-                throw ex;
-            }
-            finally
-            {
-                Log.Information("任务结束");
-                _workDoneEvent.Release();
-                _status = WorkStatus.Terminated;
-            }
-        }
-        
-
-        /// <summary>
-        /// 单次循环
-        /// </summary>
-        private void SingleLoop()
-        {
-            //达到压印次数，则终止任务
-            if (CurrentIndex >= ImprintCount)
-            {
-                Status = WorkStatus.Terminated;
-                StartContent = "启动";
-                return;
-            }
-
-            while (_deviceManager.ProcedureIndex < _procedureManager.AutoProcedures.Count)
-            {
-                var result = _procedureManager.ExecuteAutoProcedureByIndex(_deviceManager.ProcedureIndex);
-                if (result)
-                {
-                    //记录当前流程的步骤，报错关机后下次继续执行
-                    _deviceManager.ProcedureIndex++;
-
-                    //结束流程
-                    if (_deviceManager.ProcedureIndex == _procedureManager.AutoProcedures.Count)
-                    {
-                        _deviceManager.ProcedureIndex = 0;
-                        break;
-                    } 
-                }
-                else
-                {
-                    var name = _procedureManager.GetProcedureName(_deviceManager.ProcedureIndex);
-                    throw new Exception($"流程{name}未正确执行完");
-                }
-            }
-
-            //压印图案计数
-            CurrentIndex++;
-            CurrentRow = CurrentIndex / ImprintCol;
-            CurrentCol = CurrentIndex % ImprintCol;
-        }
-        
-
+   
         /// <summary>
         /// 刷新当前各个流程状态
         /// </summary>
@@ -455,7 +176,9 @@ namespace NanoImprinter.ViewModels
             }
         }
 
-      
+        /// <summary>
+        /// 连接所有元器件
+        /// </summary>
         private void Connected()
         {
             var task = Task.Run(() =>
@@ -463,28 +186,168 @@ namespace NanoImprinter.ViewModels
                 _deviceManager.ConnectedPlatform();
             });
         }
+
+
+        #region 原来使用的屏幕按钮的执行代码，现在移动到了procedureManager
+        //private void Emergency()
+        //{
+        //    _deviceManager.Axes.All().ForEach(o => o.EmergencyStop());
+        //}
+
+        //private void Start()
+        //{
+        //    switch (_status)
+        //    {
+        //        case WorkStatus.Emergency:
+        //            Log.Information("进入急停状态");
+        //            throw new InvalidOperationException("急停状态下，必须先复位才能再次启动");
+        //        case WorkStatus.Terminated:
+        //            Log.Information("纳米压印启动");
+        //            _workDoneEvent.Wait();
+        //            Status = WorkStatus.Running;
+        //            StartContent = "暂停";
+        //            ThreadPool.QueueUserWorkItem(o => StartLoop());
+        //            break;
+        //        case WorkStatus.Running:
+        //            Log.Information("纳米压印暂停");
+        //            Status = WorkStatus.Paused;
+        //            StartContent = "启动";
+        //            return;
+        //        case WorkStatus.Paused:
+        //            Status = WorkStatus.Running;
+        //            break;
+        //    }
+        //}
+
+        //private void Reset()
+        //{
+        //    Log.Information("复位，所有任务终止");
+        //    Status = WorkStatus.Terminated;
+
+        //    _deviceManager.Axes.All().ForEach(o => o.ResetAlarm());
+        //}
+
+        //private void GoHome()
+        //{
+        //    Log.Information("系统开始回零");
+        //    Status = WorkStatus.Terminated;
+        //    var goHomeTask = Task.Run(() =>
+        //    {
+        //        //先脱模
+        //        var microPlatform = _deviceManager.GetPlatform(typeof(MicroPlatform).Name) as MicroPlatform;
+        //        microPlatform.Demold();
+
+        //        foreach (var plate in _deviceManager.Platforms)
+        //            plate.Value.GoHome();
+        //        Log.Information("系统回零完成");
+        //    });
+        //}
+
+        //private void Vacuum()
+        //{
+        //    Log.Information("真空吸气");
+        //}
+
+        //private void Evacuate()
+        //{
+        //    Log.Information("真空吹气");
+        //}
+
+
+        ///// <summary>
+        ///// 开始执行自动流程
+        ///// </summary>
+        //private void StartLoop()
+        //{
+        //    try
+        //    {
+        //        //放wafe
+        //        Log.Information("放Wafe");
+        //        _procedureManager.ExcuteProcedureByName(typeof(LoadProcedure).Name);
+        //        //定位wafe圆心
+        //        Log.Information("定位Wafe圆心");
+        //        _procedureManager.ExcuteProcedureByName(typeof(FindRotateCenterProcedure).Name);
+        //        //定位初次压印位置
+        //        Log.Information("定位Wafe初次压印位置");
+        //        _procedureManager.ExcuteProcedureByName(typeof(PositionProcedure).Name);
+
+        //        while (true)
+        //        {
+        //            switch (_status)
+        //            {
+        //                case WorkStatus.Emergency:
+        //                    return;
+        //                case WorkStatus.Terminated:
+        //                    return;
+        //                case WorkStatus.Running:
+        //                    SingleLoop();        //开始执行单个图案的压印
+        //                    break;
+        //                case WorkStatus.Paused:
+        //                    Thread.Sleep(10);
+        //                    break;
+        //                default:
+        //                    throw new Exception("未知");
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log.Information(ex.Message);
+        //        throw ex;
+        //    }
+        //    finally
+        //    {
+        //        Log.Information("任务结束");
+        //        _workDoneEvent.Release();
+        //        _status = WorkStatus.Terminated;
+        //    }
+        //}
+
+
+        ///// <summary>
+        ///// 单次循环
+        ///// </summary>
+        //private void SingleLoop()
+        //{
+        //    //达到压印次数，则终止任务
+        //    if (CurrentIndex >= ImprintCount)
+        //    {
+        //        Status = WorkStatus.Terminated;
+        //        //StartContent = "启动";
+        //        return;
+        //    }
+
+        //    //单个图案的压印
+        //    while ( _deviceManager.ProcedureIndex < _procedureManager.AutoProcedures.Count)
+        //    {
+        //        var result = _procedureManager.ExecuteAutoProcedureByIndex(_deviceManager.ProcedureIndex);
+
+        //        if (result)
+        //        {
+        //            //记录当前流程的步骤，报错关机后下次继续执行
+        //            _deviceManager.ProcedureIndex++;
+
+        //            //结束流程
+        //            if (_deviceManager.ProcedureIndex == _procedureManager.AutoProcedures.Count)
+        //            {
+        //                _deviceManager.ProcedureIndex = 0;
+
+        //                //压印图案计数; 计数条件待定。
+        //                CurrentIndex++;
+        //                CurrentRow = CurrentIndex / ImprintCol;
+        //                CurrentCol = CurrentIndex % ImprintCol;
+
+        //                break;
+        //            } 
+        //        }
+        //        else
+        //        {
+        //            var name = _procedureManager.GetAutoProcedureName(_deviceManager.ProcedureIndex);
+        //            throw new Exception($"流程{name}未正确执行完");
+        //        }
+        //    }
+        //}
+        #endregion
+
     }
-
-
-    public enum WorkStatus
-    {
-        /// <summary>
-        /// 终止
-        /// </summary>
-        Terminated,
-        /// <summary>
-        /// 运行中
-        /// </summary>
-        Running,
-        /// <summary>
-        /// 暂停中
-        /// </summary>
-        Paused,
-        /// <summary>
-        /// 急停中
-        /// </summary>
-        Emergency,
-
-    }
-
 }

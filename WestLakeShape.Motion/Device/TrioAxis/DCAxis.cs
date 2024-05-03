@@ -22,12 +22,14 @@ namespace WestLakeShape.Motion.Device
 
         public override void ServoOn()
         {
-            var rt = _trioPC.CoWrite(0,(short)(_config.Index + 1), 0x60FE, 2, 7, 0X10000);
+            var rt = _trioPC.SetAxisVariable(TrioParamName.ServoOn, (short)_config.Index, 1);//上使能
+            Thread.Sleep(2000);//轴使能需要延时
+            CheckException(rt);
+            rt = _trioPC.CoWrite(0,(short)(_config.Index + 1), 0x60FE, 2, 7, 0X10000);
             CheckException(rt);
             rt = _trioPC.CoWrite(0, (short)(_config.Index + 1), 0x60FE, 1, 7, 0X0);//输出抱闸
             CheckException(rt);
-            rt = _trioPC.SetAxisVariable(TrioParamName.ServoOn, (short)_config.Index, 1);//上使能
-            CheckException(rt);
+            
             rt = _trioPC.CoWrite(0, (short)(_config.Index + 1), 0x60FE, 1, 7, 0X10000);//关闭抱闸
             CheckException(rt);
 
@@ -38,8 +40,8 @@ namespace WestLakeShape.Motion.Device
         public override void InitialParameter()
         {
             base.InitialParameter();
-            
-            //完成直流电机特有的参数初始化
+
+            //完成直流点击正负限位
             if (_config.IsFwdEnable)
             {
                 _trioPC.SetAxisParameter(AxisParameter.FWD_IN, _config.Index, _config.FwdIndex);
@@ -47,7 +49,7 @@ namespace WestLakeShape.Motion.Device
             if (_config.IsRevEnable)
             {
                 _trioPC.SetAxisParameter(AxisParameter.REV_IN, _config.Index, _config.RevIndex);
-            }        
+            }
         }
 
 
@@ -137,7 +139,6 @@ namespace WestLakeShape.Motion.Device
         [Category("DCAxis"), Description("存在正限位"), DefaultValue(10)]
         [DisplayName("存在正限位")]
         public bool IsRevEnable { get; set; }
-
         [Category("DCAxis"), Description("软正限位值，行程值"), DefaultValue(10)]
         [DisplayName("软正限位值")]
         public double SoftPositiveDistance { get; set; }

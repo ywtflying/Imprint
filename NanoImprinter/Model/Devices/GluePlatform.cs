@@ -12,7 +12,7 @@ using WestLakeShape.Motion.Device;
 
 namespace NanoImprinter.Model
 {
-    public interface IGluePlatform : INotifyPropertyChanged, IPlatform
+    public interface IGluePlatform : IPlatform
     {
         GluePlatformConfig Config { get; set; }
         //bool GoHome();
@@ -22,12 +22,13 @@ namespace NanoImprinter.Model
         void ResetAxesAlarm();
     }
 
-    public class GluePlatform : IGluePlatform
+    public class GluePlatform :NotifyPropertyChanged, IGluePlatform
     {
         private GluePlatformConfig _config;
         private IAxis _glueZAxis;
         private GlueControl _glueControl;
         private double _currentPositionGlueZ;
+        private bool _isHomeComplete;
 
         public IAxis GlueZAxis => _glueZAxis;
         public bool IsConnected => _glueControl.IsConnected;
@@ -50,6 +51,10 @@ namespace NanoImprinter.Model
                 }
             }
         }
+
+        public bool IsHomeComplete => _isHomeComplete;
+
+        public string Name => throw new NotImplementedException();
 
         public GluePlatform(GluePlatformConfig config,IAxis[] axes)
         {
@@ -75,7 +80,11 @@ namespace NanoImprinter.Model
         /// <returns></returns>
         public bool GoHome()
         {
-            return _glueZAxis.GoHome();
+            _isHomeComplete = false;
+            _glueZAxis.GoHome();
+
+            _isHomeComplete = true;
+            return _isHomeComplete;
         }
 
         public bool MoveToWaitPosition()
@@ -114,25 +123,12 @@ namespace NanoImprinter.Model
                 CurrentPositionGlueZ = _glueZAxis.Position;
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            var handler = PropertyChanged;
-            if (handler != null)
-            {
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    handler(this, new PropertyChangedEventArgs(propertyName));
-                });
-            }
-        }
-
-        public void Connected()
+        public void Connect()
         {
             _glueControl.Connect();
         }
 
-        public void Disconnected()
+        public void Disconnect()
         {
             _glueControl.Disconnected();
         }

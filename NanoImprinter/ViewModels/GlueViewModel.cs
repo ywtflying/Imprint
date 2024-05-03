@@ -192,7 +192,7 @@ namespace NanoImprinter.ViewModels
         }
         private void Connected()
         {
-            _gluePlatform.Connected();
+            _gluePlatform.Connect();
         }
     }
 }

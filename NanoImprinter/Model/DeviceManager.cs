@@ -20,12 +20,12 @@ namespace NanoImprinter.Model
     {
         Dictionary<string, IPlatform> Platforms { get; }      
         /// <summary>
-        /// 上次流程执行到的步骤
+        /// 记录当前流程执行到哪里，并保存，下次继续执行
         /// </summary>
         int ProcedureIndex { get; set; }
         bool IsConnected { get; set; }
-        ImprinterIO IOStates { get;}
-        ImprinterAxis Axes { get; }
+        IOManager IOStates { get;}
+        AxisManager Axes { get; }
         string ConfigFileName { get; set;}
         MachineModelConfig Config { get; }
         void LoadParam();
@@ -46,11 +46,11 @@ namespace NanoImprinter.Model
         /// <summary>
         /// 所有IO卡
         /// </summary>
-        public ImprinterIO IOStates { get; private set; }
+        public IOManager IOStates { get; private set; }
         /// <summary>
         /// 所有轴
         /// </summary>
-        public ImprinterAxis Axes { get; private set; }
+        public AxisManager Axes { get; private set; }
 
         /// <summary>
         /// 上次流程执行到的步骤
@@ -93,7 +93,7 @@ namespace NanoImprinter.Model
             if (!Directory.Exists(folder))
                 Directory.CreateDirectory(folder);
 
-            File.WriteAllText(path, JsonConvert.SerializeObject(Config,Formatting.Indented), Constants.Encoding);
+            File.WriteAllText(path, JsonConvert.SerializeObject(Config,Formatting.Indented), Encoding.UTF8);
         }
 
         public void LoadParam()
@@ -104,7 +104,8 @@ namespace NanoImprinter.Model
             
             if (File.Exists(configFile))
             {
-                var content = File.ReadAllText(configFile, Constants.Encoding);
+                //var content = File.ReadAllText(configFile, Constants.Encoding);
+                var content = File.ReadAllText(configFile, Encoding.UTF8);
                 Config = JsonConvert.DeserializeObject<MachineModelConfig>(content);
             }
             else
@@ -114,8 +115,10 @@ namespace NanoImprinter.Model
             }
             LoadHardwareConfig();
 
-            IOStates = new ImprinterIO(Config.ImprinterIO);
-            Axes = new ImprinterAxis(Config.ImprinterAxis);
+            //IOStates = new ImprinterIO(Config.ImprinterIO);
+            //Axes = new ImprinterAxis(Config.ImprinterAxis);
+            IOStates = new IOManager(HardwareConfig.ImprinterIO);
+            Axes = new AxisManager(HardwareConfig.ImprinterAxis);
 
             Platforms.Add(typeof(ImprintPlatform).Name, new ImprintPlatform(Config.ImprintPlatform,
                                                                             Axes.PrintPlatformAxes()));
@@ -126,7 +129,6 @@ namespace NanoImprinter.Model
             Platforms.Add(typeof(MicroPlatform).Name, new MicroPlatform(Config.MicroPlatform));
             Platforms.Add(typeof(MacroPlatform).Name, new MacroPlatform(Config.MacroPlatform,
                                                                         Axes.MacroPlatformAxes()));
-            //Instance = model;
         }
 
 
@@ -140,15 +142,15 @@ namespace NanoImprinter.Model
                 var axisFile = Path.Combine(Constants.ConfigRootFolder, _hardwareFile);
                 if (File.Exists(axisFile))
                 {
-                    var content = File.ReadAllText(axisFile, Constants.Encoding);
+                    var content = File.ReadAllText(axisFile, Encoding.UTF8);
                     HardwareConfig = JsonConvert.DeserializeObject<HardwareConfig>(content);
                 }
                 else
                 {
-                    HardwareConfig = new HardwareConfig();
-                    HardwareConfig.ImprinterAxis = Config.ImprinterAxis;
-                    HardwareConfig.ImprinterIO = Config.ImprinterIO;
-                    SaveHardwareConfig();
+                    //HardwareConfig = new HardwareConfig();
+                    //HardwareConfig.ImprinterAxis = Config.ImprinterAxis;
+                    //HardwareConfig.ImprinterIO = Config.ImprinterIO;
+                    //SaveHardwareConfig();
                     throw new Exception("轴的基本参数文件不存在，请拷贝！同时：慎重修改，否则撞机！");
                 }
             }
@@ -182,21 +184,22 @@ namespace NanoImprinter.Model
         {
             if (!IsConnected)
             {
-                //Axes.Connected();
+                Axes.Connect();
+                //IOStates.Connect();
                 //foreach (var pairs in Platforms)
                 //{
-                //    pairs.Value.Connected();
+                //    pairs.Value.Connect();
                 //}
 
                 IsConnected = true;
             }
             else
             {
-                //Axes.Disconnected();
+                Axes.Disconnect();
 
                 //foreach (var pairs in Platforms)
                 //{
-                //    pairs.Value.Disconnected();
+                //    pairs.Value.Disconnect();
                 //}
                 IsConnected = false;
             }
@@ -243,8 +246,8 @@ namespace NanoImprinter.Model
     {
         public WafeInfo WafeInfo { get; set; } = new WafeInfo();
         public MaskInfo MaskInfo { get; set; } = new MaskInfo();
-        public ImprinterAxisConfig ImprinterAxis { get; set; } = new ImprinterAxisConfig();
-        public ImprinterIOConfig ImprinterIO { get; set; } = new ImprinterIOConfig();
+        //public ImprinterAxisConfig ImprinterAxis { get; set; } = new ImprinterAxisConfig();
+        //public ImprinterIOConfig ImprinterIO { get; set; } = new ImprinterIOConfig();
 
         public AfmPlatformConfig AfmPlatform { get; set; } = new AfmPlatformConfig();
         public GluePlatformConfig GluePlatform { get; set; } = new GluePlatformConfig();
@@ -259,8 +262,8 @@ namespace NanoImprinter.Model
     /// </summary>
     public class HardwareConfig
     {
-        public ImprinterAxisConfig ImprinterAxis { get; set; } = new ImprinterAxisConfig();
-        public ImprinterIOConfig ImprinterIO { get; set; } = new ImprinterIOConfig();
+        public AxisManagerConfig ImprinterAxis { get; set; } = new AxisManagerConfig();
+        public IOManagerConfig ImprinterIO { get; set; } = new IOManagerConfig();
     }
 
 }

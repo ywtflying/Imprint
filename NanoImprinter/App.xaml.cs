@@ -1,4 +1,6 @@
-﻿using NanoImprinter.Model;
+﻿using NanoImprinter.ControlViewModels;
+using NanoImprinter.ControlViews;
+using NanoImprinter.Model;
 using NanoImprinter.Views;
 using Prism.Ioc;
 using Prism.Modularity;
@@ -38,7 +40,9 @@ namespace NanoImprinter
             containerRegistry.RegisterForNavigation<OtherView>();
             containerRegistry.RegisterSingleton<IDeviceManager, DeviceManager>();
             containerRegistry.RegisterSingleton<ProcedureManager>();
-            //containerRegistry.RegisterSingleton<IRefreshDataService, RefreshDataService>();
+            containerRegistry.RegisterSingleton<IRefreshDataService, RefreshDataService>();
+            containerRegistry.RegisterDialog<MessageDialog, MessageDialogViewModel>();
+
 
             //containerRegistry.RegisterSingleton<ILogService, LogService>();
         }

@@ -32,7 +32,7 @@ namespace NanoImprinter.ViewModels
         public DelegateCommand ReloadParamCommand => new DelegateCommand(LoadParam);
         public DelegateCommand SaveParamCommand => new DelegateCommand(SaveParam);
         public DelegateCommand SaveConfigFileNameCommand => new DelegateCommand(SaveConfigFileName);
-        public ImprinterIO IOStates { get;private set; }
+        public IOManager IOStates { get;private set; }
         
         public OtherViewModel(IDeviceManager deviceManager)
         {
@@ -70,6 +70,7 @@ namespace NanoImprinter.ViewModels
         {
             _deviceManager.SaveParam();
         }
+      
         private void SaveConfigFileName()
         {
             if (!_configFileName.Contains(".config"))

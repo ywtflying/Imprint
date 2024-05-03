@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using WestLakeShape.Common.WpfCommon;
 
 namespace NanoImprinter.Procedures
 {
@@ -21,14 +22,14 @@ namespace NanoImprinter.Procedures
         bool Execute();
     }
 
-    public abstract class WorkProcedure : IWorkProcedure
+    public abstract class WorkProcedure :NotifyPropertyChanged, IWorkProcedure
     {
         private DateTime _startTime;
         private DateTime _endTime;
         
 
         protected string _name;
-        protected IDeviceManager _machine;
+        protected IDeviceManager _device;
         protected WorkStatus _workStatus;
         protected readonly IEventAggregator _eventAggregator;
 
@@ -40,12 +41,12 @@ namespace NanoImprinter.Procedures
         public WorkStatus Status
         {
             get => _workStatus;
-            set => _workStatus = value;
+            set => SetProperty(ref _workStatus , value);
         }
 
-        public WorkProcedure(IDeviceManager machine,IEventAggregator eventAggregator)
+        public WorkProcedure(IDeviceManager device, IEventAggregator eventAggregator)
         {
-            _machine = machine;
+            _device = device;
             _eventAggregator = eventAggregator;
         }
 

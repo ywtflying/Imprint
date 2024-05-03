@@ -27,9 +27,7 @@ namespace NanoImprinter.Model
     {
         private MicroPlatformConfig _config;
         private PiezoActuator _piezo;
-        private bool _isConnected;
-        private bool _isClosedLoop;
-
+        private bool _isHomeComplete;
         private double _currentPositionZ;
         private double _currentPositionRX;
         private double _currentPositionRY;
@@ -37,12 +35,14 @@ namespace NanoImprinter.Model
         public delegate void MessageHandler(string message);
         public event MessageHandler OnMessage;
 
-        #region
+        #region property
+        public string Name => _config.Name;
         public ChannelNo ZAxis => ChannelNo.Third;
         public ChannelNo RXAxis => ChannelNo.One;
         public ChannelNo RYAxis => ChannelNo.Two;
         public bool IsConnected => _piezo.IsConnected;
         public bool IsClosedLoop => _piezo.IsClosedLoop;
+        public bool IsHomeComplete => _isHomeComplete;
 
         public MicroPlatformConfig Config
         {
@@ -86,9 +86,9 @@ namespace NanoImprinter.Model
                 }
             }
         }
-        
         #endregion
-        
+
+
         public MicroPlatform(MicroPlatformConfig config)
         {
             _config = config;
@@ -106,7 +106,7 @@ namespace NanoImprinter.Model
            // _piezo.SetAllChannelClosedLoop(isClosedLoop);
         }
 
-        public void Connected()
+        public void Connect()
         {            
             _piezo.Connect();
             //获取当前闭环开环状态
@@ -115,7 +115,7 @@ namespace NanoImprinter.Model
             ReadPositions();
         }
 
-        public void Disconnected()
+        public void Disconnect()
         {
             _piezo.Disconnected();
         }
@@ -158,9 +158,10 @@ namespace NanoImprinter.Model
         /// <returns></returns>
         public bool GoHome()
         {
+            _isHomeComplete = false;
             var zero = new PointZRXY(0, 0, 0);
             MoveTo(zero);
-
+            _isHomeComplete = true;
             return true;
         }
 
@@ -307,7 +308,6 @@ namespace NanoImprinter.Model
 
     public class MicroPlatformConfig:NotifyPropertyChanged
     {
-
         private double _contactPosition;
         private double _zCreepDistance;
         private PointZRXY _levelPosition = new PointZRXY(0, 0, 0);
@@ -315,6 +315,8 @@ namespace NanoImprinter.Model
         private double _maxPressure;
         private double _minPressure;
         private PiezoActuatorConfig _piezoActuatorConfig = new PiezoActuatorConfig();
+
+        public string Name => "微动平台";
 
         [Category("MicroPlatform"), Description("接触位置")]
         [DisplayName("接触位置")]

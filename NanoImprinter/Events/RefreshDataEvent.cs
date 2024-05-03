@@ -11,13 +11,13 @@ namespace NanoImprinter.Events
     /// 不同ViewModel订阅刷新事件，通过主界面的定时器调用ViewModel中需要刷新的方法。
     /// 保证只有一个定时器
     /// </summary>
-    public class RefreshDataEvent : PubSubEvent<RefreshDataEventArgs>
+    public class RefreshDataEvent : PubSubEvent<IORefreshEventArgs>
     {
     }
 
-    public class RefreshDataEventArgs
+    public class IORefreshEventArgs
     {
-        public string ViewModelName { get; set; }
+        public string Name { get; set; }
         // 可以添加更多属性
     }
 }

@@ -30,6 +30,7 @@ namespace NanoImprinter.Model
         private IAxis _uvXAxis;
         private ForceSensorControl _forceSensorControl;
         private UVControl _uvControl;
+        private bool _isHomeComplete;
         
         private double _currentPositionMaskZ;  //掩膜Z轴当前位置
         private double _currentPositionCameraZ;
@@ -50,6 +51,7 @@ namespace NanoImprinter.Model
         public IAxis UVXAxis => _uvXAxis;
         public bool IsConnected => _uvControl.IsConnected;
 
+        public bool IsHomeComplete => _isHomeComplete;
 
         #region 实时数据
         public double CurrentPositionMaskZ
@@ -91,6 +93,8 @@ namespace NanoImprinter.Model
             set => SetProperty(ref _forceValue3, value);
         }
 
+        public string Name => throw new NotImplementedException();
+
         #endregion
 
         public ImprintPlatform(ImprintPlatformConfig config,IAxis[] axes)
@@ -104,7 +108,7 @@ namespace NanoImprinter.Model
             RefreshDataService.Instance.Register(RefreshRealtimeData);
         }
 
-        public void Connected()
+        public void Connect()
         {
             _forceSensorControl.Connected();
             _uvControl.OnConnecting();
@@ -117,7 +121,7 @@ namespace NanoImprinter.Model
         {
             _uvControl.OnConnecting();
         }
-        public void Disconnected()
+        public void Disconnect()
         {
             _forceSensorControl.Disconnected();
             _uvControl.OnDisconnecting();
@@ -129,12 +133,14 @@ namespace NanoImprinter.Model
         /// <returns></returns>
         public bool GoHome()
         {
+            _isHomeComplete = false;
             //var uvxTask = Task.Run(()=>_uvXAxis.GoHome());
             //Task.WaitAll(uvxTask);
-            var cZTask = Task.Run(() => _cameraZAxis.GoHome());           
+            var cZTask = Task.Run(() => _cameraZAxis.GoHome());
             //Task.WaitAll(cZTask);
             //return _maskZAxis.GoHome();
-            return true;
+            _isHomeComplete = true;
+            return _isHomeComplete;
             
         }
 
@@ -143,7 +149,7 @@ namespace NanoImprinter.Model
             _uvControl.ReloadConfig();
             _forceSensorControl.ReloadConfig();
         }
-        private void LoadAxesVelocity()
+        public void LoadAxesVelocity()
         {
             _uvXAxis.LoadVelocity(Config.UVXWorkVel);
             _cameraZAxis.LoadVelocity(Config.CameraZWorkVel);
@@ -207,6 +213,7 @@ namespace NanoImprinter.Model
 
         private bool MoveBy(IAxis axis,double position)
         {
+
             return axis.MoveTo(position);
         }
 

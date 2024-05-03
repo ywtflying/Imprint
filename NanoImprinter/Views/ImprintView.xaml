@@ -141,7 +141,7 @@
                                              ParamValue="{Binding UVIrradiationPosition, Mode=TwoWay}" />
 
                 <ces:ParameterDisplayControl x:Name="tbUVXWorkVel"
-                                             Grid.Row="2"
+                                             Grid.Row="1"
                                              Grid.Column="0"
                                              Margin="5"
                                              ParamName="X轴工作速度"
@@ -159,7 +159,7 @@
                                              Grid.Column="1"
                                              Margin="35,5,0,5"
                                              ParamName="UV功率"
-                                             ParamUnit="ms"
+                                             ParamUnit="%"
                                              ParamValue="{Binding UVPowerPercentage, Mode=TwoWay}" />
 
                 <UniformGrid Grid.Row="5"

@@ -14,7 +14,7 @@ namespace NanoImprinter.Procedures
         public UVCurePorcedure(IDeviceManager machine, IEventAggregator eventAggregator) : base(machine,eventAggregator)
         {
             _name = "UV固化流程";
-            _platform = _machine.GetPlatform(typeof(ImprintPlatform).Name) as ImprintPlatform;
+            _platform = _device.GetPlatform(typeof(ImprintPlatform).Name) as ImprintPlatform;
         }
 
         protected override bool OnExecute()

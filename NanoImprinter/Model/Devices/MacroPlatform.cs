@@ -29,7 +29,7 @@ namespace NanoImprinter.Model
         private double _currentPositionX;
         private double _currentPositionY;
         private double _currentPositionR;
-
+        private bool _isHomeComplete;
         public IAxis XAxis { get; }
         public IAxis YAxis { get; }
         public IAxis RAxis { get; }
@@ -77,14 +77,17 @@ namespace NanoImprinter.Model
             }
         }
 
+        public bool IsHomeComplete => _isHomeComplete;
+
+        public string Name => throw new NotImplementedException();
+
         public MacroPlatform(MacroPlatformConfig config,IAxis[] axes)
         {
             Config = config;
-
             XAxis = axes[0];
             YAxis = axes[1];
             RAxis = axes[2];
-
+            _isHomeComplete = true;
             RefreshDataService.Instance.Register(RefreshRealtimeData);
         }
 
@@ -135,13 +138,15 @@ namespace NanoImprinter.Model
         /// <returns></returns>
         public bool GoHome()
         {
+            _isHomeComplete = false;
             var xMovement = Task.Run(()=> XAxis.GoHome());
             var yMovement = Task.Run(() => YAxis.GoHome());
             var rMovement = Task.Run(() => RAxis.GoHome());
            
             Task.WaitAll(xMovement, yMovement, rMovement);
             
-            return true;
+            _isHomeComplete = true;
+            return _isHomeComplete;
         }
 
         public bool MoveToLoadPosition()
@@ -202,10 +207,10 @@ namespace NanoImprinter.Model
             }
         }
 
-        public void Connected()
+        public void Connect()
         {
         }
-        public void Disconnected()
+        public void Disconnect()
         {
         }
     }
@@ -224,6 +229,7 @@ namespace NanoImprinter.Model
         private double _yWorkVel;
         private double _rWorkVel;
 
+        public string Name => "宏动平台";
         public double XWorkVel
         {
             get => _xWorkVel;

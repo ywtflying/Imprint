@@ -39,7 +39,6 @@ namespace WestLakeShape.Motion.Device
             _trioPC = TrioControl.Instance.TrioPC;
             _config = config;
             _state = new AxisState();
-            //Initial();
             _log.Information($"{config.Name}轴完成创建");
         }
 
@@ -303,11 +302,14 @@ namespace WestLakeShape.Motion.Device
         }
         public override void ServoOn()
         {
-            var ret = _trioPC.SetAxisVariable(TrioParamName.IsLoop, _config.Index, 1);
-            CheckException(ret);
-            ret = _trioPC.SetAxisVariable(TrioParamName.ServoOn, _config.Index, 1);
-            CheckException(ret);
-            GetState();
+            if (_config.Index != 3)
+            {
+                var ret = _trioPC.SetAxisVariable(TrioParamName.IsLoop, _config.Index, 1);
+                CheckException(ret);
+                ret = _trioPC.SetAxisVariable(TrioParamName.ServoOn, _config.Index, 1);
+                CheckException(ret);
+                GetState();
+            }
         }
 
         private bool WaitGoHome()
@@ -346,6 +348,16 @@ namespace WestLakeShape.Motion.Device
             SetAxisParameter(AxisParameter.CREEP, _config.Creep);//触发原点后，移动到限位的速度
             SetAxisParameter(AxisParameter.FE_LIMIT, 10);
             SetAxisParameter(AxisParameter.FE_RANGE, 10);
+
+            if (_config.Index == 3)
+            {
+                //R轴设置正负限位值，防止角度过大，微动平台线缆扯断
+                //因为离线编程，后续加入到config类中
+                var ret = _trioPC.SetAxisParameter(AxisParameter.FS_LIMIT, _config.Index, 10);
+                CheckException(ret);
+                ret = _trioPC.SetAxisParameter(AxisParameter.RS_LIMIT, _config.Index, -10);
+                CheckException(ret);
+            }
         }
 
         public override void LoadVelocity(double vel)
@@ -503,6 +515,6 @@ namespace WestLakeShape.Motion.Device
         {
             get => _creep;
             set => SetProperty(ref _creep, value);
-        }
+        }        
     }
 }

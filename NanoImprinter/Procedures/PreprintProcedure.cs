@@ -20,9 +20,9 @@ namespace NanoImprinter.Procedures
         public PreprintProcedure(IDeviceManager machine, IEventAggregator eventAggregator) :base(machine,eventAggregator)
         {
             _name = "预压印流程";
-            _machine = machine;
-            _imprintPlatform =_machine.GetPlatform(typeof(ImprintPlatform).Name) as ImprintPlatform;
-            _macroPlatform = _machine.GetPlatform(typeof(MacroPlatform).Name) as MacroPlatform;
+            _device = machine;
+            _imprintPlatform =_device.GetPlatform(typeof(ImprintPlatform).Name) as ImprintPlatform;
+            _macroPlatform = _device.GetPlatform(typeof(MacroPlatform).Name) as MacroPlatform;
         }
 
         protected override bool OnExecute()

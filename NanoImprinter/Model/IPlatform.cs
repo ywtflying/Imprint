@@ -8,10 +8,12 @@ namespace NanoImprinter.Model
 {
     public interface IPlatform
     {
+        string Name { get; }
         bool IsConnected { get; }
+        bool IsHomeComplete { get; }
         bool GoHome();
-        void Connected();
-        void Disconnected();
+        void Connect();
+        void Disconnect();
     }
     
     //public interface IComponentFactory

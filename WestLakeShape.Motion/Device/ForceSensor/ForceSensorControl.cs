@@ -29,6 +29,8 @@ namespace WestLakeShape.Motion.Device
         private readonly byte[] _clearCmd = new byte[11] { 0x01, 0x10, 0x00, 0x5E, 0x00, 0x01, 0x02, 0x00, 0xFF, 0xEB, 0x6E };
         private readonly byte[] _readAllCmd = new byte[8] { 0x01, 0x03, 0x01, 0xC2, 0x00, 0x06, 0x64, 0x6B };
 
+        private readonly double Fore_Range = 500;//5KG
+
         public double ForceValue0
         {
             get => _forceValues[0];

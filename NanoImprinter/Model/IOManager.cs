@@ -15,17 +15,17 @@ using static WestLakeShape.Motion.IOStateSource;
 
 namespace NanoImprinter.Model
 {
-    public class ImprinterIO
+    public class IOManager
     {
-        private ImprinterIOConfig _config;
+        private IOManagerConfig _config;
         private TrioIOStateSource _ioSource;
-        private static readonly ILogger _log = LogHelper.For<ImprinterIO>();
+        private static readonly ILogger _log = LogHelper.For<IOManager>();
         
-        public ImprinterIOConfig Config => _config;
+        public IOManagerConfig Config => _config;
         public ObservableCollection<StateValue> InputIOs { get; set; }
         public ObservableCollection<StateValue> OutputIOs { get; set; }
 
-        public ImprinterIO(ImprinterIOConfig config)
+        public IOManager(IOManagerConfig config)
         {
             _config = config;
 
@@ -38,18 +38,58 @@ namespace NanoImprinter.Model
             RefreshDataService.Instance.Register(RefreshIOState);
         }
 
+        public void SetValue(string name)
+        {
+            if (_ioSource.OutputStates.ContainsKey(name))
+            {
+                var state = _ioSource.OutputStates[name];
+                var flag = !state.State;
+                state.Set(flag);
+                var output = OutputIOs.Where(o => o.Name == name).FirstOrDefault();
+                output.IsOn = flag;
+            }
+        }
+
+        public IOState GetInputIO(string name)
+        {
+            if (_ioSource.InputStates.ContainsKey(name))
+            {
+                return _ioSource.InputStates[name];
+            }
+            else
+            {
+                _log.Error($"不存在Name属性为{name}的IO");
+                throw new Exception();
+            }
+        }
+
+        public bool GetInputIOStatus(string ioName)
+        {
+            var io = InputIOs.Where(o => o.Name == ioName).FirstOrDefault();
+            if (io == null)
+            {
+                throw new Exception("代码出错");
+            }
+            else
+            {
+                return io.IsOn;
+            }
+        }
+
         /// <summary>
         /// 完成IO配置
         /// </summary>
         private void LoadIOStateSourceConfig()
         {
-            int bitIndex = 13;
+            int bitIndex = 13;//轴限位开关占用了13个inputIO
             var inputIOs = Enum.GetValues(typeof(InputIOName)).Cast<InputIOName>();
             
             foreach (var io in inputIOs)
             {
                 if (!_config.IOStateSourceConfig.States.Any(o => o.Name == io.ToString()))
                 {
+                    //防止IO文件修改有问题
+                    _log.Information($"在InputIOName枚举中未找到与IO配置文件相匹配的IO，请检查");
                     _config.IOStateSourceConfig.States.Add(new IOStateConfig()
                     {
                         Name = io.ToString(),
@@ -69,6 +109,8 @@ namespace NanoImprinter.Model
             {
                 if (!_config.IOStateSourceConfig.States.Any(o => o.Name == io.ToString()))
                 {
+                    //防止IO文件修改有问题
+                    _log.Information($"在OutputIOName枚举中未找到与IO配置文件相匹配的IO，请检查");
                     _config.IOStateSourceConfig.States.Add(new IOStateConfig()
                     {
                         Name = io.ToString(),
@@ -80,10 +122,8 @@ namespace NanoImprinter.Model
                 }
                 bitIndex++;
             }
-
             _config.IOStateSourceConfig.InputBufferLength = inputIOs.Count();
             _config.IOStateSourceConfig.OutputBufferLength = outputIOs.Count();
-       
        }
 
         private void Initial()
@@ -121,50 +161,26 @@ namespace NanoImprinter.Model
                     stateValue.IsOn = states[stateValue.Name].State;
             }
         }
-
-        public void SetValue(string name)
-        {
-            if (_ioSource.OutputStates.ContainsKey(name))
-            {
-                var state = _ioSource.OutputStates[name];
-                var flag = !state.State;
-                state.Set(flag);
-                var tempState =OutputIOs.Where(o => o.Name == name).FirstOrDefault();
-                tempState.IsOn = flag;
-            }
-        }
-
-        public IOState GetInputIO(string name)
-        {
-            if (_ioSource.InputStates.ContainsKey(name))
-            {
-                return _ioSource.InputStates[name];
-            }
-            else
-            {
-                _log.Error($"不存在Name属性为{name}的IO");
-                throw new Exception();
-            }
-        }
     }
 
-    public class ImprinterIOConfig:NotifyPropertyChanged
+    public class IOManagerConfig:NotifyPropertyChanged
     {
         public IOStateSourceConfig IOStateSourceConfig { get; set; } = new IOStateSourceConfig()
         {
-            Name = "ImprintIO"
+            Name = "IOManager"
         };
     }
-
 
     public class StateValue : NotifyPropertyChanged
     {
         private string _name ;
         private bool _isOn;
+        private string _description;
         public StateValue(IOState ioState)
         {
             _name = ioState.Name;
             _isOn = ioState.State;
+            _description = ioState.Description;
         }
         public string Name
         {
@@ -177,12 +193,18 @@ namespace NanoImprinter.Model
             get => _isOn;
             set => SetProperty(ref _isOn, value);
         }
+        public string Description
+        {
+            get => _description;
+            set => SetProperty(ref _description, value);
+        }
     }
 
 
     public enum InputIOName
     {
         Start,
+        Stop,
         GoHome,
         Reset,
         Emergency,

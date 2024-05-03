@@ -5,10 +5,11 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WestLakeShape.Common.WpfCommon;
 
 namespace NanoImprinter.ViewModels
 {
-    public class MaskDataViewModel : INotifyPropertyChanged
+    public class MaskDataViewModel : NotifyPropertyChanged
     {
         public ObservableCollection<XYPoint> Points { get; set; } = new ObservableCollection<XYPoint>();
 
@@ -32,12 +33,6 @@ namespace NanoImprinter.ViewModels
                 Y = col * 5 + 150
             };
             Points.Add(new XYPoint { X = point.X, Y = point.Y });
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
     public class XYPoint

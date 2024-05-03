@@ -9,7 +9,7 @@ using WestLakeShape.Motion.Device;
 
 namespace NanoImprinter.Model
 {
-    public class ImprinterAxis
+    public class AxisManager
     {
         private TrioAxis _macroPlatformRAxis;// 宏动平台
         private TrioAxis _macroPlatformYAxis;
@@ -23,12 +23,12 @@ namespace NanoImprinter.Model
         private TrioAxis _afmPlatformZAxis;//
       
         private TrioControl _trioControl;
-        private ImprinterAxisConfig _config;
+        private AxisManagerConfig _config;
         private bool _isConnected;
 
         public bool IsConnected => _isConnected;
 
-        public ImprinterAxis(ImprinterAxisConfig config)
+        public AxisManager(AxisManagerConfig config)
         {
             _config = config;
 
@@ -46,30 +46,26 @@ namespace NanoImprinter.Model
             _trioControl = TrioControl.Instance;
         }
 
-        public void Connected()
+        public void Connect()
         {
            //打开控制器
-           _isConnected = _trioControl.Connected();
+           _isConnected = _trioControl.Connect();
+         
             if (_isConnected)
             {
                 var axes = All();
                 axes.ForEach(o =>
                 {
+
                     o.InitialParameter();
                     o.ServoOn();
                 });
             }
         }
 
-        public void Disconnected()
+        public void Disconnect()
         {
-            _isConnected = _trioControl.Disconnected();
-        }
-
-        private void Initial()
-        {
-            var axes = All();
-            _macroPlatformYAxis.InitialParameter();     
+            _isConnected = _trioControl.Disconnect();
         }
 
         public List<IAxis> All()
@@ -147,29 +143,11 @@ namespace NanoImprinter.Model
              _macroPlatformRAxis,
             };
         }
-    
-        //public void RefreshAxisValue(object state)
-        //{
-        //    var axes = All();
-        //    for(int i=0; i<axes.Count; i++)
-        //    {
-        //        if (_positions[i] != axes[i].Position)
-        //        {
-        //            OnUpdateStatus(axes[i].Name, axes[i].Position);
-        //        }
-        //    }
-        //}
 
-        //public event EventHandler<AxisStatusEventArgs> UpdataStatusEvent;
-        //protected virtual void OnUpdateStatus(string name,double position)
-        //{
-        //    UpdataStatusEvent?.Invoke(this, new AxisStatusEventArgs(name,position));
-        //}
-    
     }
 
 
-    public class ImprinterAxisConfig
+    public class AxisManagerConfig
     {
         /// <summary>
         /// 宏动平台

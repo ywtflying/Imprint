@@ -15,15 +15,15 @@ namespace NanoImprinter.Procedures
     {
         private Point2D _wafeCenter;
         private MacroPlatform _platform;
-        public FindRotateCenterProcedure(IDeviceManager machine, IEventAggregator eventAggregator) :base(machine,eventAggregator)
+        private DeviceManager device;
+        public FindRotateCenterProcedure(IDeviceManager device, IEventAggregator eventAggregator) :base(device,eventAggregator)
         {
             _wafeCenter = new Point2D(0, 0);
-            _platform = _machine.GetPlatform(typeof(MacroPlatform).Name) as MacroPlatform;
+            _platform = _device.GetPlatform(typeof(MacroPlatform).Name) as MacroPlatform;
             _name = "找圆心流程";
         }
         protected override bool OnExecute()
         {
-            var model = new DeviceManager();
             if (!CheckWorkStatus())
                 return false;
             //移动到圆心左监测点 
@@ -60,7 +60,7 @@ namespace NanoImprinter.Procedures
 
 
             ///图像算法获取圆心位置
-            model.Config.WafeInfo.Center = new Point2D(1.0, 1.0);
+            _device.Config.WafeInfo.Center = new Point2D(1.0, 1.0);
 
 
             return true;

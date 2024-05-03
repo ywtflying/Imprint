@@ -235,7 +235,7 @@ namespace NanoImprinter.ViewModels
         }
         private void Connected()
         {
-            _microPlatform.Connected();
+            _microPlatform.Connect();
         }
         private void ShowMessage(string message)
         {

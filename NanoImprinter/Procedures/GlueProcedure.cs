@@ -16,16 +16,15 @@ namespace NanoImprinter.Procedures
     {
         private GluePlatform _gluePlatform;
         private MacroPlatform _macroPlatform;
-        public GlueProcedure(IDeviceManager machine, IEventAggregator eventAggregator) :base(machine,eventAggregator)
+        public GlueProcedure(IDeviceManager device, IEventAggregator eventAggregator) :base(device,eventAggregator)
         {
             _name = "点胶流程";
-            _gluePlatform = _machine.GetPlatform(typeof(GluePlatform).Name) as GluePlatform;
-            _macroPlatform = _machine.GetPlatform(typeof(MacroPlatform).Name) as MacroPlatform;
+            _gluePlatform = _device.GetPlatform(typeof(GluePlatform).Name) as GluePlatform;
+            _macroPlatform = _device.GetPlatform(typeof(MacroPlatform).Name) as MacroPlatform;
         }
 
         protected override bool OnExecute()
         {
-            var model = new DeviceManager();
             if (!CheckWorkStatus())
                 return false;
             //宏动平台移动点胶位置

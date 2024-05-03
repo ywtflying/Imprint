@@ -67,7 +67,7 @@ namespace WestLakeShape.Motion.Device
         {
             for (var i = 0; i < buff.Length; i++)
             {
-                _trioPC.Op(0, Btye_Size, buff[i]);
+                _trioPC.Op(0, Btye_Size-1, buff[i]);
             }
         }
     }

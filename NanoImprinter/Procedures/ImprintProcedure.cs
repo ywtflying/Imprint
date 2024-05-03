@@ -21,8 +21,8 @@ namespace NanoImprinter.Procedures
         public ImprintProcedure(IDeviceManager machine, IEventAggregator eventAggregator) :base(machine,eventAggregator)
         {
             _name = "压印流程";
-            _microPlatform = _machine.GetPlatform(typeof(MicroPlatform).Name) as MicroPlatform;
-            _imprintPlatform = _machine.GetPlatform(typeof(ImprintPlatform).Name) as ImprintPlatform;
+            _microPlatform = _device.GetPlatform(typeof(MicroPlatform).Name) as MicroPlatform;
+            _imprintPlatform = _device.GetPlatform(typeof(ImprintPlatform).Name) as ImprintPlatform;
         }
         protected override bool OnExecute()
         {
@@ -62,8 +62,8 @@ namespace NanoImprinter.Procedures
 
         protected override bool Prepare()
         {
-            var foreValue = _machine.Config.MaskInfo.ForceValue;
-            var percentage = _machine.Config.MaskInfo.ForceRangePercentage;
+            var foreValue = _device.Config.MaskInfo.ForceValue;
+            var percentage = _device.Config.MaskInfo.ForceRangePercentage;
             _minValue = foreValue * (100 - percentage) / 100;
             _maxValue = foreValue * (100 + percentage) / 100;
             return true;

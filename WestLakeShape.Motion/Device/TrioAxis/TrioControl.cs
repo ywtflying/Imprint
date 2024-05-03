@@ -34,7 +34,7 @@ namespace WestLakeShape.Motion.Device
                 _trioPC.Close();
         }
 
-        public bool Connected()
+        public bool Connect()
         {
             _trioPC.HostAddress = _ip;
             _isConnected = _trioPC.Open(PortType.Ethernet, PortId.Default);
@@ -56,7 +56,7 @@ namespace WestLakeShape.Motion.Device
             return _isConnected;
         }
 
-        public bool Disconnected()
+        public bool Disconnect()
         {
             if (_trioPC.IsOpen(PortId.Default))
             {

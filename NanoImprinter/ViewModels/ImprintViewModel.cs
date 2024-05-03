@@ -1,6 +1,7 @@
 ﻿using NanoImprinter.Model;
 using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Services.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,6 +18,7 @@ namespace NanoImprinter.ViewModels
     public class ImprintViewModel : BindableBase
     {
         private readonly IDeviceManager _deviceManager;
+        private readonly IDialogService _dialogService;
         private ImprintPlatform _plate;
         private ImprintPlatformConfig _platformConfig;
         private string _uvPortName;
@@ -148,10 +150,11 @@ namespace NanoImprinter.ViewModels
         public ObservableCollection<string> PortNames { get; set; }
         public ObservableCollection<IAxis> Axes { get; set; }
 
-        public ImprintViewModel(IDeviceManager machine)
+        public ImprintViewModel(IDeviceManager deviceManager,IDialogService dialogService)
         {
-            _deviceManager = machine;
-            _plate = machine.GetPlatform(typeof(ImprintPlatform).Name) as ImprintPlatform;
+            _deviceManager = deviceManager;
+            _dialogService = dialogService;
+            _plate = deviceManager.GetPlatform(typeof(ImprintPlatform).Name) as ImprintPlatform;
             _platformConfig = _deviceManager.Config.ImprintPlatform;
             Axes = new ObservableCollection<IAxis>();
             PortNames = new ObservableCollection<string>();
@@ -197,27 +200,35 @@ namespace NanoImprinter.ViewModels
 
         private void SaveParam()
         {
-            _platformConfig.MaskWaitHeight = MaskWaitHeight;
-            _platformConfig.MaskPreprintHeight = MaskPreprintHeight;
-            _platformConfig.MaskZWorkVel = MaskZWorkVel;
-            _platformConfig.CameraWaitHeight = CameraWaitHeight;
-            _platformConfig.CameraTakePictureHeight = CameraTakePictureHeight;
-            _platformConfig.CameraZWorkVel = CameraZWorkVel;
-            _platformConfig.SafeDistanceOfCameraAndMask = XDirSafePosition;
-            _platformConfig.UVWaitPosition = UVWaitPosition;
-            _platformConfig.UVIrradiationPosition = UVIrradiationPosition;
-            _platformConfig.UVXWorkVel = UVXWorkVel;
-            _platformConfig.UVConfig.IrradiationTime = UVIrradiationTime;
-            _platformConfig.UVConfig.PowerPercentage = UVPowerPercentage;
-            _platformConfig.UVSafePositionForCamera = UVYDirSafePosition;
-            _platformConfig.UVConfig.PortName = _uvPortName;
-            _platformConfig.ForceSensorControlConfig.PortName = _forceSensorPortName;
-            
-            _deviceManager.SaveParam();
-            _plate.ReloadConfig();
-            
-            //保存参数到UV控制器中
-            _plate.WriteUVParam();
+            try
+            {
+                _platformConfig.MaskWaitHeight = MaskWaitHeight;
+                _platformConfig.MaskPreprintHeight = MaskPreprintHeight;
+                _platformConfig.MaskZWorkVel = MaskZWorkVel;
+                _platformConfig.CameraWaitHeight = CameraWaitHeight;
+                _platformConfig.CameraTakePictureHeight = CameraTakePictureHeight;
+                _platformConfig.CameraZWorkVel = CameraZWorkVel;
+                _platformConfig.SafeDistanceOfCameraAndMask = XDirSafePosition;
+                _platformConfig.UVWaitPosition = UVWaitPosition;
+                _platformConfig.UVIrradiationPosition = UVIrradiationPosition;
+                _platformConfig.UVXWorkVel = UVXWorkVel;
+                _platformConfig.UVConfig.IrradiationTime = UVIrradiationTime;
+                _platformConfig.UVConfig.PowerPercentage = UVPowerPercentage;
+                _platformConfig.UVSafePositionForCamera = UVYDirSafePosition;
+                _platformConfig.UVConfig.PortName = _uvPortName;
+                _platformConfig.ForceSensorControlConfig.PortName = _forceSensorPortName;
+
+                _deviceManager.SaveParam();
+                _plate.ReloadConfig();
+                _plate.LoadAxesVelocity();
+
+                //保存参数到UV控制器中
+                _plate.WriteUVParam();
+            }
+            catch (Exception e)
+            {
+                ShowDialog(e.Message);
+            }
         }
 
         private void ReloadParam()
@@ -241,11 +252,29 @@ namespace NanoImprinter.ViewModels
 
         private void ConnectedUVControl()
         {
-            _plate.ConnectedUVControl();
+            RefreshPortNames();
+            if (!PortNames.Contains(UVPortName))
+            {
+                ShowDialog($"当前com口列表中不包含{UVPortName}，请检查UV接口是否连接");
+                return;
+            }
+            var task = Task.Run(() =>
+            {
+                _plate.ConnectedUVControl();
+            });
         }
         private void ConnectedForceControl()
         {
-            _plate.ConnectedForceControl();
+            if (!PortNames.Contains(UVPortName))
+            {
+                ShowDialog($"当前com口列表中不包含{ForceSensorPortName}，请检查压力传感器接口是否连接");
+                return;
+            }
+
+            var task = Task.Run(() =>
+            {
+                _plate.ConnectedForceControl();
+            });
         }
         private void MoveToUVWaitPosition()
         {
@@ -297,6 +326,18 @@ namespace NanoImprinter.ViewModels
             {
                 _plate.WriteUVParam();
             });
+        }
+
+        private void ShowDialog(string message,Action onOkClicked = null)
+        {
+            var parameters = new DialogParameters { { "message", message } };
+            _dialogService.ShowDialog("MessageDialog", parameters, result =>
+              {
+                  if (result.Result == ButtonResult.OK)
+                  {
+                      onOkClicked?.Invoke();
+                  }
+              });
         }
     }
 }

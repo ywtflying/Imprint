@@ -17,13 +17,13 @@ namespace NanoImprinter.Procedures
     {
         private ImprintPlatform _imprintPlatform;
         private MacroPlatform _macroPlatform;
-        private ImprinterIO _io;
+        private IOManager _io;
 
         public PositionProcedure(IDeviceManager machine, IEventAggregator eventAggregator) :base(machine,eventAggregator)
         {
             _name = "定位流程";
-            _imprintPlatform = _machine.GetPlatform(typeof(ImprintPlatform).Name) as ImprintPlatform;
-            _macroPlatform = _machine.GetPlatform(typeof(MacroPlatform).Name) as MacroPlatform;
+            _imprintPlatform = _device.GetPlatform(typeof(ImprintPlatform).Name) as ImprintPlatform;
+            _macroPlatform = _device.GetPlatform(typeof(MacroPlatform).Name) as MacroPlatform;
         }
 
         protected override bool OnExecute()

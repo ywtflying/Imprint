@@ -11,12 +11,17 @@ using WestLakeShape.Motion;
 
 namespace NanoImprinter.Model
 {
-    public interface IAfmPlatform: IPlatform, INotifyPropertyChanged
+    public interface IAfmPlatform : IPlatform
     {
         void Run();
     }
-    public class AfmPlatform : IAfmPlatform
+    public class AfmPlatform : NotifyPropertyChanged, IAfmPlatform
     {
+        private double _currentPositionX;
+        private double _currentPositionY;
+        private double _currentPositionZ;
+        private bool _isHomeComplete;
+
         public IAxis XAxis { get; }
         public IAxis YAxis { get; }
         public IAxis ZAxis { get; }
@@ -24,6 +29,26 @@ namespace NanoImprinter.Model
         public AfmPlatformConfig Config { get; set; }
 
         public bool IsConnected => true;
+
+        public double CurrentPositionX
+        {
+            get => _currentPositionX;
+            set => SetProperty(ref _currentPositionX, value);
+        }
+        public double CurrentPositionY
+        {
+            get => _currentPositionY;
+            set => SetProperty(ref _currentPositionY, value);
+        }
+        public double CurrentPositionZ
+        {
+            get => _currentPositionZ;
+            set => SetProperty(ref _currentPositionZ, value);
+        }
+
+        public bool IsHomeComplete => _isHomeComplete;
+
+        public string Name => throw new NotImplementedException();
 
         public AfmPlatform(AfmPlatformConfig config, IAxis[] axes)
         {
@@ -46,11 +71,13 @@ namespace NanoImprinter.Model
         /// <returns></returns>
         public bool GoHome()
         {
+            _isHomeComplete = false;
             var zMoveMent = Task.Run(() => ZAxis.GoHome());
             Task.WaitAll(zMoveMent);
             var xMovement = Task.Run(() => XAxis.GoHome());
             var yMovement = Task.Run(() => YAxis.GoHome());        
             Task.WaitAll(xMovement, yMovement);
+            _isHomeComplete = true;
             return true;
         }
 
@@ -58,25 +85,14 @@ namespace NanoImprinter.Model
         {
             throw new NotImplementedException();
         }
-        public void Connected()
+        public void Connect()
         {
         }
 
-        public void Disconnected()
+        public void Disconnect()
         {
         }
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            var handler = PropertyChanged;
-            if (handler != null)
-            {
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    handler(this, new PropertyChangedEventArgs(propertyName));
-                });
-            }
-        }
+       
     }
 
 
@@ -88,6 +104,7 @@ namespace NanoImprinter.Model
 
         private Point2D _waitPosition = new Point2D(0, 0);
         private Point2D _workPosition = new Point2D(0, 0);
+
 
         [Category("AfmPlatform"), Description("X轴运行速度")]
         [DisplayName("X轴运行速度")]
@@ -122,7 +139,12 @@ namespace NanoImprinter.Model
             set => SetProperty(ref _workPosition, value);
         }
 
-
-
+        [Category("AfmPlatform"), Description("工作位置")]
+        [DisplayName("工作位置")]
+        public double FoundDistance
+        {
+            get => _foundDistance;
+            set => SetProperty(ref _foundDistance, value);
+        }
     }
 }

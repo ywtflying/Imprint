@@ -40,7 +40,6 @@ namespace WestLakeShape.Motion
             _dirtyMasks = new byte[_config.OutputBufferLength];
             _tempBuffer = new byte[_config.OutputBufferLength];
 
-
             InputStates = new Dictionary<string, IOState>();
             OutputStates = new Dictionary<string, IOState>();
 
@@ -115,9 +114,8 @@ namespace WestLakeShape.Motion
             private readonly IOStateConfig _config;
             private readonly IOStateSource _source;
 
-
             public override bool ReadOnly => _config.Type == IOType.Input;
-           
+            public string Description => _config.Description;
             public bool State => Get();
 
 

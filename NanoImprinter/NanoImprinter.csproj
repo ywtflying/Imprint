@@ -80,8 +80,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ControlViewModels\MessageDialogViewModel.cs" />
     <Compile Include="ControlViews\AxisControl.xaml.cs">
       <DependentUpon>AxisControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ControlViews\MessageDialog.xaml.cs">
+      <DependentUpon>MessageDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="ControlViews\PrintMaskDataView.xaml.cs">
       <DependentUpon>PrintMaskDataView.xaml</DependentUpon>
@@ -127,6 +131,10 @@
       <DependentUpon>OtherView.xaml</DependentUpon>
     </Compile>
     <Page Include="ControlViews\AxisControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ControlViews\MessageDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -203,11 +211,10 @@
     <Compile Include="ControlExtensions\IconTabItem.cs" />
     <Compile Include="ControlExtensions\ParameterDisplayControl.cs" />
     <Compile Include="ControlExtensions\SwitchButton.cs" />
-    <Compile Include="DeviceViewModels\MicroPlatformViewModel.cs" />
     <Compile Include="Model\Devices\AfmPlatform.cs" />
     <Compile Include="Model\Devices\GluePlatform.cs" />
-    <Compile Include="Model\ImprinterAxis.cs" />
-    <Compile Include="Model\ImprinterIO.cs" />
+    <Compile Include="Model\AxisManager.cs" />
+    <Compile Include="Model\IOManager.cs" />
     <Compile Include="Model\Devices\MacroPlatform.cs" />
     <Compile Include="Model\Devices\MicroPlatform.cs" />
     <Compile Include="Model\Devices\MicroPlatformAsync.cs" />
@@ -228,8 +235,8 @@
     <Compile Include="ViewModels\MacroViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
-    <Compile Include="DeviceViewModels\MaskDataViewModel.cs" />
-    <Compile Include="DeviceViewModels\SystemOperatorViewModel.cs" />
+    <Compile Include="ControlViewModels\WafeDisplayViewModel.cs" />
+    <Compile Include="ControlViewModels\SystemOperatorViewModel.cs" />
     <Compile Include="Views\GlueView.xaml.cs">
       <DependentUpon>GlueView.xaml</DependentUpon>
     </Compile>
