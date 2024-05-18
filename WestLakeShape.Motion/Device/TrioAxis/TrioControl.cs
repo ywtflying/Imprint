@@ -20,7 +20,7 @@ namespace WestLakeShape.Motion.Device
 
         public TrioPC TrioPC => _trioPC;
 
-        public bool IsConnected => _isConnected;
+        public bool IsConnected => _trioPC.IsOpen(PortId.Default);
         public bool IsError => _trioPC.IsError();
 
         private TrioControl()
@@ -73,9 +73,12 @@ namespace WestLakeShape.Motion.Device
         {
             var ret = _trioPC.SetVariable(TrioParamName.Enable, 1);
             if (!ret)
-                _log.Information("所有伺服上电失败！");
+            {
+                _log.Information("伺服不能上电！");
+                throw new Exception("轴上电总开关打开失败");
+            }               
             else
-                _log.Information("所有伺服上电！");
+                _log.Information("伺服开始上电！");
         }
 
         private void AllACAxesDisable()

@@ -53,13 +53,21 @@ namespace WestLakeShape.Motion.Device
         }
         public void ReloadConfig()
         {
-            if (_isConnected)
-                OnDisconnecting();
+            try
+            {
+                if (_isConnected)
+                    OnDisconnecting();
 
-            _port.PortName = _config.PortName;
+                _port.PortName = _config.PortName;
 
-            OnConnecting();
-            _log.Information($"UV串口更改成{_config.PortName}");
+                OnConnecting();
+                _log.Information($"UV串口更改成{_config.PortName}");
+            }
+            catch (Exception e)
+            {
+                var msg = $"UV控制器重载参数失败，原因：{e.Message}";
+                throw new Exception(msg);
+            }
         }
 
         /// <summary>
@@ -112,8 +120,10 @@ namespace WestLakeShape.Motion.Device
         /// </summary>
         public void WriteIrradiationParameter()
         {
-            byte timeLow = (byte)(_config.IrradiationTime & 0xFF); // 低位字节
-            byte timeHigh = (byte)((_config.IrradiationTime >> 8) & 0xFF); // 高位字节
+            var time = _config.IrradiationTime * 10;
+
+            byte timeLow = (byte)(time & 0xFF); // 低位字节
+            byte timeHigh = (byte)((time >> 8) & 0xFF); // 高位字节
             
             byte powerLow = (byte)(_config.PowerPercentage & 0xFF); // 低位字节
             byte powerHigh = (byte)((_config.PowerPercentage >> 8) & 0xFF); // 高位字节
@@ -158,7 +168,8 @@ namespace WestLakeShape.Motion.Device
                 _log.Information("UV设定为多阶段不同功率照射");
                 throw new Exception("UV为多阶段不同功率照射");
             }
-            if (_config.IrradiationTime != datas[2])
+            var time = datas[2] / 10;
+            if (_config.IrradiationTime != time)
                 throw new Exception("控制器功率参数与保存参数不一致");
             if(_config.PowerPercentage != datas[10])
                 throw new Exception("控制器照射参数与保存参数不一致");

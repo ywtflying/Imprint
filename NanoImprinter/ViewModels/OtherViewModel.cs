@@ -32,19 +32,19 @@ namespace NanoImprinter.ViewModels
         public DelegateCommand ReloadParamCommand => new DelegateCommand(LoadParam);
         public DelegateCommand SaveParamCommand => new DelegateCommand(SaveParam);
         public DelegateCommand SaveConfigFileNameCommand => new DelegateCommand(SaveConfigFileName);
-        public IOManager IOStates { get;private set; }
+        public IOManager IOManager { get;private set; }
         
         public OtherViewModel(IDeviceManager deviceManager)
         {
             _deviceManager = deviceManager;
-            IOStates = deviceManager.IOStates;
+            IOManager = deviceManager.IoManager;
             
             ConfigFileName = _deviceManager.ConfigFileName;
         }
 
         private void SetOutputValue(string stateName)
         {
-            IOStates.SetValue(stateName);
+            IOManager.SetValue(stateName);
         }
 
         private void OpenFile()

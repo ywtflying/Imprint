@@ -28,12 +28,14 @@ namespace WestLakeShape.Motion.Device
         protected bool _isReturnHome;
 
         public int Index => _config.Index;
-        public override double Position => _state.Position;
-        public override double Speed => _state.Speed;
         public bool IsBusy => _state.IsBusy;
-        public string Name => _config.Name;
         public bool IsReturnHome => _isReturnHome;
 
+        public override double Position => _state.Position;
+        public override double Speed => _state.Speed;
+        public override string Name => _config.Name;
+        public override bool Direction => _config.Direction;
+      
         public TrioAxis(TrioAxisConfig config) : base(config)
         {
             _trioPC = TrioControl.Instance.TrioPC;
@@ -102,12 +104,13 @@ namespace WestLakeShape.Motion.Device
         /// <returns></returns>
         public override bool MoveBy(double position)
         {
+            GetState();
             Stop();
             var targetPosition = _state.Position + position;
             var movement = new Movement(targetPosition);
             _currentMovement = movement;
 
-            var rt = _trioPC.MoveRel(new double[] { position }, _config.Index);
+            var rt = _trioPC.MoveAbs(new double[] { targetPosition }, _config.Index);
             CheckException(rt);
 
             GetState();
@@ -136,8 +139,8 @@ namespace WestLakeShape.Motion.Device
         /// <returns></returns>
         public override void Stop()
         {
-            if (!IsBusy)
-                return;
+            ////if (!IsBusy)
+            ////    return;
 
             var rt = _trioPC.Cancel(0, _config.Index);
             CheckException(rt);
@@ -177,10 +180,10 @@ namespace WestLakeShape.Motion.Device
             {
                 //获取目标位置
                 //GetAxisParameter(AxisParameter.DPOS, out targetPostion);               
-                GetAxisParameter(AxisParameter.MPOS, out positionValue); //当前的速度
-                GetAxisParameter(AxisParameter.MSPEED, out speedValue);  //当前位置
-                GetAxisParameter(AxisParameter.IDLE, out stopValue);//运动否已停止
-                GetAxisParameter(AxisParameter.MTYPE, out moveValue);//当前的运动指令,空闲为Idle
+                GetAxisParameter(AxisParameter.MPOS, out positionValue); //当前位置
+                GetAxisParameter(AxisParameter.MSPEED, out speedValue);  //当前速度
+                GetAxisParameter(AxisParameter.IDLE, out stopValue);     //运动否已停止
+                GetAxisParameter(AxisParameter.MTYPE, out moveValue);    //当前的运动指令,空闲为Idle
 
                 _state.Speed = speedValue;
                 _state.Position = positionValue;
@@ -193,7 +196,7 @@ namespace WestLakeShape.Motion.Device
                     if (DateTime.UtcNow - movement.StartTimeUtc > _startWait)
                     {
                         if (!_state.IsBusy &&
-                           Math.Abs(positionValue - movement.TargetPostion) <= 10)
+                           Math.Abs(positionValue - movement.TargetPostion) <= 15)
                         {
                             if (!movement.TaskCompletionSource.TrySetResult(true))
                                 throw new Exception("轴运动完成赋值出错");
@@ -302,7 +305,7 @@ namespace WestLakeShape.Motion.Device
         }
         public override void ServoOn()
         {
-            if (_config.Index != 3)
+            if (_config.Index != 2&&_config.Index!=0&&_config.Index!=1)
             {
                 var ret = _trioPC.SetAxisVariable(TrioParamName.IsLoop, _config.Index, 1);
                 CheckException(ret);
@@ -310,6 +313,7 @@ namespace WestLakeShape.Motion.Device
                 CheckException(ret);
                 GetState();
             }
+            
         }
 
         private bool WaitGoHome()
@@ -338,26 +342,30 @@ namespace WestLakeShape.Motion.Device
         /// </summary>
         public override void InitialParameter()
         {
-            SetAxisParameter(AxisParameter.UNITS, _config.PlusEquivalent);
-            var acc = _config.Speed * 10;     //加速度=10*Vel
-            var jogSpeed = _config.Speed / 2; //jog速度=vel/2
-            SetAxisParameter(AxisParameter.ACCEL,  acc);
-            SetAxisParameter(AxisParameter.DECEL, acc);
-            SetAxisParameter(AxisParameter.SPEED, _config.Speed);
-            SetAxisParameter(AxisParameter.JOGSPEED, jogSpeed);
-            SetAxisParameter(AxisParameter.CREEP, _config.Creep);//触发原点后，移动到限位的速度
-            SetAxisParameter(AxisParameter.FE_LIMIT, 10);
-            SetAxisParameter(AxisParameter.FE_RANGE, 10);
-
-            if (_config.Index == 3)
+            if (_config.Index != 2&&_config.Index!=0&&_config.Index!=1)
             {
-                //R轴设置正负限位值，防止角度过大，微动平台线缆扯断
-                //因为离线编程，后续加入到config类中
-                var ret = _trioPC.SetAxisParameter(AxisParameter.FS_LIMIT, _config.Index, 10);
-                CheckException(ret);
-                ret = _trioPC.SetAxisParameter(AxisParameter.RS_LIMIT, _config.Index, -10);
-                CheckException(ret);
+                SetAxisParameter(AxisParameter.UNITS, _config.PlusEquivalent);
+                var acc = _config.Speed * 10;     //加速度=10*Vel
+                var jogSpeed = _config.Speed / 2; //jog速度=vel/2
+                SetAxisParameter(AxisParameter.ACCEL, acc);
+                SetAxisParameter(AxisParameter.DECEL, acc);
+                SetAxisParameter(AxisParameter.SPEED, _config.Speed);
+                SetAxisParameter(AxisParameter.JOGSPEED, jogSpeed);
+                SetAxisParameter(AxisParameter.CREEP, _config.Creep);//触发原点后，移动到限位的速度
+                SetAxisParameter(AxisParameter.FE_LIMIT, 10);
+                SetAxisParameter(AxisParameter.FE_RANGE, 10);
+
+                if (_config.Index == 3)
+                {
+                    //R轴设置正负限位值，防止角度过大，微动平台线缆扯断
+                    //因为离线编程，后续加入到config类中
+                    var ret = _trioPC.SetAxisParameter(AxisParameter.FS_LIMIT, _config.Index, 50);
+                    CheckException(ret);
+                    ret = _trioPC.SetAxisParameter(AxisParameter.RS_LIMIT, _config.Index, -50);
+                    CheckException(ret);
+                }
             }
+           
         }
 
         public override void LoadVelocity(double vel)
@@ -460,6 +468,7 @@ namespace WestLakeShape.Motion.Device
         private double _workSpeed;
         private TrioHomeModel _homeModel;
         private double _creep;
+        private bool _direction;
 
         [Category("TrioAxis"), Description("脉冲当量"), DefaultValue(10)]
         [DisplayName("脉冲当量")]
@@ -467,6 +476,14 @@ namespace WestLakeShape.Motion.Device
         {
             get => _plusEquivalent;
             set => SetProperty(ref _plusEquivalent, value);
+        }
+
+        [Category("TrioAxis"), Description("正方向，true为正，false为负"), DefaultValue(10)]
+        [DisplayName("正方向")]
+        public bool Direction
+        {
+            get => _direction;
+            set => SetProperty(ref _direction, value);
         }
 
         [Category("TrioAxis"), Description("加速度"), DefaultValue(100)]

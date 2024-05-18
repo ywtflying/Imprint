@@ -20,7 +20,7 @@ namespace NanoImprinter.Model
         private IOManagerConfig _config;
         private TrioIOStateSource _ioSource;
         private static readonly ILogger _log = LogHelper.For<IOManager>();
-        
+        private TrioControl _trioControl;
         public IOManagerConfig Config => _config;
         public ObservableCollection<StateValue> InputIOs { get; set; }
         public ObservableCollection<StateValue> OutputIOs { get; set; }
@@ -28,14 +28,88 @@ namespace NanoImprinter.Model
         public IOManager(IOManagerConfig config)
         {
             _config = config;
+            _trioControl = TrioControl.Instance;
 
             LoadIOStateSourceConfig();
+     
             //根据io配置创建IOState
             _ioSource = new TrioIOStateSource(_config.IOStateSourceConfig);
 
             Initial();
-
             RefreshDataService.Instance.Register(RefreshIOState);
+        }
+
+        /// <summary>
+        /// 完成IO配置
+        /// </summary>
+        private void LoadIOStateSourceConfig()
+        {
+            int bitIndex = 23;//轴限位开关占用了13个inputIO，IO接口为15针插头
+            var inputIONames = Enum.GetValues(typeof(InputIOName)).Cast<InputIOName>();
+            foreach (var io in inputIONames)
+            {
+                if (!_config.IOStateSourceConfig.States.Any(o => o.Name == io.ToString()))
+                {
+                    //防止IO文件修改有问题
+                    _log.Information($"在InputIOName枚举中未找到与IO配置文件相匹配的IO，请检查");
+                    //throw new Exception($"在InputIOName枚举中未找到与IO配置文件相匹配的IO，请检查");
+                    _config.IOStateSourceConfig.States.Add(new IOStateConfig()
+                    {
+                        Name = io.ToString(),
+                        Type = IOType.Input,
+                        ByteIndex = bitIndex / 8,
+                        BitIndex = bitIndex % 8,
+                        ActiveLevel = IOActiveLevel.Lower
+                    });
+                }
+                bitIndex++;
+            }
+
+
+            bitIndex = 12;//11个输出已占用
+            var outputIONames = Enum.GetValues(typeof(OutputIOName)).Cast<OutputIOName>();
+            foreach (var io in outputIONames)
+            {
+                if (!_config.IOStateSourceConfig.States.Any(o => o.Name == io.ToString()))
+                {
+                    //防止IO文件修改有问题
+                    _log.Information($"在OutputIOName枚举中未找到与IO配置文件相匹配的IO，请检查");
+                    _config.IOStateSourceConfig.States.Add(new IOStateConfig()
+                    {
+                        Name = io.ToString(),
+                        Type = IOType.Output,
+                        ByteIndex = bitIndex / 8,
+                        BitIndex = bitIndex % 8,
+                        ActiveLevel = IOActiveLevel.High
+                    }); ;
+                }
+                bitIndex++;
+            }         
+        }
+
+        private void Initial()
+        {
+            InputIOs = new ObservableCollection<StateValue>();
+            OutputIOs = new ObservableCollection<StateValue>();
+
+            foreach (var state in _ioSource.InputStates)
+            {
+                InputIOs.Add(new StateValue(state.Value));
+            }
+           
+            foreach (var state in _ioSource.OutputStates)
+            {
+                    OutputIOs.Add(new StateValue(state.Value));
+            }
+        }
+
+        public void Connect()
+        {
+            if (!_trioControl.IsConnected)
+            {
+                _trioControl.Connect();      
+            }
+            _ioSource.Connect();
         }
 
         public void SetValue(string name)
@@ -76,90 +150,23 @@ namespace NanoImprinter.Model
             }
         }
 
-        /// <summary>
-        /// 完成IO配置
-        /// </summary>
-        private void LoadIOStateSourceConfig()
-        {
-            int bitIndex = 13;//轴限位开关占用了13个inputIO
-            var inputIOs = Enum.GetValues(typeof(InputIOName)).Cast<InputIOName>();
-            
-            foreach (var io in inputIOs)
-            {
-                if (!_config.IOStateSourceConfig.States.Any(o => o.Name == io.ToString()))
-                {
-                    //防止IO文件修改有问题
-                    _log.Information($"在InputIOName枚举中未找到与IO配置文件相匹配的IO，请检查");
-                    _config.IOStateSourceConfig.States.Add(new IOStateConfig()
-                    {
-                        Name = io.ToString(),
-                        Type = IOType.Input,
-                        ByteIndex = bitIndex / 8,
-                        BitIndex = bitIndex % 8,
-                        ActiveLevel = IOActiveLevel.Lower
-                    }); ;
-                }
-                bitIndex++;
-            }
-
-            bitIndex = 0;
-            var outputIOs = Enum.GetValues(typeof(OutputIOName)).Cast<OutputIOName>();
-            
-            foreach (var io in outputIOs)
-            {
-                if (!_config.IOStateSourceConfig.States.Any(o => o.Name == io.ToString()))
-                {
-                    //防止IO文件修改有问题
-                    _log.Information($"在OutputIOName枚举中未找到与IO配置文件相匹配的IO，请检查");
-                    _config.IOStateSourceConfig.States.Add(new IOStateConfig()
-                    {
-                        Name = io.ToString(),
-                        Type = IOType.Output,
-                        ByteIndex = bitIndex / 8,
-                        BitIndex = bitIndex % 8,
-                        ActiveLevel = IOActiveLevel.Lower
-                    }); ;
-                }
-                bitIndex++;
-            }
-            _config.IOStateSourceConfig.InputBufferLength = inputIOs.Count();
-            _config.IOStateSourceConfig.OutputBufferLength = outputIOs.Count();
-       }
-
-        private void Initial()
-        {
-            InputIOs = new ObservableCollection<StateValue>();
-            OutputIOs = new ObservableCollection<StateValue>();
-
-            var states = _ioSource.InputStates;
-
-            foreach (var name in Enum.GetValues(typeof(InputIOName)))
-            {
-                if (states.ContainsKey(name.ToString()))
-                    InputIOs.Add(new StateValue(states[name.ToString()]));
-            }
-
-            foreach (var name in Enum.GetValues(typeof(InputIOName)))
-            {
-                if (states.ContainsKey(name.ToString()))
-                    OutputIOs.Add(new StateValue(states[name.ToString()]));
-            }
-        }
-
         private void RefreshIOState()
         {
-            var states = _ioSource.InputStates;
-            foreach (var stateValue in InputIOs)
+            if (_trioControl.IsConnected)
             {
-               if(states.ContainsKey(stateValue.Name))
-                stateValue.IsOn = states[stateValue.Name].State;
-            }
+                var states = _ioSource.InputStates;
+                foreach (var stateValue in InputIOs)
+                {
+                    if (states.ContainsKey(stateValue.Name))
+                        stateValue.IsOn = states[stateValue.Name].State;
+                }
 
-            foreach (var stateValue in OutputIOs)
-            {
-                if (states.ContainsKey(stateValue.Name))
-                    stateValue.IsOn = states[stateValue.Name].State;
-            }
+                foreach (var stateValue in OutputIOs)
+                {
+                    if (states.ContainsKey(stateValue.Name))
+                        stateValue.IsOn = states[stateValue.Name].State;
+                }
+            }           
         }
     }
 
@@ -203,24 +210,44 @@ namespace NanoImprinter.Model
 
     public enum InputIOName
     {
-        Start,
-        Stop,
-        GoHome,
-        Reset,
-        Emergency,
-        SaftDoor,
-        LoadWafeDoor,
-        HasWafe,
+        CCDZPositiveLimit,  //CCD-Z正限位
+        CCDZNegativeLimit,  //CCD-Z负限位
+        MaskZPositiveLimt,  //Mask-Z正限位
+        MaskZNegativeLimit, //Mask-Z正限位
+        GlueZPositiveLimit, //Glue-Z正限位
+        GlueZNegativeLimit, //Glue-Z正限位
+        AfmXPositiveLimit,  //Afm-X正限位
+        AfmXNegativeLimit,  //Afm-X正限位
+        AfmYPositiveLimit,  //Afm-Y正限位
+        AfmYNegativeLimit,  //Afm-Y正限位
+        UVXPositiveLimit,   //UV-X正限位
+        UVXNegativeLimit,   //UV-X正限位
+        AfmZPositiveLimit,  //Afm-Z正限位
+        Empty0,             //
+        Empty1,         //空
+        Empty2,        //空
+        Start,        //开始按钮In16
+        Stop,         //关闭按钮In17
+        GoHome,       //回零按钮In18
+        OpenVacuum,   //打开真空阀吸气In19
+        CloseVacuum,  //关闭真空阀吹气In20
+        Emergency,    //急停按钮In21
+        HasWafe       //真空检测In22
+        
     }
     public enum OutputIOName
     {
-        StartLight,
-        GoHomeLight,
-        ResetLight,
-        EmergencyLight,
-        FixedMark,
-        FixedWafe,
-        OpenAirControl,
-        ClosedAirControl
+        StartLight,        //开始按钮灯out0
+        StopLight,         //关闭按钮灯out1
+        GoHomeLight,       //回零按钮灯out2
+        OpenVacuumLight,   //打开真空阀吸气out3
+        CloseVacuumLight,  //打开真空阀吹气out4
+        OpenVacuumControl, //打开吸气真空阀out5
+        CloseVacuumControl,//打开吹气真空阀out6
+        RedLight,     //三色灯红灯out7
+        OrangeLight,  //三色灯黄灯out8
+        GreenLight,   //三色灯绿灯out9
+        BlueLight,    //三色灯蓝灯out10
+        Buzzer        //三色灯蜂鸣器out11
     }
 }

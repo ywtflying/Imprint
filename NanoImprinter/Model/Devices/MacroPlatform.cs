@@ -31,6 +31,7 @@ namespace NanoImprinter.Model
         private double _currentPositionR;
         private bool _isHomeComplete;
         public IAxis XAxis { get; }
+        public IAxis X2Axis { get; }
         public IAxis YAxis { get; }
         public IAxis RAxis { get; }
         public bool IsConnected => true;
@@ -85,8 +86,9 @@ namespace NanoImprinter.Model
         {
             Config = config;
             XAxis = axes[0];
-            YAxis = axes[1];
-            RAxis = axes[2];
+            X2Axis = axes[1];
+            YAxis = axes[2];
+            RAxis = axes[3];
             _isHomeComplete = true;
             RefreshDataService.Instance.Register(RefreshRealtimeData);
         }

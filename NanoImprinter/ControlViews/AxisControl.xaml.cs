@@ -76,15 +76,18 @@ namespace NanoImprinter.ControlViews
  
 
         private void btnJogForward_Click(object sender, RoutedEventArgs e)
-        {
-            var distance = SelectedValue;
+        {    
             var axis = SelectedAxis;
+            var dir = SelectedAxis.Direction ? 1 : -1;
+            var distance = SelectedValue * dir;
             var task = Task.Run(()=> axis.MoveBy(distance));
         }
         private void btnJogBack_Click(object sender, RoutedEventArgs e)
         {
-            var distance = -1 * SelectedValue;
             var axis = SelectedAxis;
+            //在移动方向上后退，值与运动方向值的符号相反
+            var dir = SelectedAxis.Direction ? -1 : 1;
+            var distance = dir * SelectedValue;
             var task = Task.Run(() => axis.MoveBy(distance));
         }
 
@@ -117,7 +120,7 @@ namespace NanoImprinter.ControlViews
 
         private void btnGoHome_Click(object sender, RoutedEventArgs e)
         {
-            SelectedAxis.GoHome();
+            Task.Run(() => SelectedAxis.GoHome()) ;        
         }
     }
 }

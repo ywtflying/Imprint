@@ -30,7 +30,11 @@ namespace WestLakeShape.Motion.Device
         public string PortName
         {
             get => _port.PortName;
-            set => _port.PortName = value;
+            set 
+            {
+                Disconnected();
+                _port.PortName = value;
+            }
         }
         public PiezoSerialPort(string name)
         {

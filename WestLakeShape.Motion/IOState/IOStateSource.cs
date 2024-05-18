@@ -34,16 +34,13 @@ namespace WestLakeShape.Motion
         public IOStateSource(IOStateSourceConfig config)
         {
             _config = config;
-            
+            InputStates = new Dictionary<string, IOState>();
+            OutputStates = new Dictionary<string, IOState>();
+            LoadStates();
             _inputBuffer = new byte[_config.InputBufferLength];
             _outputBuffer = new byte[_config.OutputBufferLength];
             _dirtyMasks = new byte[_config.OutputBufferLength];
-            _tempBuffer = new byte[_config.OutputBufferLength];
-
-            InputStates = new Dictionary<string, IOState>();
-            OutputStates = new Dictionary<string, IOState>();
-
-            LoadStates();
+            _tempBuffer = new byte[_config.OutputBufferLength];         
         }
 
 
@@ -54,14 +51,29 @@ namespace WestLakeShape.Motion
 
         private void LoadStates()
         {
-            foreach (var config in _config.States)
+            var ioInput = _config.States.Where(p => p.Type == IOType.Input);
+            if (ioInput != null && ioInput.Count() > 0)
             {
-                var state = new IOState(config, this);
-                if (config.Type == IOType.Input)
-                    InputStates.Add(state.Name, state);
-                else
-                    OutputStates.Add(state.Name, state);
+                _config.InputBufferLength = ioInput.Max(q => q.ByteIndex) + 1;
+                foreach (var io in ioInput)
+                {
+                    var state = new IOState(io, this);
+                    InputStates.Add(state.Name,state);
+                }                   
             }
+
+            var ioOutput = _config.States.Where(p => p.Type == IOType.Output);
+            if (ioOutput != null && ioOutput.Count() > 0)
+            {
+                _config.OutputBufferLength = ioOutput.Max(p => p.ByteIndex) + 1;
+               
+                foreach (var io in ioOutput)
+                {
+                    var state = new IOState(io, this);
+                    OutputStates.Add(state.Name, state);
+                }
+            }
+
             _outputIOs = OutputStates.Values.Cast<IOState>().ToList();
         }
 
@@ -78,6 +90,7 @@ namespace WestLakeShape.Motion
                 _outputIOs.ForEach(o => o.HasChanged());
                 
                 ReadInputs(_inputBuffer);
+                System.Diagnostics.Debug.WriteLine($"输出{BitConverter.ToString(_outputBuffer)}；输入{BitConverter.ToString(_inputBuffer)}");
             }
            
         }
@@ -254,7 +267,7 @@ namespace WestLakeShape.Motion
         public int BitIndex
         {
             get => _bitIndex;
-            set => SetProperty(ref _byteIndex, value);
+            set => SetProperty(ref _bitIndex, value);
         }
 
         /// <summary>

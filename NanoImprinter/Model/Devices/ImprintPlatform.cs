@@ -167,16 +167,16 @@ namespace NanoImprinter.Model
         {
             //计算压头目标位置是否与相机存在碰撞可能
             var safePosition = Math.Abs(_config.MaskWaitHeight) - Math.Abs(_config.SafeDistanceOfCameraAndMask);
-            if (Math.Abs(_cameraZAxis.Position) < safePosition)
-                throw new Exception("相机当前位置太低，移动压印头会发生碰撞");
+            //if (Math.Abs(_cameraZAxis.Position) < safePosition)
+            //    throw new Exception("相机当前位置太低，移动压印头会发生碰撞");
 
             return MoveBy(_maskZAxis, _config.MaskWaitHeight);
         }
 
         public bool MoveToTakePictureHeight()
         {
-            if (_uvXAxis.Position <= _config.UVWaitPosition)
-                throw new Exception("UV未离开冲突区域，移动相机会发生碰撞");
+            //if (_uvXAxis.Position <= _config.UVWaitPosition)
+            //    throw new Exception("UV未离开冲突区域，移动相机会发生碰撞");
             //计算相机目标位置是否与压头存在碰撞可能
             var safePosition = Math.Abs(_config.CameraTakePictureHeight) + Math.Abs(_config.SafeDistanceOfCameraAndMask);
             if (Math.Abs(_maskZAxis.Position) > safePosition)
@@ -213,7 +213,6 @@ namespace NanoImprinter.Model
 
         private bool MoveBy(IAxis axis,double position)
         {
-
             return axis.MoveTo(position);
         }
 

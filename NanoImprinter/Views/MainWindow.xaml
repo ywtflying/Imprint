@@ -6,7 +6,7 @@
         xmlns:prism="http://prismlibrary.com/"
         Title="MainWindow"
         Width="1920"
-        Height="1080"
+        Height="960"
         prism:ViewModelLocator.AutoWireViewModel="True"
         MouseDown="Window_MouseDown"
         ResizeMode="NoResize"
@@ -162,34 +162,34 @@
                     VerticalAlignment="Center"
                     Background="#3B445A"
                     Orientation="Horizontal">
-            <Label Content="宏X:"
+            <!--<Label Content="宏X:"
                    FontSize="16"
                    Foreground="#848484" />
             <Label Width="80"
                    Content="{Binding MacroPlatform.CurrentPositionX}"
                    FontSize="16"
                    Foreground="#C9C9C9" />
-            <Border Width="1" Background="White" />
+            <Border Width="1" Background="White" />-->
 
-            <Label Content="宏Y:"
+            <!--<Label Content="宏Y:"
                    FontSize="16"
                    Foreground="#848484" />
             <Label Width="80"
                    Content="{Binding MacroPlatform.CurrentPositionY}"
                    FontSize="16"
                    Foreground="#C9C9C9" />
-            <Border Width="1" Background="White" />
+            <Border Width="1" Background="White" />-->
 
-            <Label Content="宏R:"
+            <!--<Label Content="宏R:"
                    FontSize="16"
                    Foreground="#848484" />
             <Label Width="60"
                    Content="{Binding MacroPlatform.CurrentPositionR}"
                    FontSize="16"
                    Foreground="#C9C9C9" />
-            <Border Width="1" Background="White" />
+            <Border Width="1" Background="White" />-->
 
-            <Border Width="1" Background="White" />
+            <!--<Border Width="1" Background="White" />
             
             <Label Content="CCD-Z:"
                    FontSize="16"
@@ -199,118 +199,118 @@
                    FontSize="16"
                    Foreground="#C9C9C9" />
             <Border Width="1"
-                    Background="White" />
+                    Background="White" />-->
             
             <Label Content="压印Z:"
-                   FontSize="16"
+                   FontSize="12"
                    Foreground="#848484" />
             <Label Width="70"
                    Content="{Binding ImprintPlatform.CurrentPositionMaskZ}"
-                   FontSize="16"
+                   FontSize="12"
                    Foreground="#C9C9C9" />
             <Border Width="1"
                     Background="White" />
 
             <Label Content="喷胶Z:"
-                   FontSize="16"
+                   FontSize="12"
                    Foreground="#848484" />
             <Label Width="70"
                    Content="{Binding GluePlatform.CurrentPositionGlueZ}"
-                   FontSize="16"
+                   FontSize="12"
                    Foreground="#C9C9C9" />
             <Border Width="1"
                     Background="White" />
             
             <Label Content="Afm-X:"
-                   FontSize="16"
+                   FontSize="12"
                    Foreground="#848484" />
             <Label Width="70"
                    Content="{Binding AfmPlatform.CurrentPositionX}"
-                   FontSize="16"
+                   FontSize="12"
                    Foreground="#C9C9C9" />
             <Border Width="1"
                     Background="White" />
             <Label Content="Afm-Y:"
-                   FontSize="16"
+                   FontSize="12"
                    Foreground="#848484" />
             <Label Width="70"
                    Content="{Binding AfmPlatform.CurrentPositionY}"
-                   FontSize="16"
+                   FontSize="12"
                    Foreground="#C9C9C9" />
             <Border Width="1"
                     Background="White" />
 
             <Label Content="UV-X:"
-                   FontSize="16"
+                   FontSize="12"
                    Foreground="#848484" />
             <Label Width="70"
                    Content="{Binding ImprintPlatform.CurrentPositionUVX}"
-                   FontSize="16"
+                   FontSize="12"
                    Foreground="#C9C9C9" />
-            <Border Width="1" Background="White" />
+            <!--<Border Width="1" Background="White" />
             <Label Content="Afm-Z:"
-                   FontSize="16"
+                   FontSize="12"
                    Foreground="#848484" />
             <Label Width="70"
                    Content="{Binding AfmPlatform.CurrentPositionZ}"
-                   FontSize="16"
-                   Foreground="#C9C9C9" />
+                   FontSize="12"
+                   Foreground="#C9C9C9" />-->
             
             <Border Width="1"
                     Background="White" />
             <Label Content="微Z:"
-                   FontSize="16"
+                   FontSize="12"
                    Foreground="#848484" />
-            <Label Width="65"
+            <Label Width="75"
                    Content="{Binding MicroPlatform.CurrentPositionZ}"
-                   FontSize="16"
+                   FontSize="12"
                    Foreground="#C9C9C9" />
             <Border Width="1"
                     Background="White" />
 
             <Label Content="微RX:"
-                   FontSize="16"
+                   FontSize="12"
                    Foreground="#848484" />
-            <Label Width="65"
+            <Label Width="75"
                    Content="{Binding MicroPlatform.CurrentPositionRX}"
-                   FontSize="16"
+                   FontSize="12"
                    Foreground="#C9C9C9" />
             <Border Width="1"
                     Background="White" />
 
             <Label Content="微RY:"
-                   FontSize="16"
+                   FontSize="12"
                    Foreground="#848484" />
-            <Label Width="65"
+            <Label Width="75"
                    Content="{Binding MicroPlatform.CurrentPositionRY}"
-                   FontSize="16"
+                   FontSize="12"
                    Foreground="#C9C9C9" />
             <Border Width="1"
                     Background="White" />
             <Label Content="压力1:"
-                   FontSize="16"
+                   FontSize="12"
                    Foreground="#848484" />
             <Label Width="60"
                    Content="{Binding ImprintPlatform.ForceValue0}"
-                   FontSize="16"
+                   FontSize="12"
                    Foreground="#C9C9C9" />
             <Border Width="1" Background="White" />
 
             <Label Content="压力2:"
-                   FontSize="16"
+                   FontSize="12"
                    Foreground="#848484" />
             <Label Width="60"
                    Content="{Binding ImprintPlatform.ForceValue1}"
-                   FontSize="16"
+                   FontSize="12"
                    Foreground="#C9C9C9" />
             <Border Width="1" Background="White" />
 
             <Label Content="压力3:"
-                   FontSize="16"
+                   FontSize="12"
                    Foreground="#848484" />
             <Label Width="60"
                    Content="{Binding ImprintPlatform.ForceValue2}"
-                   FontSize="16"
+                   FontSize="12"
                    Foreground="#C9C9C9" />
             <Border Width="1" Background="White" />
         </StackPanel>

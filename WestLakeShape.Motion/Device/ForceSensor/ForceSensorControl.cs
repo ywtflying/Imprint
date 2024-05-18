@@ -89,7 +89,7 @@ namespace WestLakeShape.Motion.Device
 
         public void Disconnected()
         {
-            if (_isConnected)
+            if (_port.IsOpen)
                 _port.Close();
 
             _isConnected = false;
@@ -97,7 +97,12 @@ namespace WestLakeShape.Motion.Device
 
         public void ReloadConfig()
         {
+            if (_port.IsOpen)
+                Disconnected();
+
             _port.PortName = _config.PortName;
+            
+            Connected();
         }
 
         public void ClearZero()
@@ -111,6 +116,7 @@ namespace WestLakeShape.Motion.Device
             while (_isConnected)
             {
                 RefreshValues();
+                Thread.Sleep(30);
             }
         }
 
@@ -160,7 +166,7 @@ namespace WestLakeShape.Motion.Device
                    
                     right += size;
                     //读取不到完整的回复消息，则break
-                    if (size == 0 && right!=17 )
+                    if (size == 0 && right != 17 )
                         break;
                     Debug.WriteLine($"当前接受数据时，数据起始{right}");
                 }

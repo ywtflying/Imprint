@@ -11,7 +11,8 @@ namespace WestLakeShape.Motion
         public abstract double Position { get; }
         public abstract double Speed { get; }
         public TAxisConfig Config { get; set; }
-        public string Name { get; }
+        public abstract string Name { get; }
+        public abstract bool Direction { get; }
 
         public Axis(TAxisConfig config)
         {
@@ -36,7 +37,7 @@ namespace WestLakeShape.Motion
         public abstract void LoadVelocity(double vel);
     }
 
-    public class AxisConfig:NotifyPropertyChanged
+    public class AxisConfig : NotifyPropertyChanged
     {
         private double _speed = 10;
         private string _name;

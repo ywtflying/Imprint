@@ -24,8 +24,8 @@ namespace NanoImprinter.Model
         /// </summary>
         int ProcedureIndex { get; set; }
         bool IsConnected { get; set; }
-        IOManager IOStates { get;}
-        AxisManager Axes { get; }
+        IOManager IoManager { get;}
+        AxisManager AxesManager { get; }
         string ConfigFileName { get; set;}
         MachineModelConfig Config { get; }
         void LoadParam();
@@ -46,11 +46,11 @@ namespace NanoImprinter.Model
         /// <summary>
         /// 所有IO卡
         /// </summary>
-        public IOManager IOStates { get; private set; }
+        public IOManager IoManager { get; private set; }
         /// <summary>
         /// 所有轴
         /// </summary>
-        public AxisManager Axes { get; private set; }
+        public AxisManager AxesManager { get; private set; }
 
         /// <summary>
         /// 上次流程执行到的步骤
@@ -94,6 +94,7 @@ namespace NanoImprinter.Model
                 Directory.CreateDirectory(folder);
 
             File.WriteAllText(path, JsonConvert.SerializeObject(Config,Formatting.Indented), Encoding.UTF8);
+            SaveHardwareConfig();
         }
 
         public void LoadParam()
@@ -113,24 +114,29 @@ namespace NanoImprinter.Model
                 Config = new MachineModelConfig();
                 SaveParam();
             }
+            //加载硬件参数（不可修改）
             LoadHardwareConfig();
-
-            //IOStates = new ImprinterIO(Config.ImprinterIO);
-            //Axes = new ImprinterAxis(Config.ImprinterAxis);
-            IOStates = new IOManager(HardwareConfig.ImprinterIO);
-            Axes = new AxisManager(HardwareConfig.ImprinterAxis);
-
-            Platforms.Add(typeof(ImprintPlatform).Name, new ImprintPlatform(Config.ImprintPlatform,
-                                                                            Axes.PrintPlatformAxes()));
-            Platforms.Add(typeof(GluePlatform).Name, new GluePlatform(Config.GluePlatform,
-                                                                      Axes.GluePlatformAxes()));
-            Platforms.Add(typeof(AfmPlatform).Name, new AfmPlatform(Config.AfmPlatform,
-                                                                    Axes.AFMPlatformAxes()));
-            Platforms.Add(typeof(MicroPlatform).Name, new MicroPlatform(Config.MicroPlatform));
-            Platforms.Add(typeof(MacroPlatform).Name, new MacroPlatform(Config.MacroPlatform,
-                                                                        Axes.MacroPlatformAxes()));
+            //对象初始化
+            Initial();
         }
 
+        private void Initial()
+        {
+            //IOStates = new ImprinterIO(Config.ImprinterIO);
+            //Axes = new ImprinterAxis(Config.ImprinterAxis);
+            IoManager = new IOManager(HardwareConfig.IOManager);
+            AxesManager = new AxisManager(HardwareConfig.AxisManager);
+
+            Platforms.Add(typeof(ImprintPlatform).Name, new ImprintPlatform(Config.ImprintPlatform,
+                                                                            AxesManager.PrintPlatformAxes()));
+            Platforms.Add(typeof(GluePlatform).Name, new GluePlatform(Config.GluePlatform,
+                                                                      AxesManager.GluePlatformAxes()));
+            Platforms.Add(typeof(AfmPlatform).Name, new AfmPlatform(Config.AfmPlatform,
+                                                                    AxesManager.AFMPlatformAxes()));
+            Platforms.Add(typeof(MicroPlatform).Name, new MicroPlatform(Config.MicroPlatform));
+            Platforms.Add(typeof(MacroPlatform).Name, new MacroPlatform(Config.MacroPlatform,
+                                                                        AxesManager.MacroPlatformAxes()));
+        }
 
         /// <summary>
         /// 重要文件，只允许程序修改者修改
@@ -167,7 +173,7 @@ namespace NanoImprinter.Model
             if (!Directory.Exists(folder))
                 Directory.CreateDirectory(folder);
 
-            File.WriteAllText(path, JsonConvert.SerializeObject(HardwareConfig, Formatting.Indented), Constants.Encoding);
+            File.WriteAllText(path, JsonConvert.SerializeObject(HardwareConfig, Formatting.Indented), Encoding.UTF8);
         }
 
 
@@ -184,8 +190,8 @@ namespace NanoImprinter.Model
         {
             if (!IsConnected)
             {
-                Axes.Connect();
-                //IOStates.Connect();
+                AxesManager.Connect();
+                IoManager.Connect();
                 //foreach (var pairs in Platforms)
                 //{
                 //    pairs.Value.Connect();
@@ -195,7 +201,7 @@ namespace NanoImprinter.Model
             }
             else
             {
-                Axes.Disconnect();
+                AxesManager.Disconnect();
 
                 //foreach (var pairs in Platforms)
                 //{
@@ -262,8 +268,8 @@ namespace NanoImprinter.Model
     /// </summary>
     public class HardwareConfig
     {
-        public AxisManagerConfig ImprinterAxis { get; set; } = new AxisManagerConfig();
-        public IOManagerConfig ImprinterIO { get; set; } = new IOManagerConfig();
+        public AxisManagerConfig AxisManager { get; set; } = new AxisManagerConfig();
+        public IOManagerConfig IOManager { get; set; } = new IOManagerConfig();
     }
 
 }

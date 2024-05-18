@@ -48,18 +48,22 @@ namespace WestLakeShape.Motion.Device
             double value = -1;
             for (var i = 0; i < buff.Length; i++)
             {
-                _trioPC.In(0, Btye_Size-1, out value);
+                var startIndex = 8 * i;
+                var stopIndex = startIndex + 7;
+                _trioPC.In(startIndex, stopIndex, out value);
                 buff[i] = (byte)value;
             }
         }
 
         private void LoadOutputs(byte[] buff)
         {
-            int value = -1;
+            int value = -1;            
             for (var i = 0; i < buff.Length; i++)
             {
-                _trioPC.ReadOp(0, Btye_Size -1, out value);
-                buff[i] = (byte)value;
+                var startIndex = 8 * i;
+                var stopIndex = startIndex + 7;
+                _trioPC.ReadOp(startIndex, stopIndex, out value);
+                buff[i] = (byte)(value & 0xFF);
             }
         }
 
@@ -67,7 +71,9 @@ namespace WestLakeShape.Motion.Device
         {
             for (var i = 0; i < buff.Length; i++)
             {
-                _trioPC.Op(0, Btye_Size-1, buff[i]);
+                var startIndex = 8 * i;
+                var stopIndex = startIndex + 7;
+                _trioPC.Op(startIndex, stopIndex, buff[i]);
             }
         }
     }

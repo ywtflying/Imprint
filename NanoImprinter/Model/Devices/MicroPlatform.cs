@@ -107,12 +107,19 @@ namespace NanoImprinter.Model
         }
 
         public void Connect()
-        {            
-            _piezo.Connect();
-            //获取当前闭环开环状态
-            _piezo.ReadClosedLoopFlag();
-            //获取当前数值信息
-            ReadPositions();
+        {
+            try
+            {
+                _piezo.Connect();
+                //获取当前闭环开环状态
+                _piezo.ReadClosedLoopFlag();
+                //获取当前数值信息
+                ReadPositions();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }            
         }
 
         public void Disconnect()
@@ -207,30 +214,40 @@ namespace NanoImprinter.Model
         {
             _piezo.WriteDisplace(index, position);
 
-            while ((index == ChannelNo.One&&position!=CurrentPositionZ)||
-                   (index == ChannelNo.Two && position != CurrentPositionRX) ||
-                   (index == ChannelNo.Third && position != CurrentPositionRY))
-            {
-                Thread.Sleep(20);
-                ReadPositions();
-            }
+            Thread.Sleep(500);
+            ReadPositions();
+            //while ((index == ChannelNo.One&&position - CurrentPositionZ>=0.1)||
+            //       (index == ChannelNo.Two && position - CurrentPositionRX>=0.001) ||
+            //       (index == ChannelNo.Third && position - CurrentPositionRY>=0.001))
+            //{
+            //    Thread.Sleep(20);
+            //    ReadPositions();
+            //}
         }
 
         /// <summary>
-        /// 多通道移动
+        /// 多通道移动(硬件不支持，只支持单个通道的移动)
         /// </summary>
         /// <param name="position"></param>
         public void MoveTo(PointZRXY position)
         {
-            _piezo.WriteMultiDisplace(new double[] { position.Z,position.RX, position.RY});
+            Console.WriteLine($"写入数据为{position.Z}:{position.RX}{position.RY}");
+            MoveTo(ChannelNo.One, position.Z);
+            MoveTo(ChannelNo.Two, position.RX);
+            MoveTo(ChannelNo.Third, position.RY);
+
             
-            while (position.Z!=CurrentPositionZ||
-                   position.RX!=CurrentPositionRX||
-                   position.RY!=CurrentPositionRY)
-            {
-                Thread.Sleep(20);
-                ReadPositions();
-            }
+
+            //_piezo.WriteMultiDisplace(new double[] { position.Z,position.RX, position.RY});
+
+            //while (position.Z-_currentPositionZ>=0.1||
+            //       position.RX-_currentPositionRX>=0.01||
+            //       position.RY-_currentPositionRY>=0.01)
+            //{
+            //    Thread.Sleep(20);
+            //    ReadPositions();
+            //}
+
         }
 
         public void ReloadConfig()
@@ -241,9 +258,11 @@ namespace NanoImprinter.Model
         private bool ReadPositions()
         {
             var position = _piezo.ReadMultiDisplace();
-            _currentPositionZ = position[0];
-            _currentPositionRX = position[1];
-            _currentPositionRY = position[2];
+            CurrentPositionZ = position[0];
+            CurrentPositionRX = position[1];
+            CurrentPositionRY = position[2];
+            
+            Console.WriteLine($"读取数据为{CurrentPositionZ}:{CurrentPositionRX}:{CurrentPositionRY}");
 
             return true;
         }
@@ -287,7 +306,7 @@ namespace NanoImprinter.Model
         private void RefreshRealtimeData()
         {
             CurrentPositionRX = _currentPositionRX;
-            CurrentPositionRY = _currentPositionRX;
+            CurrentPositionRY = _currentPositionRY;
             CurrentPositionZ = _currentPositionZ;
         }
 

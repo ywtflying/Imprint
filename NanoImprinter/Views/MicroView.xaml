@@ -81,16 +81,19 @@
                     <TextBox x:Name="tbMicroLevelPositionZ"
                              Grid.Row="1"
                              Grid.Column="1"
+                             IsReadOnly="False"
                              HorizontalAlignment="Center"
                              Text="{Binding LevelPositionZ}" />
                     <TextBox x:Name="tbMicroLevelPositionRX"
                              Grid.Row="1"
                              Grid.Column="2"
+                             IsReadOnly="False"
                              HorizontalAlignment="Center"
                              Text="{Binding LevelPositionRX}" />
                     <TextBox x:Name="tbMicroLevelPositionRY"
                              Grid.Row="1"
                              Grid.Column="3"
+                             IsReadOnly="False"
                              HorizontalAlignment="Center"
                              Text="{Binding LevelPositionRY}" />
 
@@ -100,16 +103,19 @@
                     <TextBox x:Name="tbMicroDemoldPositionZ"
                              Grid.Row="2"
                              Grid.Column="1"
+                             IsReadOnly="False"
                              HorizontalAlignment="Center"
                              Text="{Binding DemoldPositionZ}" />
                     <TextBox x:Name="tbMicroDemoldPositionRX"
                              Grid.Row="2"
                              Grid.Column="2"
+                             IsReadOnly="False"
                              HorizontalAlignment="Center"
                              Text="{Binding DemoldPositionRX}" />
                     <TextBox x:Name="tbMicroDemoldPositionRY"
                              Grid.Row="2"
                              Grid.Column="3"
+                             IsReadOnly="False"
                              HorizontalAlignment="Center"
                              Text="{Binding DemoldPositionRY}" />
 
@@ -119,19 +125,20 @@
                     <TextBox x:Name="tbContactPositionZ"
                              Grid.Row="3"
                              Grid.Column="1"
+                             IsReadOnly="False"
                              HorizontalAlignment="Center"
                              Text="{Binding ContactPosition}" />
                     <TextBox x:Name="tbContactPositionRX"
                              Grid.Row="3"
                              Grid.Column="2"
+                             IsReadOnly="False"
                              HorizontalAlignment="Center"
-                             IsReadOnly="True"
                              Text="{Binding DemoldPosition.Y}" />
                     <TextBox x:Name="tbContactPositionRY"
                              Grid.Row="3"
                              Grid.Column="3"
+                             IsReadOnly="False"
                              HorizontalAlignment="Center"
-                             IsReadOnly="True"
                              Text="{Binding DemoldPosition.Z}" />
                 </Grid>
 

@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using WestLakeShape.Common.LogService;
 using WestLakeShape.Motion;
 using WestLakeShape.Motion.Device;
 
@@ -11,9 +13,10 @@ namespace NanoImprinter.Model
 {
     public class AxisManager
     {
-        private TrioAxis _macroPlatformRAxis;// 宏动平台
+        private TrioAxis _macroPlatformRAxis;// 宏动平台        
         private TrioAxis _macroPlatformYAxis;
         private TrioAxis _macroPlatformXAxis;
+        private TrioAxis _macroPlatformX2Axis;
         private TrioAxis _imprintPlatformCameraAxis;//压印相机轴
         private TrioAxis _imprintPlatformMaskZAxis;// 压印Z轴      
         private TrioAxis _gluePlatformZAxis;// 点胶平台Z轴    
@@ -21,7 +24,7 @@ namespace NanoImprinter.Model
         private TrioAxis _afmPlatformYAxis;
         private TrioAxis _uvPlatformXAxis;//UV平台X轴
         private TrioAxis _afmPlatformZAxis;//
-      
+        private static readonly ILogger _log = LogHelper.For<AxisManager>();
         private TrioControl _trioControl;
         private AxisManagerConfig _config;
         private bool _isConnected;
@@ -33,6 +36,7 @@ namespace NanoImprinter.Model
             _config = config;
 
             _macroPlatformXAxis = new TrioAxis(config.MacroPlatformXAxis);
+            _macroPlatformX2Axis = new TrioAxis(config.MacroPlatformX2Axis);
             _macroPlatformYAxis = new TrioAxis(config.MacroPlatformYAxis);
             _macroPlatformRAxis = new TrioAxis(config.MacroPlatformRAxis);
             _imprintPlatformCameraAxis = new DCAxis(config.ImprintPlatformCameraZAxis);
@@ -56,10 +60,12 @@ namespace NanoImprinter.Model
                 var axes = All();
                 axes.ForEach(o =>
                 {
-
+                    
                     o.InitialParameter();
                     o.ServoOn();
+                    
                 });
+                _log.Information($"轴参数初始化并使能成功");
             }
         }
 
@@ -72,6 +78,7 @@ namespace NanoImprinter.Model
         {
             return new List<IAxis>() {
              _macroPlatformXAxis,
+             _macroPlatformX2Axis,
              _macroPlatformYAxis,
              _macroPlatformRAxis,
              _imprintPlatformCameraAxis,
@@ -89,6 +96,7 @@ namespace NanoImprinter.Model
             return new IAxis[]
             {
                _macroPlatformXAxis,
+               _macroPlatformX2Axis,
                _macroPlatformYAxis,
                _macroPlatformRAxis,
             };
@@ -154,7 +162,7 @@ namespace NanoImprinter.Model
         /// </summary>
         public TrioAxisConfig MacroPlatformXAxis { get; set; } = new TrioAxisConfig() { Name = "宏动平台X轴", Index = 0 };
         //X2轴不需要设置
-        //public TrioAxisConfig MacroPlatformX2Axis { get; set; } = new TrioAxisConfig() { Name = "宏动平台X2轴", Index = 1 };
+        public TrioAxisConfig MacroPlatformX2Axis { get; set; } = new TrioAxisConfig() { Name = "宏动平台X2轴", Index = 1 };
 
         public TrioAxisConfig MacroPlatformYAxis { get; set; } = new TrioAxisConfig() { Name = "宏动平台Y轴", Index = 2 };
         public TrioAxisConfig MacroPlatformRAxis { get; set; } = new TrioAxisConfig() { Name = "宏动平台R轴", Index = 3 };

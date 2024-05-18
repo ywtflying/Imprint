@@ -43,7 +43,14 @@ namespace WestLakeShape.Motion.Device
 
         public void Connect()
         {
-            _piezoPort.Connected();
+            try
+            {
+                _piezoPort.Connected();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }   
         }
 
         public void Disconnected()
@@ -53,7 +60,12 @@ namespace WestLakeShape.Motion.Device
 
         public void ReloadConfig()
         {
+            if (_piezoPort.IsConnected)
+                Disconnected();
+
             _piezoPort.PortName = _config.PortName;
+
+            _piezoPort.Connected();
         }
 
         public void SetClosedLoop(int channelNo,bool isClosedLoop)

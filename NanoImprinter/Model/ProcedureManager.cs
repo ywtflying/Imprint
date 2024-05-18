@@ -89,7 +89,7 @@ namespace NanoImprinter.Model
             _eventAggregator = eventAggregator;
 
             _deviceManager = deviceManager;
-            _ioStates = _deviceManager.IOStates;
+            _ioStates = _deviceManager.IoManager;
 
             _autoProcedures = new List<WorkProcedure>();
             _procedures = new Dictionary<string, WorkProcedure>();
@@ -188,7 +188,7 @@ namespace NanoImprinter.Model
 
         private void Emergency()
         {
-            _deviceManager.Axes.All().ForEach(o => o.EmergencyStop());
+            _deviceManager.AxesManager.All().ForEach(o => o.EmergencyStop());
         }
 
         private void Start()
@@ -221,7 +221,7 @@ namespace NanoImprinter.Model
             Log.Information("复位，所有任务终止");
             Status = WorkStatus.Terminated;
 
-            _deviceManager.Axes.All().ForEach(o => o.ResetAlarm());
+            _deviceManager.AxesManager.All().ForEach(o => o.ResetAlarm());
         }
 
         private void GoHome()
@@ -368,10 +368,10 @@ namespace NanoImprinter.Model
             {
                 GoHome();
             }
-            else if (_ioStates.GetInputIOStatus(InputIOName.Reset.ToString()))
-            {
-                Reset();
-            }
+            //else if (_ioStates.GetInputIOStatus(InputIOName.Reset.ToString()))
+            //{
+            //    Reset();
+            //}
         }
     }
 

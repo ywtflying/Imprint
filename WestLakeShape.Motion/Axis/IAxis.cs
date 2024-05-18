@@ -4,6 +4,7 @@ namespace WestLakeShape.Motion
 {
     public interface IAxis
     {
+        bool Direction { get; }
         string Name { get; }
         /// <summary>
         /// 当前位置

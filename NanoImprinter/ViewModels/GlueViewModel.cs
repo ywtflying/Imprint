@@ -184,10 +184,10 @@ namespace NanoImprinter.ViewModels
 
         private void RefreshPortNames()
         {
-            PortNames.Clear();
             foreach (var port in SerialPort.GetPortNames())
-            {
-                PortNames.Add(port);
+            { 
+                if(!PortNames.Contains(port))
+                    PortNames.Add(port);
             }
         }
         private void Connected()

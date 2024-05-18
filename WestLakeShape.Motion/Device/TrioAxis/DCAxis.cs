@@ -23,19 +23,20 @@ namespace WestLakeShape.Motion.Device
         public override void ServoOn()
         {
             var rt = _trioPC.SetAxisVariable(TrioParamName.ServoOn, (short)_config.Index, 1);//上使能
-            Thread.Sleep(2000);//轴使能需要延时
-            CheckException(rt);
-            rt = _trioPC.CoWrite(0,(short)(_config.Index + 1), 0x60FE, 2, 7, 0X10000);
-            CheckException(rt);
-            rt = _trioPC.CoWrite(0, (short)(_config.Index + 1), 0x60FE, 1, 7, 0X0);//输出抱闸
-            CheckException(rt);
-            
-            rt = _trioPC.CoWrite(0, (short)(_config.Index + 1), 0x60FE, 1, 7, 0X10000);//关闭抱闸
-            CheckException(rt);
+            //if (_config.Index == 4 || _config.Index == 5 || _config.Index == 6)
+            //{
+                Thread.Sleep(5000);//轴使能需要延时
+                CheckException(rt);
+                rt = _trioPC.CoWrite(0, (short)(_config.Index + 1), 0x60FE, 2, 7, 0X10000);
+                CheckException(rt);
+                rt = _trioPC.CoWrite(0, (short)(_config.Index + 1), 0x60FE, 1, 7, 0X0);//输出抱闸
+                CheckException(rt);
 
-            rt = _trioPC.SetAxisParameter(AxisParameter.SERVO, _config.Index, 1); //所有轴打开编码器
-            CheckException(rt);
-            GetState();
+                rt = _trioPC.CoWrite(0, (short)(_config.Index + 1), 0x60FE, 1, 7, 0X10000);//关闭抱闸
+                CheckException(rt);
+                rt = _trioPC.SetAxisParameter(AxisParameter.SERVO, _config.Index, 1); //所有轴打开编码器
+                GetState();
+            //}            
         }
         public override void InitialParameter()
         {
@@ -67,35 +68,49 @@ namespace WestLakeShape.Motion.Device
 
         public override bool GoHome()
         {
+            bool isHomeFinish = false;
             double value;
-            double fwdIOIndex;
             double datumIOIndex;
-            var ret =_trioPC.GetAxisParameter(AxisParameter.AXISSTATUS, _config.Index, out value);//获取轴的回零模式
+            double fwdIOIndex;//正限位IO端口号
+            double revIOIndex;//负限位IO端口号
+            
+            //获取轴的回零模式
+            var ret =_trioPC.GetAxisParameter(AxisParameter.AXISSTATUS, _config.Index, out value);
             CheckException(ret);
             switch (_config.HomeModel)
             {
                 //正向回原到正限位
                 case TrioHomeModel.PositiveAndLimit:
-                    ret = _trioPC.GetAxisParameter(AxisParameter.FWD_IN, _config.Index, out fwdIOIndex);// 获取正限位输入IO端口号
+                    // 获取正限位输入IO端口号
+                    ret = _trioPC.GetAxisParameter(AxisParameter.FWD_IN, _config.Index, out fwdIOIndex);
                     CheckException(ret);
-                    ret = _trioPC.GetAxisParameter(AxisParameter.DATUM_IN, _config.Index, out datumIOIndex);// 获取原点的输入IO端口号
+                    // 获取原点的输入IO端口号
+                    ret = _trioPC.GetAxisParameter(AxisParameter.DATUM_IN, _config.Index, out datumIOIndex);
                     CheckException(ret);
-                    ret = _trioPC.SetAxisParameter(AxisParameter.FWD_IN, _config.Index, -1);          //取消正限位关联IO
+                    //取消正限位关联IO
+                    ret = _trioPC.SetAxisParameter(AxisParameter.FWD_IN, _config.Index, -1);          
                     CheckException(ret);
-                    ret = _trioPC.SetAxisParameter(AxisParameter.DATUM_IN, _config.Index, fwdIOIndex);//原正限位关联IO作为原点IO
+                    //原正限位关联IO作为原点IO
+                    ret = _trioPC.SetAxisParameter(AxisParameter.DATUM_IN, _config.Index, fwdIOIndex);
                     CheckException(ret);
-                    ret = _trioPC.Datum(3, _config.Index);//开始回零
+                    //开始回零
+                    ret = _trioPC.Datum(3, _config.Index);
                     CheckException(ret);
-                    ret = _trioPC.GetAxisParameter(AxisParameter.MTYPE, _config.Index, out value);//获取轴回零状态
+                    //获取轴回零状态
+                    ret = _trioPC.GetAxisParameter(AxisParameter.MTYPE, _config.Index, out value);
                     CheckException(ret);
-                    while (value == 0) //判断回零完成
+                    //判断回零完成
+                    while (value == 0) 
                     {
                         ret = _trioPC.GetAxisParameter(AxisParameter.MTYPE, _config.Index, out value);
                         CheckException(ret);
-                    }
 
-                    //System.Threading.Thread.Sleep(2);
-                    ret = _trioPC.GetAxisParameter(AxisParameter.AXISSTATUS, _config.Index, out value);//获取轴位置到达信号
+                    }
+                    if (value != 0)
+                        isHomeFinish = true;
+
+                    //获取轴位置到达信号
+                    ret = _trioPC.GetAxisParameter(AxisParameter.AXISSTATUS, _config.Index, out value);
                     CheckException(ret);
                     while (((int)value >> 6) == 1)
                     {
@@ -103,12 +118,58 @@ namespace WestLakeShape.Motion.Device
                         CheckException(ret);
                     }
 
-                    ret = _trioPC.SetAxisParameter(AxisParameter.DATUM_IN, _config.Index, datumIOIndex);  //恢复原点IO设置
+                    //回绝对零点
+                    if (isHomeFinish)
+                    {
+                        ret = _trioPC.MoveAbs(new double[] { 0 }, _config.Index);
+                        CheckException(ret);
+                    }
+                    
+                    //恢复原点和限位设定
+                    ret = _trioPC.SetAxisParameter(AxisParameter.DATUM_IN, _config.Index, datumIOIndex);
                     CheckException(ret);
-                    ret = _trioPC.SetAxisParameter(AxisParameter.FWD_IN, _config.Index, fwdIOIndex);      //恢复原点IO设置
+                    ret = _trioPC.SetAxisParameter(AxisParameter.FWD_IN, _config.Index, fwdIOIndex);
                     CheckException(ret);
+                    
                     break;
+                
+                //反向回原到负限位
+                //case TrioHomeModel.NegativeAndLimit:                    
+                //    ret =_trioPC.GetAxisParameter(AxisParameter.REV_IN, _config.Index, out revIOIndex);
+                //    CheckException(ret);
+                //    ret =_trioPC.GetAxisParameter(AxisParameter.DATUM_IN, _config.Index, out datumIOIndex);
+                //    CheckException(ret);
+                //    //取消负限位关联IO
+                //    ret = _trioPC.SetAxisParameter(AxisParameter.REV_IN, _config.Index, -1);
+                //    CheckException(ret);
+                //    //原负限位关联IO作为原点IO
+                //    ret = _trioPC.SetAxisParameter(AxisParameter.DATUM_IN, _config.Index, revIOIndex);
+                //    CheckException(ret);
+                //    ret = _trioPC.Datum(4, _config.Index);
+                //    CheckException(ret);
+                //    ret = _trioPC.GetAxisParameter(AxisParameter.MTYPE, _config.Index, out value);
+                //    CheckException(ret);
+                //    while (value == 0)
+                //    {
+                //        ret =_trioPC.GetAxisParameter(AxisParameter.MTYPE, _config.Index, out value);
+                //        CheckException(ret);
+                //    }
+                //    ret = _trioPC.GetAxisParameter(AxisParameter.AXISSTATUS, _config.Index, out value);
+                //    CheckException(ret);
+                //    while (((int)value >> 6) == 1)
+                //    {
+                //        ret = _trioPC.GetAxisParameter(AxisParameter.AXISSTATUS, _config.Index, out value);
+                //        CheckException(ret);
+                //    }
+                //    //恢复原点和负限位IO设定
+                //    ret = _trioPC.SetAxisParameter(AxisParameter.DATUM_IN, _config.Index, datumIOIndex);
+                //    CheckException(ret);
+                //    ret = _trioPC.SetAxisParameter(AxisParameter.REV_IN, _config.Index, revIOIndex);
+                //    CheckException(ret);
+                //    break;
             }
+
+
             ret = _trioPC.SetAxisParameter(AxisParameter.FS_LIMIT, _config.Index, _config.SoftPositiveDistance);
             CheckException(ret);
             ret = _trioPC.SetAxisParameter(AxisParameter.RS_LIMIT, _config.Index, _config.SoftNegativeDistance);

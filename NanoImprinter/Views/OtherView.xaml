@@ -57,7 +57,7 @@
             
             <ListBox Grid.Row="1"
                      Grid.ColumnSpan="2"
-                     ItemsSource="{Binding IOStates.InputIOs}">
+                     ItemsSource="{Binding IOManager.InputIOs}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid>
@@ -155,7 +155,7 @@
                    Content="IO值" />
             <ListBox Grid.Row="1"
                      Grid.ColumnSpan="2"
-                     ItemsSource="{Binding IOStates.OutputIOs, Mode=TwoWay}">
+                     ItemsSource="{Binding IOManager.OutputIOs, Mode=TwoWay}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid>
@@ -187,9 +187,9 @@
                                               Width="80"
                                               Height="40"
                                               HorizontalAlignment="Center"
-                                              Command="{Binding SetOutputValueCommand}"
+                                              Command="{Binding DataContext.SetOutputValueCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                               CommandParameter="{Binding Name}"
-                                              IsChecked="{Binding IsOn, Mode=OneWay}"
+                                              IsChecked="{Binding IsOn, Mode=TwoWay}"
                                               Template="{StaticResource ToggleButtonTemplate}" />
                                 <Label FontSize="14"
                                        HorizontalAlignment="Left"
