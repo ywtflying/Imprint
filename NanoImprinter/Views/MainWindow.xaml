@@ -23,7 +23,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="37" />
             <RowDefinition />
-            <RowDefinition Height="33" />
+            <RowDefinition Height="53" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -156,163 +156,226 @@
                         Margin="0"
                         prism:RegionManager.RegionName="ContentRegion" />
         <!--  底部栏  -->
-        <StackPanel Grid.Row="2"
-                    Grid.ColumnSpan="2"
-                    Margin="0"
+        <UniformGrid Grid.Row="2"
+                     Grid.ColumnSpan="2"
+                     Rows="2"
+                     Columns="8"
+                     Margin="1"
                     VerticalAlignment="Center"
-                    Background="#3B445A"
-                    Orientation="Horizontal">
-            <!--<Label Content="宏X:"
-                   FontSize="16"
-                   Foreground="#848484" />
-            <Label Width="80"
-                   Content="{Binding MacroPlatform.CurrentPositionX}"
-                   FontSize="16"
-                   Foreground="#C9C9C9" />
-            <Border Width="1" Background="White" />-->
+                    Background="#3B445A">
+            <StackPanel Orientation="Horizontal">
+                <Label Content="宏X:"
+                       FontSize="12"
+                       Width="50"
+                       Foreground="#848484" />
+                <Label Width="180"
+                       Content="{Binding MacroPlatform.CurrentPositionX}"
+                       FontSize="12"
+                       Foreground="#C9C9C9" />
+                <Border Width="2"
+                        Background="White" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="宏R:"
+                       FontSize="12"
+                       Width="50"
+                       Foreground="#848484" />
+                <Label Width="180"
+                       Content="{Binding MacroPlatform.CurrentPositionR}"
+                       FontSize="10"
+                       Foreground="#C9C9C9" />
+                <Border Width="2"
+                        Background="White" />
+            </StackPanel>
+          
+          
+            <StackPanel Orientation="Horizontal">
+                <Label Content="CCD-Z:"
+                       FontSize="12"
+                       Width="50"
+                       Foreground="#848484" />
+                <Label Width="180"
+                       Content="{Binding ImprintPlatform.CurrentPositionCameraZ}"
+                       FontSize="12"
+                       Foreground="#C9C9C9" />
+                <Border Width="2"
+                        Background="White" />
+            </StackPanel>
 
-            <!--<Label Content="宏Y:"
-                   FontSize="16"
-                   Foreground="#848484" />
-            <Label Width="80"
-                   Content="{Binding MacroPlatform.CurrentPositionY}"
-                   FontSize="16"
-                   Foreground="#C9C9C9" />
-            <Border Width="1" Background="White" />-->
+          
 
-            <!--<Label Content="宏R:"
-                   FontSize="16"
-                   Foreground="#848484" />
-            <Label Width="60"
-                   Content="{Binding MacroPlatform.CurrentPositionR}"
-                   FontSize="16"
-                   Foreground="#C9C9C9" />
-            <Border Width="1" Background="White" />-->
-
-            <!--<Border Width="1" Background="White" />
+            <StackPanel Orientation="Horizontal">
+                <Label Content="喷胶Z:"
+                       FontSize="12"
+                       Width="50"
+                       Foreground="#848484" />
+                <Label Width="180"
+                       Content="{Binding GluePlatform.CurrentPositionGlueZ}"
+                       FontSize="12"
+                       Foreground="#C9C9C9" />
+                <Border Width="2"
+                        Background="White" />
+            </StackPanel>
             
-            <Label Content="CCD-Z:"
-                   FontSize="16"
-                   Foreground="#848484" />
-            <Label Width="70"
-                   Content="{Binding ImprintPlatform.CurrentPositionCameraZ}"
-                   FontSize="16"
-                   Foreground="#C9C9C9" />
-            <Border Width="1"
-                    Background="White" />-->
+          
+           
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Afm-Y:"
+                       FontSize="12"
+                       Width="50"
+                       Foreground="#848484" />
+                <Label Width="180"
+                       Content="{Binding AfmPlatform.CurrentPositionY}"
+                       FontSize="12"
+                       Foreground="#C9C9C9" />
+                <Border Width="2"
+                        Background="White" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="微Z:"
+                       FontSize="12"
+                       Width="50"
+                       Foreground="#848484" />
+                <Label Width="180"
+                       Content="{Binding MicroPlatform.CurrentPositionZ}"
+                       FontSize="12"
+                       Foreground="#C9C9C9" />
+                <Border Width="2"
+                        Background="White" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <Label Content="微RY:"
+                       FontSize="12"
+                       Width="50"
+                       Foreground="#848484" />
+                <Label Width="180"
+                       Content="{Binding MicroPlatform.CurrentPositionRY}"
+                       FontSize="12"
+                       Foreground="#C9C9C9" />
+                <Border Width="2"
+                        Background="White" />
+            </StackPanel>
+
+
+            <StackPanel Orientation="Horizontal">
+                <Label Content="压力3:"
+                       FontSize="12"
+                       Width="50"
+                       Foreground="#848484" />
+                <Label Width="180"
+                       Content="{Binding ImprintPlatform.ForceValue2}"
+                       FontSize="12"
+                       Foreground="#C9C9C9" />
+                <Border Width="2"
+                        Background="White" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <Label Content="宏Y:"
+                       FontSize="12"
+                       Width="50"
+                       Foreground="#848484" />
+                <Label Width="180"
+                       Content="{Binding MacroPlatform.CurrentPositionY}"
+                       FontSize="12"
+                       Foreground="#C9C9C9" />
+                <Border Width="2"
+                        Background="White" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <Label Content="UV-X:"
+                       Width="50"
+                       FontSize="12"
+                       Foreground="#848484" />
+                <Label Width="180"
+                       Content="{Binding ImprintPlatform.CurrentPositionUVX}"
+                       FontSize="12"
+                       Foreground="#C9C9C9" />
+                <Border Width="2"
+                        Background="White" />
+            </StackPanel>
             
-            <Label Content="压印Z:"
-                   FontSize="12"
-                   Foreground="#848484" />
-            <Label Width="70"
-                   Content="{Binding ImprintPlatform.CurrentPositionMaskZ}"
-                   FontSize="12"
-                   Foreground="#C9C9C9" />
-            <Border Width="1"
-                    Background="White" />
+            <StackPanel Orientation="Horizontal">
+                <Label Content="压印Z:"
+                       FontSize="12"
+                       Width="50"
+                       Foreground="#848484" />
+                <Label Width="180"
+                       Content="{Binding ImprintPlatform.CurrentPositionMaskZ}"
+                       FontSize="12"
+                       Foreground="#C9C9C9" />
+                <Border Width="2"
+                        Background="White" />
+            </StackPanel>
 
-            <Label Content="喷胶Z:"
-                   FontSize="12"
-                   Foreground="#848484" />
-            <Label Width="70"
-                   Content="{Binding GluePlatform.CurrentPositionGlueZ}"
-                   FontSize="12"
-                   Foreground="#C9C9C9" />
-            <Border Width="1"
-                    Background="White" />
-            
-            <Label Content="Afm-X:"
-                   FontSize="12"
-                   Foreground="#848484" />
-            <Label Width="70"
-                   Content="{Binding AfmPlatform.CurrentPositionX}"
-                   FontSize="12"
-                   Foreground="#C9C9C9" />
-            <Border Width="1"
-                    Background="White" />
-            <Label Content="Afm-Y:"
-                   FontSize="12"
-                   Foreground="#848484" />
-            <Label Width="70"
-                   Content="{Binding AfmPlatform.CurrentPositionY}"
-                   FontSize="12"
-                   Foreground="#C9C9C9" />
-            <Border Width="1"
-                    Background="White" />
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Afm-X:"
+                       Width="50"
+                       FontSize="12"
+                       Foreground="#848484" />
+                <Label Width="180"
+                       Content="{Binding AfmPlatform.CurrentPositionX}"
+                       FontSize="12"
+                       Foreground="#C9C9C9" />
+                <Border Width="2"
+                        Background="White" />
+            </StackPanel>
 
-            <Label Content="UV-X:"
-                   FontSize="12"
-                   Foreground="#848484" />
-            <Label Width="70"
-                   Content="{Binding ImprintPlatform.CurrentPositionUVX}"
-                   FontSize="12"
-                   Foreground="#C9C9C9" />
-            <!--<Border Width="1" Background="White" />
-            <Label Content="Afm-Z:"
-                   FontSize="12"
-                   Foreground="#848484" />
-            <Label Width="70"
-                   Content="{Binding AfmPlatform.CurrentPositionZ}"
-                   FontSize="12"
-                   Foreground="#C9C9C9" />-->
-            
-            <Border Width="1"
-                    Background="White" />
-            <Label Content="微Z:"
-                   FontSize="12"
-                   Foreground="#848484" />
-            <Label Width="75"
-                   Content="{Binding MicroPlatform.CurrentPositionZ}"
-                   FontSize="12"
-                   Foreground="#C9C9C9" />
-            <Border Width="1"
-                    Background="White" />
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Afm-Z:"
+                       FontSize="12"
+                       Width="50"
+                       Foreground="#848484" />
+                <Label Width="180"
+                       Content="{Binding AfmPlatform.CurrentPositionZ}"
+                       FontSize="12"
+                       Foreground="#C9C9C9" />
+                <Border Width="2"
+                        Background="White" />
+            </StackPanel>
 
-            <Label Content="微RX:"
-                   FontSize="12"
-                   Foreground="#848484" />
-            <Label Width="75"
-                   Content="{Binding MicroPlatform.CurrentPositionRX}"
-                   FontSize="12"
-                   Foreground="#C9C9C9" />
-            <Border Width="1"
-                    Background="White" />
+            <StackPanel Orientation="Horizontal">
+                <Label Content="微RX:"
+                       FontSize="12"
+                       Width="50"
+                       Foreground="#848484" />
+                <Label Width="180"
+                       Content="{Binding MicroPlatform.CurrentPositionRX}"
+                       FontSize="12"
+                       Foreground="#C9C9C9" />
+                <Border Width="2"
+                        Background="White" />
+            </StackPanel>
+          
+            <StackPanel Orientation="Horizontal">
+                <Label Content="压力1:"
+                       FontSize="12"
+                       Width="50"
+                       Foreground="#848484" />
+                <Label Width="180"
+                       Content="{Binding ImprintPlatform.ForceValue0}"
+                       FontSize="12"
+                       Foreground="#C9C9C9" />
+                <Border Width="2"
+                        Background="White" />
+            </StackPanel>
 
-            <Label Content="微RY:"
-                   FontSize="12"
-                   Foreground="#848484" />
-            <Label Width="75"
-                   Content="{Binding MicroPlatform.CurrentPositionRY}"
-                   FontSize="12"
-                   Foreground="#C9C9C9" />
-            <Border Width="1"
-                    Background="White" />
-            <Label Content="压力1:"
-                   FontSize="12"
-                   Foreground="#848484" />
-            <Label Width="60"
-                   Content="{Binding ImprintPlatform.ForceValue0}"
-                   FontSize="12"
-                   Foreground="#C9C9C9" />
-            <Border Width="1" Background="White" />
+            <StackPanel Orientation="Horizontal">
+                <Label Content="压力2:"
+                       FontSize="12"
+                       Width="50"
+                       Foreground="#848484" />
+                <Label Width="180"
+                       Content="{Binding ImprintPlatform.ForceValue1}"
+                       FontSize="12"
+                       Foreground="#C9C9C9" />
+                <Border Width="2"
+                        Background="White" />
+            </StackPanel>
 
-            <Label Content="压力2:"
-                   FontSize="12"
-                   Foreground="#848484" />
-            <Label Width="60"
-                   Content="{Binding ImprintPlatform.ForceValue1}"
-                   FontSize="12"
-                   Foreground="#C9C9C9" />
-            <Border Width="1" Background="White" />
-
-            <Label Content="压力3:"
-                   FontSize="12"
-                   Foreground="#848484" />
-            <Label Width="60"
-                   Content="{Binding ImprintPlatform.ForceValue2}"
-                   FontSize="12"
-                   Foreground="#C9C9C9" />
-            <Border Width="1" Background="White" />
-        </StackPanel>
+          
+        </UniformGrid>
     </Grid>
 </Window>
