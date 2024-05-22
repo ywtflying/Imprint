@@ -16,6 +16,7 @@ namespace WestLakeShape.Motion.Device
         private GlueControlConfig _config;
 
         public bool IsConnected => _port.IsConnected;
+        
         /// <summary>
         /// 已点胶次数
         /// </summary>
@@ -26,13 +27,11 @@ namespace WestLakeShape.Motion.Device
         /// </summary>
         public int GlueCycle { get; set; }
 
-
         public GlueControlConfig Config
         {
             get => _config;
             set => _config = value;
         }
-
 
         public GlueControl(GlueControlConfig config)
         {
@@ -43,6 +42,9 @@ namespace WestLakeShape.Motion.Device
         public void Connect()
         {
             _port.Connected();
+            
+            //修改成点胶模式
+            ChangeWorkModel(false);
         }
 
         public void Disconnected()
@@ -67,7 +69,7 @@ namespace WestLakeShape.Motion.Device
         /// <returns></returns>
         public bool StopDispense()
         {
-             ReadParam(RegisterNo.StartDispense, CommandValue.Stop_Dispense);
+            ReadParam(RegisterNo.StartDispense, CommandValue.Stop_Dispense);
             return true;
         }
 
@@ -83,7 +85,12 @@ namespace WestLakeShape.Motion.Device
 
         public void ReloadConfig()
         {
+            if (_port.IsConnected)
+                Disconnected();
+
             _port.Name=_config.PortName;
+
+            Connect();
         }
 
         /// <summary>
@@ -92,22 +99,35 @@ namespace WestLakeShape.Motion.Device
         /// <returns></returns>
         public bool WriteDispensingDeleyTime()
         {
-            
             WriteParam(RegisterNo.DispensingDelayTime, _config.DispensingDelayTime);
             return true;
         }
 
+        ///点模式，设置点胶个数
+        public bool SetDotCount(int count)
+        {
+            WriteParam(RegisterNo.DotCount, count);
+            return true;
+        }
+        
 
+
+        private void ChangeWorkModel(bool isLine)
+        {
+            int value = isLine ? 1 : 0;         
+            WriteParam(RegisterNo.WorkModel, 1);
+        }
 
         private byte[] ReadParam(RegisterNo registerNo, ushort command)
         {
-            return _port.ReadSingleRegister(8194);
-            //return  _port.ReadSingleRegister((ushort)registerNo);
+            //return _port.ReadSingleRegister(8194);
+            return  _port.ReadSingleRegister((ushort)registerNo);
         }
+       
         private bool WriteParam(RegisterNo registerNo, int val)
         {
-            _port.WriteSingleRegister(8713, 1);
-            //_port.WriteSingleRegister((ushort)registerNo, (ushort)val);
+            //_port.WriteSingleRegister(8713, 1);
+            _port.WriteSingleRegister((ushort)registerNo, (ushort)val);
             return true;
         }
 
@@ -154,14 +174,6 @@ namespace WestLakeShape.Motion.Device
         }
 
 
-        //public async void Refresh()
-        //{
-        //    WriteCommand(_config.SlaveID, 0x2102, 2);
-        //    WriteCommand(_config.SlaveID, 0x2101, 1);
-        //    WriteCommand(_config.SlaveID, 0x220A, 1);
-        //}
-
-
         enum RegisterNo : ushort
         {
             SaveParamter = 0x2008,
@@ -178,19 +190,17 @@ namespace WestLakeShape.Motion.Device
             UpTime,
             ClosedValveTime,
             OpenValveIntensity,
-            ControlModel,
-            GluePoints,
+            WorkModel,
+            DotCount,
             DispensingDelayTime,
             TargetTemperatore
         }
 
         static class CommandValue
         {
-            public static ushort Save_Param = 1;
-
             public static ushort Start_Dispense = 1;
             public static ushort Stop_Dispense = 0;
-
+            public static ushort Save_Param = 1;
             public static ushort Line_Model = 0;
             public static ushort Point_Model = 1;
             public static ushort Heating_Enable = 1;

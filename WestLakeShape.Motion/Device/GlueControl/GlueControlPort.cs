@@ -26,12 +26,7 @@ namespace WestLakeShape.Motion.Device
         public string Name
         {
             get => _port.PortName;
-            set
-            {
-                Disconnected();
-                _port.PortName = value;
-                Connected();
-            }
+            set => _port.PortName = value;
         }
 
         public GlueControlPort(string name)

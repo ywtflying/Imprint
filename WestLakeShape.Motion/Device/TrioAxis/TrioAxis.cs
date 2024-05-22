@@ -305,7 +305,7 @@ namespace WestLakeShape.Motion.Device
         }
         public override void ServoOn()
         {
-            if (_config.Index != 2&&_config.Index!=0&&_config.Index!=1)
+            if (_config.Index != 2)
             {
                 var ret = _trioPC.SetAxisVariable(TrioParamName.IsLoop, _config.Index, 1);
                 CheckException(ret);
@@ -342,7 +342,7 @@ namespace WestLakeShape.Motion.Device
         /// </summary>
         public override void InitialParameter()
         {
-            if (_config.Index != 2&&_config.Index!=0&&_config.Index!=1)
+            if (_config.Index != 2)
             {
                 SetAxisParameter(AxisParameter.UNITS, _config.PlusEquivalent);
                 var acc = _config.Speed * 10;     //加速度=10*Vel
@@ -359,9 +359,9 @@ namespace WestLakeShape.Motion.Device
                 {
                     //R轴设置正负限位值，防止角度过大，微动平台线缆扯断
                     //因为离线编程，后续加入到config类中
-                    var ret = _trioPC.SetAxisParameter(AxisParameter.FS_LIMIT, _config.Index, 50);
+                    var ret = _trioPC.SetAxisParameter(AxisParameter.FS_LIMIT, _config.Index, 15);
                     CheckException(ret);
-                    ret = _trioPC.SetAxisParameter(AxisParameter.RS_LIMIT, _config.Index, -50);
+                    ret = _trioPC.SetAxisParameter(AxisParameter.RS_LIMIT, _config.Index, -15);
                     CheckException(ret);
                 }
             }

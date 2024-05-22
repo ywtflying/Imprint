@@ -48,7 +48,8 @@ namespace NanoImprinter.Model
             {
                 if (_currentPositionX != value)
                 {
-                    _currentPositionX = value;
+                    var val = Math.Round(value, 6);
+                    _currentPositionX = val;
                     OnPropertyChanged(nameof(CurrentPositionX));
                 }
             }
@@ -60,7 +61,8 @@ namespace NanoImprinter.Model
             {
                 if (_currentPositionY != value)
                 {
-                    _currentPositionY = value;
+                    var val = Math.Round(value, 6);
+                    _currentPositionY = val;
                     OnPropertyChanged(nameof(CurrentPositionY));
                 }
             }
@@ -72,7 +74,8 @@ namespace NanoImprinter.Model
             {
                 if (_currentPositionR != value)
                 {
-                    _currentPositionR = value;
+                    var val = Math.Round(value, 6);
+                    _currentPositionR = val;
                     OnPropertyChanged(nameof(CurrentPositionR));
                 }
             }

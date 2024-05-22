@@ -31,7 +31,7 @@ namespace NanoImprinter.Model
         private ForceSensorControl _forceSensorControl;
         private UVControl _uvControl;
         private bool _isHomeComplete;
-        
+
         private double _currentPositionMaskZ;  //掩膜Z轴当前位置
         private double _currentPositionCameraZ;
         private double _currentPositionUVX;
@@ -57,40 +57,68 @@ namespace NanoImprinter.Model
         public double CurrentPositionMaskZ
         {
             get => _currentPositionMaskZ;
-            set => SetProperty(ref _currentPositionMaskZ, value);
+            set
+            {
+                var val = Math.Round(value, 6);
+                SetProperty(ref _currentPositionMaskZ, val);
+            }
         }
 
         public double CurrentPositionCameraZ
         {
             get => _currentPositionCameraZ;
-            set => SetProperty(ref _currentPositionCameraZ, value);
+            set
+            {
+                var val = Math.Round(value, 6);
+                SetProperty(ref _currentPositionCameraZ, val);
+            }
         }
 
         public double CurrentPositionUVX
         {
             get => _currentPositionUVX;
-            set => SetProperty(ref _currentPositionUVX, value);
+            set
+            {
+                var val = Math.Round(value, 6);
+                SetProperty(ref _currentPositionUVX, val);
+            }
         }
 
         public double ForceValue0
         {
             get => _forceValue0;
-            set => SetProperty(ref _forceValue0, value);
+            set
+            {
+                var val = Math.Round(value, 3);
+                SetProperty(ref _forceValue0, val);
+            }
         }
         public double ForceValue1
         {
             get => _forceValue1;
-            set => SetProperty(ref _forceValue1, value);
+            set
+            {
+                var val = Math.Round(value, 3);
+                SetProperty(ref _forceValue1, val);
+            }
         }
         public double ForceValue2
         {
             get => _forceValue2;
-            set => SetProperty(ref _forceValue2, value);
+            set
+            {
+                var val = Math.Round(value, 3);
+                SetProperty(ref _forceValue2, val);
+            }
         }
         public double ForceValue3
         {
             get => _forceValue3;
-            set => SetProperty(ref _forceValue3, value);
+            set
+            {
+                var val = Math.Round(value, 3);
+                SetProperty(ref _forceValue3, val);
+            }
         }
 
         public string Name => throw new NotImplementedException();

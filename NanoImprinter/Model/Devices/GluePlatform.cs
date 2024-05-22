@@ -46,7 +46,8 @@ namespace NanoImprinter.Model
             {
                 if (_currentPositionGlueZ != value)
                 {
-                    _currentPositionGlueZ = value;
+                    var val = Math.Round(value, 6);
+                    _currentPositionGlueZ = val;
                     OnPropertyChanged(nameof(CurrentPositionGlueZ));
                 }
             }
