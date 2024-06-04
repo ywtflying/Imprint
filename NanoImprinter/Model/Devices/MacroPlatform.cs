@@ -177,16 +177,17 @@ namespace NanoImprinter.Model
         public void ResetAxesAlarm()
         {
             ((TrioAxis)XAxis).ResetAlarm();
-            ((TrioAxis)YAxis).ResetAlarm();
+            //((TrioAxis)YAxis).ResetAlarm();
             ((TrioAxis)RAxis).ResetAlarm();
         }
 
         private bool MoveBy(double x, double y, double r)
         {
             var xMovement = Task.Run(() => XAxis.MoveTo(x));
-            var yMovement = Task.Run(() => YAxis.MoveTo(y));
-            var rMovement = Task.Run(() => RAxis.MoveTo(r));
-            Task.WaitAll(xMovement, yMovement, rMovement);
+            //var yMovement = Task.Run(() => YAxis.MoveTo(y));
+            //var rMovement = Task.Run(() => RAxis.MoveTo(r));
+            //Task.WaitAll(xMovement, yMovement, rMovement);
+            //Task.WaitAll(xMovement, rMovement);
             return true;
         }
         private void RefreshRealtimeData()

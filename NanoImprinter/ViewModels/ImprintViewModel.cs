@@ -133,7 +133,9 @@ namespace NanoImprinter.ViewModels
         public DelegateCommand SaveParamCommand => new DelegateCommand(SaveParam);
         public DelegateCommand ReloadParamCommand => new DelegateCommand(ReloadParam);
         public DelegateCommand MoveToMaskPreprintPositionCommand =>new DelegateCommand(MoveToMaskPreprintHeight);
+        public DelegateCommand MoveToMaskWaitPositionCommand => new DelegateCommand(MoveToMaskWaitHeight);
         public DelegateCommand MoveToCameraTakePicturePositionCommand => new DelegateCommand(MoveToCameraTakePictureHeight);
+        public DelegateCommand MoveToCameraWaitPositionCommand => new DelegateCommand(MoveToCameraWaitHeight);
         public DelegateCommand MaskZGoHomeCommand =>  new DelegateCommand(MaskZGoHome);
         public DelegateCommand ResetAlarmCommand =>  new DelegateCommand(ResetAlarm);
         public DelegateCommand MoveToUVWaitPositionCommand =>  new DelegateCommand(MoveToUVWaitPosition);
@@ -181,6 +183,14 @@ namespace NanoImprinter.ViewModels
             });
             
         }
+        private void MoveToMaskWaitHeight()
+        {
+            var task = Task.Run(() =>
+            {
+                _plate.MoveToMaskWaitHeight();
+            });
+        }
+
         private void MoveToCameraTakePictureHeight()
         {
             var task = Task.Run(() =>
@@ -188,6 +198,15 @@ namespace NanoImprinter.ViewModels
                 _plate.MoveToTakePictureHeight();
             });
         }
+
+        private void MoveToCameraWaitHeight()
+        {
+            var task = Task.Run(() =>
+            {
+                _plate.MoveToCameraWaitHeight();
+            });
+        }
+
         private void ResetAlarm()
         {
             var task = Task.Run(() =>
@@ -265,7 +284,8 @@ namespace NanoImprinter.ViewModels
         }
         private void ConnectedForceControl()
         {
-            if (!PortNames.Contains(UVPortName))
+            RefreshPortNames();
+            if (!PortNames.Contains(ForceSensorPortName))
             {
                 ShowDialog($"当前com口列表中不包含{ForceSensorPortName}，请检查压力传感器接口是否连接");
                 return;

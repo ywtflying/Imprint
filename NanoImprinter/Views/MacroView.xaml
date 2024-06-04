@@ -127,72 +127,86 @@
                 <TextBox x:Name="tbMacroWaitPostionX"
                          Grid.Row="1"
                          Grid.Column="1"
+                         IsReadOnly="False"
                          HorizontalAlignment="Center"
                          Text="{Binding LoadPosition.X, Mode=TwoWay}" />
                 <TextBox x:Name="tbMacroGluePostionX"
                          Grid.Row="2"
                          Grid.Column="1"
+                         IsReadOnly="False"
                          HorizontalAlignment="Center"
                          Text="{Binding GluePosition.X, Mode=TwoWay}" />
                 <TextBox x:Name="tbMacroImprintPostionX"
                          Grid.Row="3"
                          Grid.Column="1"
+                         IsReadOnly="False"
                          HorizontalAlignment="Center"
                          Text="{Binding ImprintPosition.X, Mode=TwoWay}" />
                 <TextBox x:Name="tbMacroLeftCenterPositionX"
                          Grid.Row="4"
                          Grid.Column="1"
+                         IsReadOnly="False"
                          HorizontalAlignment="Center"
                          Text="{Binding LeftCenterPosition.X, Mode=TwoWay}" />
                 <TextBox x:Name="tbMacroRightCenterPositionX"
                          Grid.Row="5"
                          Grid.Column="1"
+                         IsReadOnly="False"
                          HorizontalAlignment="Center"
                          Text="{Binding RightCenterPosition.X, Mode=TwoWay}" />
                 <TextBox x:Name="tbMacroUpCenterPositionX"
                          Grid.Row="6"
                          Grid.Column="1"
+                         IsReadOnly="False"
                          HorizontalAlignment="Center"
                          Text="{Binding UpCenterPosition.X, Mode=TwoWay}" />
                 <TextBox x:Name="tbMacroDownCenterPositionX"
                          Grid.Row="7"
                          Grid.Column="1"
+                         IsReadOnly="False"
                          HorizontalAlignment="Center"
                          Text="{Binding DownCenterPosition.X, Mode=TwoWay}" />
 
 
                 <TextBox x:Name="tbMacroWaitPostionY"
                          Grid.Row="1"
+                         IsReadOnly="False"
                          Grid.Column="2"
                          HorizontalAlignment="Center"
                          Text="{Binding LoadPosition.Y, Mode=TwoWay}" />
                 <TextBox x:Name="tbMacroGluePostionY"
                          Grid.Row="2"
                          Grid.Column="2"
+                         IsReadOnly="False"
                          HorizontalAlignment="Center"
                          Text="{Binding GluePosition.Y, Mode=TwoWay}" />
                 <TextBox x:Name="tbMacroImprintPostionY"
                          Grid.Row="3"
                          Grid.Column="2"
+                         IsReadOnly="False"
                          HorizontalAlignment="Center"
                          Text="{Binding ImprintPosition.Y, Mode=TwoWay}" />
                 <TextBox x:Name="tbMacroLeftCenterPositionY"
                          Grid.Row="4"
+                         IsReadOnly="False"
                          Grid.Column="2"
                          HorizontalAlignment="Center"
                          Text="{Binding LeftCenterPosition.Y, Mode=TwoWay}" />
                 <TextBox x:Name="tbMacroRightCenterPositionY"
                          Grid.Row="5"
+                         IsReadOnly="False"
                          Grid.Column="2"
                          HorizontalAlignment="Center"
                          Text="{Binding RightCenterPosition.Y, Mode=TwoWay}" />
                 <TextBox x:Name="tbMacroUpCenterPositionY"
                          Grid.Row="6"
+                         IsReadOnly="False"
                          Grid.Column="2"
                          HorizontalAlignment="Center"
                          Text="{Binding UpCenterPosition.Y, Mode=TwoWay}" />
                 <TextBox x:Name="tbMacroDownCenterPositionY"
                          Grid.Row="7"
+                         IsReadOnly="False"
                          Grid.Column="2"
                          HorizontalAlignment="Center"
                          Text="{Binding DownCenterPosition.Y, Mode=TwoWay}" />

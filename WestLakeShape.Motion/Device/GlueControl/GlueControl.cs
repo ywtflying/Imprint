@@ -103,15 +103,49 @@ namespace WestLakeShape.Motion.Device
             return true;
         }
 
+        /// <summary>
         ///点模式，设置点胶个数
+        /// </summary>
+        /// <returns></returns>
         public bool SetDotCount(int count)
         {
             WriteParam(RegisterNo.DotCount, count);
             return true;
         }
-        
 
+        /// <summary>
+        /// 开始加热
+        /// </summary>
+        /// <returns></returns>
+        public bool StartHeart()
+        {
+            HeartAction(1);
+            return true;
+        }
+        /// <summary>
+        /// 关闭加热
+        /// </summary>
+        /// <returns></returns>
+        public bool StopHeart()
+        {
+            HeartAction(0);
+            return true;
+        }
+        public int RefreshCurrentTemplate()
+        {
+           ReadParam(RegisterNo.CurrentTemperator,1);
+            return 1;
+        }
 
+        private void HeartAction(int value)
+        {
+            WriteParam(RegisterNo.HeartAction, value);
+        }
+
+        /// <summary>
+        /// 设置点胶模式
+        /// </summary>
+        /// <param name="isLine"></param>
         private void ChangeWorkModel(bool isLine)
         {
             int value = isLine ? 1 : 0;         
@@ -193,7 +227,9 @@ namespace WestLakeShape.Motion.Device
             WorkModel,
             DotCount,
             DispensingDelayTime,
-            TargetTemperatore
+            TargetTemperator,
+            HeartAction,
+            CurrentTemperator
         }
 
         static class CommandValue
@@ -202,7 +238,7 @@ namespace WestLakeShape.Motion.Device
             public static ushort Stop_Dispense = 0;
             public static ushort Save_Param = 1;
             public static ushort Line_Model = 0;
-            public static ushort Point_Model = 1;
+            public static ushort Dot_Model = 1;
             public static ushort Heating_Enable = 1;
             public static ushort Heating_Disable = 0;
         }

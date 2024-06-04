@@ -23,8 +23,8 @@ namespace WestLakeShape.Motion.Device
         public override void ServoOn()
         {
             var rt = _trioPC.SetAxisVariable(TrioParamName.ServoOn, (short)_config.Index, 1);//上使能
-            //if (_config.Index == 4 || _config.Index == 5 || _config.Index == 6)
-            //{
+            if (_config.Index == 4 || _config.Index == 5 || _config.Index == 6)
+            {
                 Thread.Sleep(5000);//轴使能需要延时
                 CheckException(rt);
                 rt = _trioPC.CoWrite(0, (short)(_config.Index + 1), 0x60FE, 2, 7, 0X10000);
@@ -33,10 +33,10 @@ namespace WestLakeShape.Motion.Device
                 CheckException(rt);
 
                 rt = _trioPC.CoWrite(0, (short)(_config.Index + 1), 0x60FE, 1, 7, 0X10000);//关闭抱闸
-                CheckException(rt);
-                rt = _trioPC.SetAxisParameter(AxisParameter.SERVO, _config.Index, 1); //所有轴打开编码器
-                GetState();
-            //}            
+                CheckException(rt);               
+            }
+            rt = _trioPC.SetAxisParameter(AxisParameter.SERVO, _config.Index, 1); //所有轴打开编码器
+            GetState();
         }
         public override void InitialParameter()
         {

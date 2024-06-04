@@ -90,21 +90,21 @@
                             HorizontalAlignment="Center"
                             Command="{Binding MoveToMaskPreprintPositionCommand}"
                             Content="移动预压印位" />
+                    <Button Width="170"
+                            Height="60"
+                            HorizontalAlignment="Center"
+                            Command="{Binding MoveToMaskWaitPositionCommand}"
+                            Content="移动压印等待位" />
                     <Button Width="160"
                             Height="60"
                             HorizontalAlignment="Center"
                             Command="{Binding MoveToCameraTakePicturePositionCommand}"
                             Content="移动拍照位" />
-                    <Button Width="120"
+                    <Button Width="170"
                             Height="60"
                             HorizontalAlignment="Center"
-                            Command="{Binding MaskZGoHomeCommand}"
-                            Content="回零" />
-                    <Button Width="120"
-                            Height="60"
-                            HorizontalAlignment="Center"
-                            Command="{Binding ResetAlarmCommand}"
-                            Content="清除报警" />
+                            Command="{Binding MoveToCameraWaitPositionCommand}"
+                            Content="移动相机等待位" />
                 </UniformGrid>
             </Grid>
         </GroupBox>
@@ -175,16 +175,6 @@
                             HorizontalAlignment="Center"
                             Command="{Binding MoveToUVIrradiationPositionCommand}"
                             Content="移动照射位" />
-                    <Button Width="140"
-                            Height="60"
-                            HorizontalAlignment="Center"
-                            Command="{Binding UVGoHomeCommand}"
-                            Content="回零" />
-                    <Button Width="140"
-                            Height="60"
-                            HorizontalAlignment="Center"
-                            Command="{Binding ResetAlarmCommand}"
-                            Content="清除报警" />
                 </UniformGrid>
             </Grid>
         </GroupBox>
@@ -283,8 +273,18 @@
                 </StackPanel>
             </GroupBox>
 
-            <UniformGrid Columns="2"
+            <UniformGrid Columns="4"
                          Margin="10">
+                <Button Width="120"
+                        Height="60"
+                        HorizontalAlignment="Center"
+                        Command="{Binding MaskZGoHomeCommand}"
+                        Content="回零" />
+                <Button Width="120"
+                        Height="60"
+                        HorizontalAlignment="Center"
+                        Command="{Binding ResetAlarmCommand}"
+                        Content="清除报警" />
                 <Button Grid.Row="2"
                         Grid.Column="0"
                         Width="140"

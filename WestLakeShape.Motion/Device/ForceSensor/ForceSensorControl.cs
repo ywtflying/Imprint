@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using WestLakeShape.Common;
+using WestLakeShape.Common.LogService;
 using WestLakeShape.Common.WpfCommon;
 
 namespace WestLakeShape.Motion.Device
@@ -29,8 +31,8 @@ namespace WestLakeShape.Motion.Device
         private readonly byte[] _clearCmd = new byte[11] { 0x01, 0x10, 0x00, 0x5E, 0x00, 0x01, 0x02, 0x00, 0xFF, 0xEB, 0x6E };
         private readonly byte[] _readAllCmd = new byte[8] { 0x01, 0x03, 0x01, 0xC2, 0x00, 0x06, 0x64, 0x6B };
 
-        private readonly double Fore_Range = 500;//5KG
-
+        private readonly double Force_Ratio = 100;//单位kg，小数点0.001
+        private static readonly ILogger _log = LogHelper.For<ForceSensorControl>();
         public double ForceValue0
         {
             get => _forceValues[0];
@@ -50,6 +52,11 @@ namespace WestLakeShape.Motion.Device
         {
             get => _forceValues[3];
             private set => _forceValues[3] = value;
+        }
+        public bool IsConnected
+        {
+            get => _isConnected;
+            set => _isConnected = value;
         }
 
 
@@ -82,7 +89,7 @@ namespace WestLakeShape.Motion.Device
             }
             catch (Exception e)
             {
-                throw new Exception($"力传感器报错;{e.Message}");
+                throw new Exception($"力传感器连接失败，报错信息;{e.Message}");
             }
         }
 
@@ -116,7 +123,7 @@ namespace WestLakeShape.Motion.Device
             while (_isConnected)
             {
                 RefreshValues();
-                Thread.Sleep(30);
+                Thread.Sleep(20);
             }
         }
 
@@ -141,10 +148,10 @@ namespace WestLakeShape.Motion.Device
                 //接受数据
                 ReceivedData();
             }
-            catch (Exception ex) 
+            catch (Exception e) 
             {
                 _isConnected = false;
-                throw ex;
+                _log.Error(e.Message);
             }         
         }
 
@@ -280,13 +287,13 @@ namespace WestLakeShape.Motion.Device
                     {
                         value += 1;
                         _forceValues[i] = value;
-                        _forceValues[i] = _forceValues[i] *(-1);
+                        _forceValues[i] = _forceValues[i] *(-1)/Force_Ratio;
                     }
                     else
                     {
-                        _forceValues[i] = value;
+                        _forceValues[i] = value/Force_Ratio;
                     }
-                    Debug.WriteLine($"第{i}个传感器读取数值为{ _forceValues[i]}");
+                    Debug.WriteLine($"第{i}个传感器读取数值为{ _forceValues[i]/Force_Ratio}");
                 }
             }
             else
@@ -347,7 +354,6 @@ namespace WestLakeShape.Motion.Device
             return message[message.Length - 1] == (byte)(tmp >> 8) &&
                 message[message.Length - 2] == (byte)(tmp & 0x00ff);
         }
-
 
     }
 

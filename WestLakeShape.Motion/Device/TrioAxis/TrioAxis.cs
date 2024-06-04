@@ -41,7 +41,6 @@ namespace WestLakeShape.Motion.Device
             _trioPC = TrioControl.Instance.TrioPC;
             _config = config;
             _state = new AxisState();
-            _log.Information($"{config.Name}轴完成创建");
         }
 
 

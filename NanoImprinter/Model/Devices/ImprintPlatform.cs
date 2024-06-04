@@ -186,8 +186,8 @@ namespace NanoImprinter.Model
 
         public bool MoveToMaskPreprintHeight()
         {
-            if (_uvXAxis.Position <= _config.UVWaitPosition)
-                throw new Exception("UV未离开冲突区域，移动相机会发生碰撞");
+            //if (_uvXAxis.Position <= _config.UVWaitPosition)
+            //    throw new Exception("UV未离开冲突区域，移动相机会发生碰撞");
 
             return MoveBy(_maskZAxis,_config.MaskPreprintHeight);
         }
@@ -207,8 +207,8 @@ namespace NanoImprinter.Model
             //    throw new Exception("UV未离开冲突区域，移动相机会发生碰撞");
             //计算相机目标位置是否与压头存在碰撞可能
             var safePosition = Math.Abs(_config.CameraTakePictureHeight) + Math.Abs(_config.SafeDistanceOfCameraAndMask);
-            if (Math.Abs(_maskZAxis.Position) > safePosition)
-                throw new Exception("压头高度太高，移动相机会发生碰撞");
+            //if (Math.Abs(_maskZAxis.Position) > safePosition)
+            //    throw new Exception("压头高度太高，移动相机会发生碰撞");
 
             return MoveBy(_cameraZAxis,_config.CameraTakePictureHeight);
         }
@@ -229,13 +229,13 @@ namespace NanoImprinter.Model
         {
             //相机和Mask的位置值为负值，
             //后期可根据情况修改成相机和压头轴必须在等待位。
-            if (Math.Abs(_cameraZAxis.Position) < Math.Abs(_config.UVSafePositionForCamera))
-                throw new Exception("相机高度太低，移动UV会发生碰撞");
-            if (Math.Abs(_maskZAxis.Position) < Math.Abs(_config.UVSafePositionForMask))
-                throw new Exception("掩膜高度太低，移动UV会发生碰撞");
+            //if (Math.Abs(_cameraZAxis.Position) < Math.Abs(_config.UVSafePositionForCamera))
+            //    throw new Exception("相机高度太低，移动UV会发生碰撞");
+            //if (Math.Abs(_maskZAxis.Position) < Math.Abs(_config.UVSafePositionForMask))
+            //    throw new Exception("掩膜高度太低，移动UV会发生碰撞");
 
             var xTask = Task.Run(() => MoveBy(_uvXAxis, _config.UVIrradiationPosition));
-            Task.WaitAll(xTask);
+            //Task.WaitAll(xTask);
             return true;
         }
 
