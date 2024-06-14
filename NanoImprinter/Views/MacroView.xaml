@@ -330,11 +330,15 @@
                   Header="轴运动"
                   Style="{StaticResource GroupBox.DefaultStyle}">
             <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="233*"/>
+                    <ColumnDefinition Width="579*"/>
+                </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*" />
                     <RowDefinition Height="80" />
                 </Grid.RowDefinitions>
-                <cvs:AxisControl Axes="{Binding Axes}" />
+                <cvs:AxisControl Axes="{Binding Axes}" Grid.ColumnSpan="2" Margin="0,0,0.333,0" />
             </Grid>
         </GroupBox>
     </Grid>

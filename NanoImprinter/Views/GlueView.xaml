@@ -17,7 +17,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height=" 35" />
             <RowDefinition Height=" 1*" />
-            <RowDefinition Height=" 1*" />
+            <RowDefinition Height=" 1.2*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
@@ -38,163 +38,243 @@
                   Style="{StaticResource GroupBox.DefaultStyle}">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="0.5*" />
                     <RowDefinition Height="1*" />
                     <RowDefinition Height="1*" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*" />
                     <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
                 </Grid.ColumnDefinitions>
+                <Label HorizontalAlignment="Center" Content="名称" />
+                <Label Grid.Column="1"
+                       HorizontalAlignment="Center"
+                       Content="位置值" />
+                <Label Grid.Column="2"
+                       HorizontalAlignment="Center"
+                       Content="速度值" />
+                <Label Grid.Column="3"
+                       HorizontalAlignment="Center"
+                       Content="操作" />
+                <Label Grid.Row="1"
+                       Grid.Column="0"
+                       HorizontalAlignment="Center"
+                       Content="等待位" />
+                <Label Grid.Row="2"
+                       HorizontalAlignment="Center"
+                       Content="点胶位" />
 
-                <ces:ParameterDisplayControl x:Name="tbGlueWaitPosition"
-                                             ParamName="等待位"
-                                             ParamUnit="mm"
-                                             ParamValue="{Binding WaitPosition, Mode=TwoWay}" />
-                <ces:ParameterDisplayControl x:Name="tbGluePosition"
-                                             Grid.Row="0"
-                                             Grid.Column="1"
-                                             ParamName="点胶位"
-                                             ParamUnit="mm"
-                                             ParamValue="{Binding GluePosition, Mode=TwoWay}" />
-                <ces:ParameterDisplayControl x:Name="tbGlueWorkVel"
-                                             Grid.Row="1"
-                                             Grid.Column="0"
-                                             ParamName="工作速度"
-                                             ParamUnit="mm/s"
-                                             ParamValue="{Binding WorkVel, Mode=TwoWay}" />
-                <Button Grid.Row="3"
-                        Grid.Column="0"
-                        Width="160"
+                <TextBox Grid.Row="1"
+                         Grid.Column="1"
+                         IsReadOnly="False"
+                          HorizontalAlignment="Center"
+                         Text="{Binding WaitPosition, Mode=TwoWay}" />
+                <TextBox Grid.Row="2"
+                         Grid.Column="1"
+                         IsReadOnly="False"
+                          HorizontalAlignment="Center"
+                         Text="{Binding GluePosition, Mode=TwoWay}" />
+                <TextBox Grid.Row="1"
+                         Grid.Column="2"
+                         IsReadOnly="False"
+                         HorizontalAlignment="Center"
+                         Text="{Binding WorkVel, Mode=TwoWay}" />
+                <TextBox Grid.Row="2"
+                         Grid.Column="2"
+                         HorizontalAlignment="Center"
+                         IsReadOnly="False"
+                         Text="{Binding WorkVel, Mode=TwoWay}" />
+
+                <Button Grid.Row="1"
+                        Grid.Column="3"
+                        Width="120"
+                        Height="50"
+                        HorizontalAlignment="Center"
+                        Command="{Binding MoveToWaitPositionCommand}"
+                        Content="移动" />
+                <Button Grid.Row="2"
+                        Grid.Column="3"
+                        Width="120"
+                        Height="50"
+                        HorizontalAlignment="Center"
+                        Command="{Binding MoveToGluePositionCommand}"
+                        Content="移动" />
+            </Grid>
+        </GroupBox>
+
+        <Grid Grid.Row="1"
+              Grid.RowSpan="2"
+              Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*" />
+                <RowDefinition Height="0.5*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+            <GroupBox Grid.Row="0"
+                      Margin="10"
+                      Header="点胶控制器参数"
+                      Style="{StaticResource GroupBox.DefaultStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.ColumnSpan="2"
+                                Margin="50,10"
+                                Orientation="Horizontal">
+                        <Label Content="Com端口号：" />
+                        <ComboBox x:Name="cbComIndex"
+                                  BorderBrush="White"
+                                  DisplayMemberPath="."
+                                  ItemsSource="{Binding PortNames}"
+                                  SelectedItem="{Binding PortName, Mode=TwoWay}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="DropDownOpened">
+                                    <prism:InvokeCommandAction Command="{Binding RefreshPortNamesCommand}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </ComboBox>
+                        <Button Width="120"
+                                Height="50"
+                                Margin="30,0"
+                                HorizontalAlignment="Center"
+                                Command="{Binding ConnectedCommand}"
+                                Content="连接" />
+                        <CheckBox Margin="50,0"
+                                  VerticalAlignment="Center"
+                                  Content="加热"
+                                  Style="{Binding CheckBoxStyle}" />
+                    </StackPanel>
+
+
+                    <ces:ParameterDisplayControl x:Name="tbGlueControlOpen"
+                                                 Grid.Row="1"
+                                                 Margin="20,0,0,0"
+                                                 ParamName="开阀时间"
+                                                 ParamUnit="mm"
+                                                 ParamValue="{Binding OpenTime, Mode=TwoWay}" />
+                    <ces:ParameterDisplayControl x:Name="tbGlueControlClose"
+                                                 Grid.Row="1"
+                                                 Grid.Column="1"
+                                                 Margin="30,0,0,0"
+                                                 ParamName="关阀时间"
+                                                 ParamUnit="mm"
+                                                 ParamValue="{Binding ClosedTime, Mode=TwoWay}" />
+                    <ces:ParameterDisplayControl x:Name="tbGlueControlOpenForce"
+                                                 Grid.Row="2"
+                                                 Grid.Column="0"
+                                                 ParamName="开阀力度"
+                                                 ParamUnit="N"
+                                                 ParamValue="{Binding OpenIntensity, Mode=TwoWay}" />
+                    <ces:ParameterDisplayControl x:Name="tbGlueControlCloseForce"
+                                                 Grid.Row="2"
+                                                 Grid.Column="1"
+                                                 ParamName="关阀力度"
+                                                 ParamUnit="N"
+                                                 ParamValue="{Binding ClosedIntensity, Mode=TwoWay}" />
+
+                    <ces:ParameterDisplayControl x:Name="tbGlueCycle"
+                                                 Grid.Row="3"
+                                                 Grid.Column="1"
+                                                 ParamName="点胶频率"
+                                                 ParamUnit=""
+                                                 ParamValue="{Binding GlueCycle, Mode=TwoWay}" />
+                    <ces:ParameterDisplayControl x:Name="tbGluePoint"
+                                                 Grid.Row="3"
+                                                 Grid.Column="0"
+                                                 Margin="20,0,0,0"
+                                                 ParamName="点数"
+                                                 ParamUnit=""
+                                                 ParamValue="{Binding GluePoints, Mode=TwoWay}" />
+                    <ces:ParameterDisplayControl x:Name="tbGlueControlTemplate"
+                                                 Grid.Row="4"
+                                                 Grid.Column="0"
+                                                 Margin="40,0,0,0"
+                                                 ParamName="温度"
+                                                 ParamUnit="℃"
+                                                 ParamValue="{Binding TargetTemperature, Mode=TwoWay}" />
+                    <StackPanel Grid.Row="4"
+                                Grid.Column="1"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Center">
+                        <Label Margin="10,0" Content="当前温度：" />
+                        <Label Content="{Binding CurrentTemperature}" />
+                        <Label Margin="10,0" Content="°：" />
+                    </StackPanel>
+                    <UniformGrid Grid.Row="5"
+                                 Grid.ColumnSpan="2"
+                                 Columns="2">
+                        <Button Width="140"
+                                Height="60"
+                                HorizontalAlignment="Center"
+                                Command="{Binding WriteGlueControlParamCommand}"
+                                Content="写入参数" />
+                        <Button Width="140"
+                                Height="60"
+                                HorizontalAlignment="Center"
+                                Command="{Binding ClearGlueControlPointsCommand}"
+                                Content="清空计数" />
+                    </UniformGrid>
+
+                    <UniformGrid Grid.Row="6"
+                                 Grid.ColumnSpan="2"
+                                 Columns="3">
+                        <Button Width="140"
+                                Height="60"
+                                HorizontalAlignment="Center"
+                                Command="{Binding StartGlueControlHeartActionCommand}"
+                                Content="开始加热" />
+                        <Button Width="140"
+                                Height="60"
+                                HorizontalAlignment="Center"
+                                Command="{Binding StopGlueControlHeartActionCommand}"
+                                Content="关闭加热" />
+                        <Button Width="140"
+                                Height="60"
+                                HorizontalAlignment="Center"
+                                Command="{Binding GlueControlTestCommand}"
+                                Content="点胶测试" />
+                    </UniformGrid>
+                </Grid>
+            </GroupBox>
+
+            <UniformGrid Grid.Row="1" Columns="2">
+                <Button Width="140"
                         Height="60"
                         HorizontalAlignment="Center"
                         Command="{Binding SaveParamCommand}"
                         Content="保存参数" />
-                <Button Grid.Row="3"
-                        Grid.Column="1"
-                        Width="160"
+                <Button Width="140"
                         Height="60"
                         HorizontalAlignment="Center"
-                        Command="{Binding SaveParamCommand}"
-                        Content="重载参数" />
+                        Command="{Binding ReloadParamCommand}"
+                        Content="加载参数" />
+            </UniformGrid>
+        </Grid>
 
-                <UniformGrid Grid.Row="2"
-                             Grid.ColumnSpan="2"
-                             Columns="4">
-                    <Button Width="160"
-                            Height="60"
-                            HorizontalAlignment="Center"
-                            Command="{Binding MoveToWaitPositionCommand}"
-                            Content="移动等待位" />
-                    <Button Width="160"
-                            Height="60"
-                            HorizontalAlignment="Center"
-                            Command="{Binding MoveToGluePositionCommand}"
-                            Content="移动点胶位" />
-                    <Button Width="120"
-                            Height="60"
-                            HorizontalAlignment="Center"
-                            Command="{Binding GoHomeCommand}"
-                            Content="回零" />
-                    <Button Width="140"
-                            Height="60"
-                            HorizontalAlignment="Center"
-                            Content="清除报警" />
-                </UniformGrid>
-            </Grid>
-        </GroupBox>
 
-        <GroupBox Grid.Row="1"
-                  Grid.Column="1"
-                  Margin="10"
-                  Header="点胶控制器参数"
-                  Style="{StaticResource GroupBox.DefaultStyle}">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="1*" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="1*" />
-                </Grid.ColumnDefinitions>
-                <StackPanel Margin="50,10" Orientation="Horizontal">
-                    <Label Content="Com端口号：" />
-                    <ComboBox x:Name="cbComIndex"
-                              BorderBrush="White"
-                              DisplayMemberPath="."
-                              ItemsSource="{Binding PortNames}"
-                              SelectedItem="{Binding PortName, Mode=TwoWay}">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="DropDownOpened">
-                                <prism:InvokeCommandAction Command="{Binding RefreshPortNamesCommand}" />
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </ComboBox>
-                </StackPanel>
-
-                <ces:ParameterDisplayControl x:Name="tbGlueControlOpen"
-                                             Grid.Row="1"
-                                             ParamName="开阀时间"
-                                             ParamUnit="mm"
-                                             ParamValue="{Binding OpenTime, Mode=TwoWay}" />
-                <ces:ParameterDisplayControl x:Name="tbGlueControlClose"
-                                             Grid.Row="1"
-                                             Grid.Column="1"
-                                             ParamName="关阀时间"
-                                             ParamUnit="mm"
-                                             ParamValue="{Binding CloseTime, Mode=TwoWay}" />
-                <ces:ParameterDisplayControl x:Name="tbGlueControlIntensity"
-                                             Grid.Row="2"
-                                             Grid.Column="0"
-                                             ParamName="开阀力度"
-                                             ParamUnit="N"
-                                             ParamValue="{Binding OpenIntensity, Mode=TwoWay}" />
-                <ces:ParameterDisplayControl x:Name="tbGlueControlTemplate"
-                                             Grid.Row="2"
-                                             Grid.Column="1"
-                                             ParamName="温度"
-                                             ParamUnit="℃"
-                                             ParamValue="{Binding Temperature, Mode=TwoWay}" />
-
-                <UniformGrid Grid.Row="3"
-                             Grid.ColumnSpan="2"
-                             Columns="4">
-                    <Button Width="140"
-                            Height="60"
-                            HorizontalAlignment="Center"
-                            Command="{Binding SaveParamCommand}"
-                            Content="保存参数" />
-                    <Button Width="140"
-                            Height="60"
-                            HorizontalAlignment="Center"
-                            Command="{Binding ReloadParamCommand}"
-                            Content="加载参数" />
-                    <Button Width="140"
-                            Height="60"
-                            HorizontalAlignment="Center"
-                            Command="{Binding GlueCommand}"
-                            Content="点胶测试" />
-                    <Button Width="120"
-                            Height="60"
-                            HorizontalAlignment="Center"
-                            Command="{Binding ConnectedCommand}"
-                            Content="连接" />
-                </UniformGrid>
-            </Grid>
-        </GroupBox>
 
         <Grid Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*" />
                 <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
-
-            <cvs:AxisControl Grid.Row="0" Axes="{Binding Axes}" />
+            <GroupBox  Margin="10"
+                  Header="单轴操作"
+                  Style="{StaticResource GroupBox.DefaultStyle}">
+                <cvs:AxisControl Grid.Row="0" Axes="{Binding Axes}" />
+            </GroupBox>
         </Grid>
 
 

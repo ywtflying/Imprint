@@ -122,5 +122,27 @@ namespace NanoImprinter.ControlViews
         {
             Task.Run(() => SelectedAxis.GoHome()) ;        
         }
+
+        private void TextBoxJogValue_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (sender is TextBox textBox)
+            {
+                if (double.TryParse(textBox.Text, out double result))
+                {
+                    if (result > 10)
+                    {
+                        // 如果值大于10，显示警告并将值设为10
+                        MessageBox.Show("值不能超过10，将其设为10。", "输入错误", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        textBox.Text = "10";
+                    }
+                }
+                else
+                {
+                    // 如果输入无效，将值设为0并显示警告
+                    MessageBox.Show("输入无效，将其设为0。", "输入错误", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    textBox.Text = "0";
+                }
+            }
+        }
     }
 }

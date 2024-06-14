@@ -17,7 +17,7 @@ namespace NanoImprinter.Model
     {
         ImprintPlatformConfig Config { get; set; }
         //bool GoHome();
-        bool MoveToMaskPreprintHeight();
+        bool MoveToMaskPrintHeight();
         bool MoveToTakePictureHeight();
         void ResetAxesAlarm();
     }
@@ -181,16 +181,10 @@ namespace NanoImprinter.Model
         {
             _uvXAxis.LoadVelocity(Config.UVXWorkVel);
             _cameraZAxis.LoadVelocity(Config.CameraZWorkVel);
-            _maskZAxis.LoadVelocity(Config.MaskZWorkVel);
+         
         }
 
-        public bool MoveToMaskPreprintHeight()
-        {
-            //if (_uvXAxis.Position <= _config.UVWaitPosition)
-            //    throw new Exception("UV未离开冲突区域，移动相机会发生碰撞");
-
-            return MoveBy(_maskZAxis,_config.MaskPreprintHeight);
-        }
+      
         public bool MoveToMaskWaitHeight()
         {
             //计算压头目标位置是否与相机存在碰撞可能
@@ -198,7 +192,44 @@ namespace NanoImprinter.Model
             //if (Math.Abs(_cameraZAxis.Position) < safePosition)
             //    throw new Exception("相机当前位置太低，移动压印头会发生碰撞");
 
+            _maskZAxis.LoadVelocity(_config.MaskWaitVelocity);
             return MoveBy(_maskZAxis, _config.MaskWaitHeight);
+        }
+
+        public bool MoveToContactHeight()
+        {
+            //计算压头目标位置是否与相机存在碰撞可能
+            //var safePosition = Math.Abs(_config.MaskWaitHeight) - Math.Abs(_config.SafeDistanceOfCameraAndMask);
+            //if (Math.Abs(_cameraZAxis.Position) < safePosition)
+            //    throw new Exception("相机当前位置太低，移动压印头会发生碰撞");
+            if (_uvXAxis.Position <= -5)
+                throw new Exception("UV未离开冲突区域，移动压印头会与UV发生碰撞");
+            if (_uvXAxis.Position >= 0.3)
+                throw new Exception("UV未回零，移动压印头会与UV发生碰撞");
+
+            _maskZAxis.LoadVelocity(_config.MaskContactVelocity);
+            return MoveBy(_maskZAxis, _config.MaskContactHeight);
+        }
+        public bool MoveToMaskPrintHeight()
+        {
+            if (_uvXAxis.Position <= -5)
+                throw new Exception("UV未离开冲突区域，移动压印头会与UV发生碰撞");
+            if (_uvXAxis.Position >= 0.3)
+                throw new Exception("UV未回零，移动压印头会与UV发生碰撞");
+
+            _maskZAxis.LoadVelocity(_config.MaskPrintVelocity);
+            return MoveBy(_maskZAxis, _config.MaskPrintHeight);
+        }
+        
+        public bool MoveToMaskDemoldHeight()
+        {
+            if (_uvXAxis.Position <= -5)
+                throw new Exception("UV未离开冲突区域，移动压印头会与UV发生碰撞");
+            if (_uvXAxis.Position >= 0.3)
+                throw new Exception("UV未回零，移动压印头会与UV发生碰撞");
+
+            _maskZAxis.LoadVelocity(_config.MaskDemoldVelocity);
+            return MoveBy(_maskZAxis, _config.MaskDemoldHeight);
         }
 
         public bool MoveToTakePictureHeight()
@@ -261,19 +292,14 @@ namespace NanoImprinter.Model
         {
             _uvControl.Open(_uvControl.FirstChannel);
         }
-        public void CloseUVLight()
+        public void ClosedUVLight()
         {
-            _uvControl.Close(_uvControl.FirstChannel);
+            _uvControl.Closed(_uvControl.FirstChannel);
         }
 
         public void WriteUVParam()
         {
             _uvControl.WriteIrradiationParameter();
-        }
-
-        public void ReadUVParam()
-        {
-            _uvControl.ReadIrradiationParameter();
         }
 
         private void RefreshRealtimeData()
@@ -293,7 +319,13 @@ namespace NanoImprinter.Model
     public class ImprintPlatformConfig : NotifyPropertyChanged
     {
         private double _maskWaitHeight;
-        private double _maskPrepintHeight;
+        private double _maskWaitVelocity;
+        private double _maskContactHeight;
+        private double _maskContactVelocity;
+        private double _maskPrintHeight;
+        private double _maskPrintVelocity;
+        private double _maskDemoldHeight;
+        private double _maskDemoldVelocity;
         private double _maskZWorkVel;
         private double _cameraWaitHeight;
         private double _cameraTakePictureHeight;
@@ -315,22 +347,53 @@ namespace NanoImprinter.Model
             get => _maskWaitHeight;
             set => SetProperty(ref _maskWaitHeight, value);
         }
-
-        //掩膜组件
-        [Category("ImprintPlatform"), Description("掩膜预压印高度")]
-        [DisplayName("掩膜预压印高度")]
-        public double MaskPreprintHeight 
+        public double MaskWaitVelocity
         {
-            get => _maskPrepintHeight;
-            set => SetProperty(ref _maskPrepintHeight, value);
+            get => _maskWaitVelocity;
+            set => SetProperty(ref _maskWaitVelocity, value);
         }
 
-        [Category("ImprintPlatform"), Description("压印速度")]
-        [DisplayName("压印速度")]
-        public double MaskZWorkVel
+
+        //掩膜组件
+        [Category("ImprintPlatform"), Description("掩膜接触胶水高度")]
+        [DisplayName("掩膜接触胶水高度")]
+        public double MaskContactHeight
         {
-            get => _maskZWorkVel;
-            set => SetProperty(ref _maskZWorkVel, value);
+            get => _maskContactHeight;
+            set => SetProperty(ref _maskContactHeight, value);
+        }
+        public double MaskContactVelocity
+        {
+            get => _maskContactVelocity;
+            set => SetProperty(ref _maskContactVelocity, value);
+        }
+
+        //掩膜组件
+        [Category("ImprintPlatform"), Description("掩膜压印高度")]
+        [DisplayName("掩膜压印高度")]
+        public double MaskPrintHeight 
+        {
+            get => _maskPrintHeight;
+            set => SetProperty(ref _maskPrintHeight, value);
+        }
+        public double MaskPrintVelocity
+        {
+            get => _maskPrintVelocity;
+            set => SetProperty(ref _maskPrintVelocity, value);
+        }
+
+        //掩膜组件
+        [Category("ImprintPlatform"), Description("掩膜脱模高度")]
+        [DisplayName("掩膜脱模高度")]
+        public double MaskDemoldHeight
+        {
+            get => _maskPrintHeight;
+            set => SetProperty(ref _maskPrintHeight, value);
+        }
+        public double MaskDemoldVelocity
+        {
+            get => _maskDemoldVelocity;
+            set => SetProperty(ref _maskDemoldVelocity, value);
         }
 
 

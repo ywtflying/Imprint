@@ -4,7 +4,7 @@
         <Setter Property="Height" Value="35" />
         <Setter Property="Width" Value="120" />
         <Setter Property="Margin" Value="5,0" />
-        <Setter Property="FontSize" Value="20" />
+        <Setter Property="FontSize" Value="24" />
         <Setter Property="ItemContainerStyle">
             <Setter.Value>
                 <Style TargetType="ComboBoxItem">
@@ -13,4 +13,65 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Style x:Key="CheckBoxStyle" TargetType="{x:Type CheckBox}">
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="OverridesDefaultStyle" Value="False" />
+        <Setter Property="Height" Value="50" />
+        <Setter Property="Margin" Value="20,0,0,0" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="IsChecked" Value="true" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid Width="{TemplateBinding Height}" Height="{TemplateBinding Height}">
+                            <Rectangle x:Name="CheckBoxRectangle"
+                                       Fill="White"
+                                       Opacity="0.3"
+                                       RadiusX="2"
+                                       RadiusY="2" />
+                            <Rectangle x:Name="CheckBoxRectangleOut"
+                                       RadiusX="2"
+                                       RadiusY="2"
+                                       Stroke="#FFABADB3"
+                                       StrokeThickness="2" />
+                            <Grid x:Name="CheckedMark"
+                                  Width="{TemplateBinding Height}"
+                                  Height="{TemplateBinding Height}"
+                                  Visibility="Collapsed">
+                                <Viewbox>
+                                    <Grid>
+                                        <Path Data="M1,9 L10,17"
+                                              SnapsToDevicePixels="True"
+                                              Stroke="#3553ad"
+                                              StrokeThickness="3" />
+                                        <Path Data="M8,17 L20,4"
+                                              SnapsToDevicePixels="True"
+                                              Stroke="#3553ad"
+                                              StrokeThickness="3" />
+                                    </Grid>
+                                </Viewbox>
+                            </Grid>
+                        </Grid>
+                        <ContentPresenter Grid.Column="1"
+                                          Margin="8,0,0,0"
+                                          VerticalAlignment="Center" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="CheckedMark" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

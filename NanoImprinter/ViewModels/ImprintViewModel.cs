@@ -25,8 +25,14 @@ namespace NanoImprinter.ViewModels
         private string _forceSensorPortName;
 
         private double _maskWaitHeight;
-        private double _maskPreprintHeight;
-        private double _maskZWorkVel;
+        private double _maskWaitVelocity;
+        private double _maskContactHeight;
+        private double _maskContactVelocity;
+        private double _maskPrintHeight;
+        private double _maskPrintVelocity;
+        private double _maskDemoldHeight;
+        private double _maskDemoldVelocity;
+
         private double _cameraWaitHeight;
         private double _takePictureHeight;
         private double _cameraZWorkVel;
@@ -55,17 +61,43 @@ namespace NanoImprinter.ViewModels
             get => _maskWaitHeight;
             set => SetProperty(ref _maskWaitHeight, value);
         }
-       
-        public double MaskPreprintHeight
+        public double MaskWaitVelocity
         {
-            get => _maskPreprintHeight;
-            set => SetProperty(ref _maskPreprintHeight, value);
+            get => _maskWaitVelocity;
+            set=> SetProperty(ref _maskWaitVelocity, value);
         }
-        
-        public double MaskZWorkVel
+       
+        public double MaskContactHeight
         {
-            get => _maskZWorkVel;
-            set => SetProperty(ref _maskZWorkVel, value);
+            get => _maskContactHeight;
+            set => SetProperty(ref _maskContactHeight, value);
+        }
+        public double MaskContactVelocity
+        {
+            get => _maskContactVelocity;
+            set => SetProperty(ref _maskContactVelocity, value);
+        }
+
+        public double MaskPrintHeight
+        {
+            get => _maskPrintHeight;
+            set => SetProperty(ref _maskPrintHeight, value);
+        }
+        public double MaskPrintVelocity
+        {
+            get => _maskPrintVelocity;
+            set => SetProperty(ref _maskPrintVelocity, value);
+        }
+    
+        public double MaskDemoldHeight
+        {
+            get => _maskDemoldHeight;
+            set => SetProperty(ref _maskDemoldHeight, value);
+        }
+        public double MaskDemoldVelocity
+        {
+            get => _maskDemoldVelocity; 
+            set => SetProperty(ref _maskDemoldVelocity, value);
         }
         public double CameraWaitHeight
         {
@@ -132,11 +164,13 @@ namespace NanoImprinter.ViewModels
 
         public DelegateCommand SaveParamCommand => new DelegateCommand(SaveParam);
         public DelegateCommand ReloadParamCommand => new DelegateCommand(ReloadParam);
-        public DelegateCommand MoveToMaskPreprintPositionCommand =>new DelegateCommand(MoveToMaskPreprintHeight);
         public DelegateCommand MoveToMaskWaitPositionCommand => new DelegateCommand(MoveToMaskWaitHeight);
+        public DelegateCommand MoveToMaskContactPositionCommand => new DelegateCommand(MoveToMaskContactHeight);
+        public DelegateCommand MoveToMaskPrintPositionCommand =>new DelegateCommand(MoveToMaskPrintHeight);
+        public DelegateCommand MoveToMaskDemoldPositionCommand => new DelegateCommand(MoveToMaskDemoldHeight);
         public DelegateCommand MoveToCameraTakePicturePositionCommand => new DelegateCommand(MoveToCameraTakePictureHeight);
         public DelegateCommand MoveToCameraWaitPositionCommand => new DelegateCommand(MoveToCameraWaitHeight);
-        public DelegateCommand MaskZGoHomeCommand =>  new DelegateCommand(MaskZGoHome);
+        public DelegateCommand MaskZGoHomeCommand =>  new DelegateCommand(GoHome);
         public DelegateCommand ResetAlarmCommand =>  new DelegateCommand(ResetAlarm);
         public DelegateCommand MoveToUVWaitPositionCommand =>  new DelegateCommand(MoveToUVWaitPosition);
         public DelegateCommand MoveToUVIrradiationPositionCommand => new DelegateCommand(MoveToUVIrradiationPosition);
@@ -168,26 +202,42 @@ namespace NanoImprinter.ViewModels
             ReloadParam();
         }
 
-        private void MaskZGoHome()
+        private void GoHome()
         {
             var task = Task.Run(() =>
             {
                 _plate.GoHome();
             });
         }
-        private void MoveToMaskPreprintHeight()
-        {
-            var task = Task.Run(() =>
-            {
-                _plate.MoveToMaskPreprintHeight();
-            });
-            
-        }
+     
         private void MoveToMaskWaitHeight()
         {
             var task = Task.Run(() =>
             {
                 _plate.MoveToMaskWaitHeight();
+            });
+        }
+        
+        private void MoveToMaskContactHeight()
+        {
+            var task = Task.Run(() =>
+            {
+                _plate.MoveToContactHeight();
+            });
+        }
+        private void MoveToMaskPrintHeight()
+        {
+            var task = Task.Run(() =>
+            {
+                _plate.MoveToMaskPrintHeight();
+            });
+
+        }
+        private void MoveToMaskDemoldHeight()
+        {
+            var task = Task.Run(() =>
+            {
+                _plate.MoveToMaskDemoldHeight();
             });
         }
 
@@ -222,8 +272,13 @@ namespace NanoImprinter.ViewModels
             try
             {
                 _platformConfig.MaskWaitHeight = MaskWaitHeight;
-                _platformConfig.MaskPreprintHeight = MaskPreprintHeight;
-                _platformConfig.MaskZWorkVel = MaskZWorkVel;
+                _platformConfig.MaskWaitVelocity = MaskWaitVelocity;
+                _platformConfig.MaskContactHeight = MaskContactHeight;
+                _platformConfig.MaskContactVelocity = MaskContactVelocity;
+                _platformConfig.MaskPrintHeight = MaskPrintHeight;
+                _platformConfig.MaskPrintVelocity = MaskPrintVelocity;
+                _platformConfig.MaskDemoldHeight = MaskDemoldHeight;
+                _platformConfig.MaskDemoldVelocity = MaskDemoldVelocity;
                 _platformConfig.CameraWaitHeight = CameraWaitHeight;
                 _platformConfig.CameraTakePictureHeight = CameraTakePictureHeight;
                 _platformConfig.CameraZWorkVel = CameraZWorkVel;
@@ -253,8 +308,13 @@ namespace NanoImprinter.ViewModels
         private void ReloadParam()
         {
             MaskWaitHeight = _platformConfig.MaskWaitHeight;
-            MaskPreprintHeight = _platformConfig.MaskPreprintHeight;
-            MaskZWorkVel = _platformConfig.MaskZWorkVel;
+            MaskWaitVelocity = _platformConfig.MaskWaitVelocity;
+            MaskContactHeight = _platformConfig.MaskContactHeight;
+            MaskContactVelocity = _platformConfig.MaskContactVelocity;
+            MaskPrintHeight = _platformConfig.MaskPrintHeight;
+            MaskPrintVelocity = _platformConfig.MaskPrintVelocity;
+            MaskDemoldHeight = _platformConfig.MaskDemoldHeight;
+            MaskDemoldVelocity = _platformConfig.MaskDemoldVelocity;
             CameraWaitHeight = _platformConfig.CameraWaitHeight;
             CameraTakePictureHeight = _platformConfig.CameraTakePictureHeight;
             CameraZWorkVel = _platformConfig.CameraZWorkVel;
@@ -339,7 +399,7 @@ namespace NanoImprinter.ViewModels
         {
             var task = Task.Run(() =>
             {
-                _plate.CloseUVLight();
+                _plate.ClosedUVLight();
             });
         }
         private void WriteUVParameter()

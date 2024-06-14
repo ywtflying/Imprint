@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using WestLakeShape.Common.WpfCommon;
 
@@ -44,12 +45,26 @@ namespace WestLakeShape.Motion.Device
             _port.Connected();
             
             //修改成点胶模式
-            ChangeWorkModel(false);
+            ChangeWorkModel(true);
         }
 
         public void Disconnected()
         {
             _port.Disconnected();
+        }
+       
+        public void ReloadConfig()
+        {
+            if (_port.IsConnected)
+            {
+                Disconnected();
+                _port.Name = _config.PortName;
+                Connect();
+            }
+            else
+            {
+                _port.Name = _config.PortName;
+            }
         }
 
         /// <summary>
@@ -59,7 +74,7 @@ namespace WestLakeShape.Motion.Device
         public bool StartDispense()
         {
             ReadParam(RegisterNo.StartDispense, CommandValue.Start_Dispense);
-            WriteParam(RegisterNo.StartDispense, 0);
+            WriteParam(RegisterNo.StartDispense, 1);
             return true;
         }
 
@@ -70,6 +85,7 @@ namespace WestLakeShape.Motion.Device
         public bool StopDispense()
         {
             ReadParam(RegisterNo.StartDispense, CommandValue.Stop_Dispense);
+            WriteParam(RegisterNo.StartDispense, 0);
             return true;
         }
 
@@ -79,67 +95,61 @@ namespace WestLakeShape.Motion.Device
         /// <returns></returns>
         public bool SaveParam()
         {
-            ReadParam(RegisterNo.SaveParamter, CommandValue.Save_Param);
-            return true;
-        }
-
-        public void ReloadConfig()
-        {
-            if (_port.IsConnected)
-                Disconnected();
-
-            _port.Name=_config.PortName;
-
-            Connect();
-        }
-
-        /// <summary>
-        /// 点胶延时
-        /// </summary>
-        /// <returns></returns>
-        public bool WriteDispensingDeleyTime()
-        {
+            //设置点胶数
+            WriteParam(RegisterNo.DotPoints, _config.GluePoints);          
+            // 设置开阀时间
+            WriteParam(RegisterNo.OpenTime, _config.OpenTime);
+            // 设置关阀时间
+            WriteParam(RegisterNo.ClosedTime, _config.ClosedTime);
+            // 开阀力度
+            WriteParam(RegisterNo.OpenIntensity, _config.OpenIntensity);
+            // 关阀力度
+            WriteParam(RegisterNo.ClosedIntensity, _config.ClosedIntensity);
+            //设置加热温度
+            WriteParam(RegisterNo.TargetTemperator, _config.TargetTemperatore);
+            //点胶延时
             WriteParam(RegisterNo.DispensingDelayTime, _config.DispensingDelayTime);
+           
+            //保存参数
+            WriteParam(RegisterNo.SaveParamter, CommandValue.Save_Param);
             return true;
         }
 
+
         /// <summary>
-        ///点模式，设置点胶个数
+        /// 清空点胶数
         /// </summary>
-        /// <returns></returns>
-        public bool SetDotCount(int count)
+        public void ClearPoints()
         {
-            WriteParam(RegisterNo.DotCount, count);
-            return true;
+            WriteParam(RegisterNo.HighGlueCount, 0);
+            Thread.Sleep(30);
+            WriteParam(RegisterNo.LowerGlueCount, 0);
         }
 
         /// <summary>
         /// 开始加热
         /// </summary>
         /// <returns></returns>
-        public bool StartHeart()
+        public bool StartHeartAction()
         {
-            HeartAction(1);
+            WriteParam(RegisterNo.HeartAction, 1);
             return true;
         }
+      
         /// <summary>
         /// 关闭加热
         /// </summary>
         /// <returns></returns>
-        public bool StopHeart()
+        public bool StopHeartAction()
         {
-            HeartAction(0);
+            WriteParam(RegisterNo.HeartAction, 0);
             return true;
         }
-        public int RefreshCurrentTemplate()
+       
+        public int RefreshCurrentTemperator()
         {
-           ReadParam(RegisterNo.CurrentTemperator,1);
+            ReadParam(RegisterNo.CurrentTemperator, 1);
             return 1;
-        }
-
-        private void HeartAction(int value)
-        {
-            WriteParam(RegisterNo.HeartAction, value);
         }
 
         /// <summary>
@@ -148,8 +158,8 @@ namespace WestLakeShape.Motion.Device
         /// <param name="isLine"></param>
         private void ChangeWorkModel(bool isLine)
         {
-            int value = isLine ? 1 : 0;         
-            WriteParam(RegisterNo.WorkModel, 1);
+            int val = isLine ? 1 : 0;         
+            WriteParam(RegisterNo.WorkModel, val);
         }
 
         private byte[] ReadParam(RegisterNo registerNo, ushort command)
@@ -161,75 +171,75 @@ namespace WestLakeShape.Motion.Device
         private bool WriteParam(RegisterNo registerNo, int val)
         {
             //_port.WriteSingleRegister(8713, 1);
+            var ss = (ushort)registerNo;
             _port.WriteSingleRegister((ushort)registerNo, (ushort)val);
             return true;
         }
 
+        ///// <summary>
+        ///// 写入单个参数
+        ///// </summary>
+        ///// <param name="registerName"></param>
+        ///// <param name="registerValue"></param>
+        ///// <returns></returns>
+        //public bool DownloadParameter(string registerName, int registerValue)
+        //{
+        //    if (Enum.IsDefined(typeof(RegisterNo), registerName))
+        //    {
+        //        var registerNo = (RegisterNo)Enum.Parse(typeof(RegisterNo), registerName, true);
+        //        WriteParam(registerNo, registerValue);
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //}
 
-        /// <summary>
-        /// 写入单个参数
-        /// </summary>
-        /// <param name="registerName"></param>
-        /// <param name="registerValue"></param>
-        /// <returns></returns>
-        public bool DownloadParameter(string registerName, int registerValue)
-        {
-            if (Enum.IsDefined(typeof(RegisterNo), registerName))
-            {
-                var registerNo = (RegisterNo)Enum.Parse(typeof(RegisterNo), registerName, true);
-                WriteParam(registerNo, registerValue);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// 写入所有参数
-        /// </summary>
-        /// <returns></returns>
-        public bool DownloadAllParameter()
-        {
-            Type configType = _config.GetType();
-            PropertyInfo[] properties = configType.GetProperties();
-            foreach (var property in properties)
-            {
-                var propertyName = property.Name;
-                if (Enum.IsDefined(typeof(RegisterNo), propertyName))
-                {
-                    var registerNo = (RegisterNo)Enum.Parse(typeof(RegisterNo), propertyName, true);
-                    var registerValue = (int)property.GetValue(_config);
-                    WriteParam(registerNo, registerValue);
-                }
-            }
-            return true;
-        }
+        ///// <summary>
+        ///// 写入所有参数
+        ///// </summary>
+        ///// <returns></returns>
+        //public bool DownloadAllParameter()
+        //{
+        //    Type configType = _config.GetType();
+        //    PropertyInfo[] properties = configType.GetProperties();
+        //    foreach (var property in properties)
+        //    {
+        //        var propertyName = property.Name;
+        //        if (Enum.IsDefined(typeof(RegisterNo), propertyName))
+        //        {
+        //            var registerNo = (RegisterNo)Enum.Parse(typeof(RegisterNo), propertyName, true);
+        //            var registerValue = (int)property.GetValue(_config);
+        //            WriteParam(registerNo, registerValue);
+        //        }
+        //    }
+        //    return true;
+        //}
 
 
         enum RegisterNo : ushort
         {
             SaveParamter = 0x2008,
-            ModbusAddress,
-            ModbusBaudrate,
-            StartDispense,
-            //OpenValveIntensity=0x2100,重复功能寄存器，找供应商
-            Cycle = 0x2101,
-            HighGlueCount,
-            LowerGlueCount,
+            //ModbusAddress,
+            //ModbusBaudrate,
+            StartDispense = 0x200B,   //点胶触发
+            OpenIntensity = 0x2100,   //重复功能寄存器，找供应商
+            Cycle = 0x2101,           //点胶频率
+            HighGlueCount = 0x2102,   //点胶计数高
+            LowerGlueCount = 0x2103,  //点胶计数低
 
-            DownTime = 0x2200,
-            OpenValveTime,
-            UpTime,
-            ClosedValveTime,
-            OpenValveIntensity,
-            WorkModel,
-            DotCount,
-            DispensingDelayTime,
-            TargetTemperator,
-            HeartAction,
-            CurrentTemperator
+            //DownTime = 0x2200,               //下降时间
+            OpenTime = 0x2201,              //开阀时间
+            //UpTime,                          //上升时间
+            ClosedTime = 0x2203,            //关阀时间   
+            ClosedIntensity = 0x2204,       //开阀力度
+            WorkModel = 0x2205,             //点胶模式
+            DotPoints = 0x2206,             //点胶数设定
+            DispensingDelayTime = 0x2207,   //点胶延时 
+            TargetTemperator = 0x2208,      //设定温度
+            HeartAction = 0x2209,           //喷嘴加热
+            CurrentTemperator = 0x220A,     //实时温度
         }
 
         static class CommandValue
@@ -250,12 +260,14 @@ namespace WestLakeShape.Motion.Device
         private byte _slaveID;
         private ModbusHubConfig _slaveConfig = new ModbusHubConfig();
         private int _downTime;
-        private int _openValveTime;
-        private int _closedValveTime;
+        private int _openTime;
+        private int _closedTime;
         private int _upTime;
-        private int _openValveIntensity;
+        private int _openIntensity;
+        private int _closedIntensity;
         private int _controlModel;
         private int _gluePoints;
+        private int _glueCycle;
         private int _dispensingDelayTime;
         private int _targetTemperatore;
 
@@ -266,14 +278,6 @@ namespace WestLakeShape.Motion.Device
             get => _portName;
             set => SetProperty(ref _portName, value);
         } 
-
-        [Category("GlueControl"), Description("从站地址"), DefaultValue(1)]
-        [DisplayName("SlaveID")]
-        public byte SlaveID 
-        {
-            get => _slaveID;
-            set => SetProperty(ref _slaveID, value);
-        }
 
         [Category("GlueControl"), Description("下降时间，单位10us")]
         [DisplayName("SlaveConfig")]
@@ -294,10 +298,18 @@ namespace WestLakeShape.Motion.Device
 
         [Category("GlueControl"), Description("开阀时间，单位10us"), DefaultValue(30)]
         [DisplayName("OpenValveTime")]
-        public int OpenValveTime
+        public int OpenTime
         {
-            get => _openValveTime;
-            set => SetProperty(ref _openValveTime, value);
+            get => _openTime;
+            set => SetProperty(ref _openTime, value);
+        }
+        
+        [Category("GlueControl"), Description("关阀时间，单位10us"), DefaultValue(30)]
+        [DisplayName("ClosedValveTime")]
+        public int ClosedTime
+        {
+            get => _closedTime;
+            set => SetProperty(ref _closedTime, value);
         }
 
 
@@ -309,21 +321,21 @@ namespace WestLakeShape.Motion.Device
             set => SetProperty(ref _upTime, value);
         }
 
-        [Category("GlueControl"), Description("关阀时间，单位10us"), DefaultValue(30)]
-        [DisplayName("ClosedValveTime")]
-        public int ClosedValveTime
-        {
-            get => _closedValveTime;
-            set => SetProperty(ref _closedValveTime, value);
-        }
-
         [Category("GlueControl"), Description("开阀力度，单位%"), DefaultValue(10)]
         [DisplayName("OpenValveIntensity")]
-        public int OpenValveIntensity
+        public int OpenIntensity
         {
-            get => _openValveIntensity;
-            set => SetProperty(ref _openValveIntensity, value);
+            get => _openIntensity;
+            set => SetProperty(ref _openIntensity, value);
         }
+        [Category("GlueControl"), Description("开阀力度，单位%"), DefaultValue(10)]
+        [DisplayName("CloseValveIntensity")]
+        public int ClosedIntensity
+        {
+            get => _closedIntensity;
+            set => SetProperty(ref _closedIntensity, value);
+        }
+
 
         [Category("GlueControl"), Description("点胶模式"), DefaultValue(1)]
         [DisplayName("ControlModel")]
@@ -340,6 +352,13 @@ namespace WestLakeShape.Motion.Device
             get => _gluePoints;
             set => SetProperty(ref _gluePoints, value);
         }
+        [Category("GlueControl"), Description("点胶频率"), DefaultValue(1)]
+        [DisplayName("GluePoints")]
+        public int GlueCycle
+        {
+            get => _glueCycle;
+            set => SetProperty(ref _glueCycle, value);
+        }
 
         [Category("GlueControl"), Description("点胶延时，单位ms"), DefaultValue(1)]
         [DisplayName("DispensingDelayTime")]
@@ -349,7 +368,7 @@ namespace WestLakeShape.Motion.Device
             set => SetProperty(ref _dispensingDelayTime, value);
         }
 
-        [Category("GlueControl"), Description("温度设定"), DefaultValue(25)]
+        [Category("GlueControl"), Description("加热温度"), DefaultValue(25)]
         [DisplayName("TargetTemperatore")]
         public int TargetTemperatore
         {

@@ -47,7 +47,7 @@
 
     <!--  设置combox的默认样式  -->
     <Style TargetType="ComboBox">
-        <Setter Property="Height" Value="35" />
+        <Setter Property="Height" Value="50" />
         <Setter Property="Width" Value="150" />
         <Setter Property="Margin" Value="5,0" />
         <Setter Property="FontSize" Value="24" />

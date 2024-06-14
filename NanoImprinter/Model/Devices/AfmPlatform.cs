@@ -85,6 +85,26 @@ namespace NanoImprinter.Model
         {
             throw new NotImplementedException();
         }
+
+        public void MoveToWaitPosition()
+        {
+            var xTask = Task.Run(() => MoveBy(XAxis, Config.WaitPosition.X));
+            var yTask = Task.Run(() => MoveBy(YAxis, Config.WaitPosition.Y));
+            var zTask = Task.Run(() => MoveBy(ZAxis, Config.WaitPosition.Z));
+            Task.WaitAll(xTask, yTask, zTask);
+        }
+        public void MoveToWorkPosition()
+        {
+            var xTask = Task.Run(() => MoveBy(XAxis, Config.WorkPosition.X));
+            var yTask = Task.Run(() => MoveBy(YAxis, Config.WorkPosition.Y));
+            var zTask = Task.Run(() => MoveBy(ZAxis, Config.WorkPosition.Z));
+            Task.WaitAll(xTask, yTask, zTask);
+        }
+        private bool MoveBy(IAxis axis, double position)
+        {
+            return axis.MoveTo(position);
+        }
+
         public void Connect()
         {
         }
@@ -100,10 +120,11 @@ namespace NanoImprinter.Model
     {
         private double _xWorkVel;
         private double _yWorkVel;
+        private double _zWorkVel;
         private double _foundDistance;//蠕动寻找Mark的距离
 
-        private Point2D _waitPosition = new Point2D(0, 0);
-        private Point2D _workPosition = new Point2D(0, 0);
+        private Point3D _waitPosition = new Point3D(0, 0,0);
+        private Point3D _workPosition = new Point3D(0, 0,0);
 
 
         [Category("AfmPlatform"), Description("X轴运行速度")]
@@ -122,10 +143,17 @@ namespace NanoImprinter.Model
             get => _yWorkVel;
             set => SetProperty(ref _yWorkVel, value);
         }
+        [Category("AfmPlatform"), Description("Y轴运行速度")]
+        [DisplayName("Y轴运行速度")]
+        public double ZWorkVel
+        {
+            get => _zWorkVel;
+            set => SetProperty(ref _zWorkVel, value);
+        }
 
         [Category("AfmPlatform"), Description("等待位置")]
         [DisplayName("等待位置")]
-        public Point2D WaitPosition
+        public Point3D WaitPosition
         {
             get => _waitPosition;
             set => SetProperty(ref _waitPosition, value);
@@ -133,18 +161,12 @@ namespace NanoImprinter.Model
 
         [Category("AfmPlatform"), Description("工作位置")]
         [DisplayName("工作位置")]
-        public Point2D WorkPosition
+        public Point3D WorkPosition
         {
             get => _workPosition;
             set => SetProperty(ref _workPosition, value);
         }
 
-        [Category("AfmPlatform"), Description("工作位置")]
-        [DisplayName("工作位置")]
-        public double FoundDistance
-        {
-            get => _foundDistance;
-            set => SetProperty(ref _foundDistance, value);
-        }
+
     }
 }

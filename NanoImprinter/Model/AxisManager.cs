@@ -60,10 +60,8 @@ namespace NanoImprinter.Model
                 var axes = All();
                 axes.ForEach(o =>
                 {
-                    
                     o.InitialParameter();
                     o.ServoOn();
-                    
                 });
                 _log.Information($"轴参数初始化并使能成功");
             }
@@ -151,7 +149,6 @@ namespace NanoImprinter.Model
              _macroPlatformRAxis,
             };
         }
-
     }
 
 

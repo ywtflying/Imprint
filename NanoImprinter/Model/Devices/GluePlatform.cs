@@ -120,8 +120,7 @@ namespace NanoImprinter.Model
 
         private void RefreshRealtimeData()
         {
-            if (_currentPositionGlueZ != _glueZAxis.Position)
-                CurrentPositionGlueZ = _glueZAxis.Position;
+            CurrentPositionGlueZ = _glueZAxis.Position;
         }
 
         public void Connect()
@@ -132,6 +131,24 @@ namespace NanoImprinter.Model
         public void Disconnect()
         {
             _glueControl.Disconnected();
+        }
+
+        public void WriteControlParam()
+        {
+            _glueControl.SaveParam();
+        }
+        public void StartControlHeartAction()
+        {
+            _glueControl.StartHeartAction();
+        }
+        public void StopControlHeartAction()
+        {
+            _glueControl.StopHeartAction();
+        }
+
+        public void ClearControlPoints()
+        {
+            _glueControl.ClearPoints();
         }
     }
 

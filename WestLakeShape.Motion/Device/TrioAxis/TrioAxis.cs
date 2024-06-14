@@ -195,7 +195,7 @@ namespace WestLakeShape.Motion.Device
                     if (DateTime.UtcNow - movement.StartTimeUtc > _startWait)
                     {
                         if (!_state.IsBusy &&
-                           Math.Abs(positionValue - movement.TargetPostion) <= 15)
+                           Math.Abs(positionValue - movement.TargetPostion) <= 10)
                         {
                             if (!movement.TaskCompletionSource.TrySetResult(true))
                                 throw new Exception("轴运动完成赋值出错");
@@ -380,7 +380,7 @@ namespace WestLakeShape.Motion.Device
         /// </summary>
         /// <param name="name"></param>
         /// <param name="value"></param>
-        private void SetAxisParameter(AxisParameter name, double value)
+        protected void SetAxisParameter(AxisParameter name, double value)
         {
             var ret = _trioPC.SetAxisParameter(name, _config.Index, value);
             CheckException(ret);

@@ -15,8 +15,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height=" 35" />
-            <RowDefinition Height=" 1*" />
-            <RowDefinition Height=" 1*" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
@@ -25,218 +24,355 @@
 
         <Grid Grid.Row="0"
               Grid.Column="0"
-              Grid.ColumnSpan="2"
+              Grid.ColumnSpan="4"
               Style="{StaticResource Grid.ViewTitle.BorderTextBlock}">
             <Border />
             <TextBlock Text="压印模块" />
         </Grid>
 
         <GroupBox Grid.Row="1"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="1"
                   Margin="10"
-                  Header="掩膜压印"
+                  Header="位置参数"
                   Style="{StaticResource GroupBox.DefaultStyle}">
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="0.75*" />
                     <RowDefinition Height="1*" />
                     <RowDefinition Height="1*" />
                     <RowDefinition Height="1*" />
                     <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="2*" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1.2*" />
+                    <ColumnDefinition Width="1.2*" />
+                    <ColumnDefinition Width="1.2*" />
                 </Grid.ColumnDefinitions>
+                <Label HorizontalAlignment="Center" Content="名称" />
+                <Label Grid.Column="1"
+                       HorizontalAlignment="Center"
+                       Content="位置" />
+                <Label Grid.Column="2"
+                       HorizontalAlignment="Center"
+                       Content="速度" />
+                <Label Grid.Column="3"
+                       HorizontalAlignment="Center"
+                       Content="操作" />
+                <Label Grid.Row="1"
+                       Grid.Column="0"
+                       HorizontalAlignment="Center"
+                       Content="压印等待位" />
+                <Label Grid.Row="2"
+                       Grid.Column="0"
+                       HorizontalAlignment="Center"
+                       Content="压印接触位" />
+                <Label Grid.Row="3"
+                       Grid.Column="0"
+                       HorizontalAlignment="Center"
+                       Content="压印位" />
+                <Label Grid.Row="4"
+                       Grid.Column="0"
+                       HorizontalAlignment="Center"
+                       Content="脱模位" />
+                <Label Grid.Row="5"
+                       Grid.Column="0"
+                       HorizontalAlignment="Center"
+                       Content="相机等待位" />
+                <Label Grid.Row="6"
+                       Grid.Column="0"
+                       HorizontalAlignment="Center"
+                       Content="相机拍照位" />
+                <Label Grid.Row="7"
+                       Grid.Column="0"
+                       HorizontalAlignment="Center"
+                       Content="UV等待位" />
+                <Label Grid.Row="8"
+                       Grid.Column="0"
+                       HorizontalAlignment="Center"
+                       Content="UV照射位" />
+                <TextBox Grid.Row="1"
+                         Grid.Column="1"
+                         HorizontalAlignment="Center"
+                         IsReadOnly="False"
+                         Text="{Binding MaskWaitHeight, Mode=TwoWay}" />
+                <TextBox Grid.Row="1"
+                         Grid.Column="2"
+                         HorizontalAlignment="Center"
+                         IsReadOnly="False"
+                         Text="{Binding MaskWaitVelocity, Mode=TwoWay}" />
+                <Button Grid.Row="1"
+                        Grid.Column="3"
+                        Width="150"
+                        Height="50"
+                        HorizontalAlignment="Center"
+                        Command="{Binding MoveToMaskWaitPositionCommand}"
+                        Content="移动" />
 
-                <ces:ParameterDisplayControl x:Name="tbImprintVel"
-                                             ParamName="压印速度"
-                                             ParamUnit="mm/s"
-                                             ParamValue="{Binding MaskZWorkVel, Mode=TwoWay}" />
-                <ces:ParameterDisplayControl x:Name="tbCameraMoveVel"
-                                             Grid.Row="0"
-                                             Grid.Column="1"
-                                             ParamName="拍照速度"
-                                             ParamUnit="mm"
-                                             ParamValue="{Binding CameraZWorkVel, Mode=TwoWay}" />
-                <ces:ParameterDisplayControl x:Name="tbPreprintHeight"
-                                             Grid.Row="1"
-                                             Grid.Column="0"
-                                             ParamName="预压印位"
-                                             ParamUnit="mm"
-                                             ParamValue="{Binding MaskPreprintHeight, Mode=TwoWay}" />
-                <ces:ParameterDisplayControl x:Name="tbTakePictureHeight"
-                                             Grid.Row="1"
-                                             Grid.Column="1"
-                                             ParamName="拍照位"
-                                             ParamUnit="mm"
-                                             ParamValue="{Binding CameraTakePictureHeight, Mode=TwoWay}" />
-                <ces:ParameterDisplayControl x:Name="tbMaskWaitHeight"
-                                             Grid.Row="2"
-                                             Grid.Column="0"
-                                             ParamName="压印等待位"
-                                             ParamUnit="mm"
-                                             ParamValue="{Binding MaskWaitHeight, Mode=TwoWay}" />
-                <ces:ParameterDisplayControl x:Name="tbCameraWaitHeight"
-                                             Grid.Row="2"
-                                             Grid.Column="1"
-                                             ParamName="拍照等待位"
-                                             ParamUnit="mm"
-                                             ParamValue="{Binding CameraWaitHeight, Mode=TwoWay}" />
 
-                <UniformGrid Grid.Row="3"
-                             Grid.ColumnSpan="2"
+                <TextBox Grid.Row="2"
+                         Grid.Column="1"
+                         HorizontalAlignment="Center"
+                         IsReadOnly="False"
+                         Text="{Binding MaskContactHeight, Mode=TwoWay}" />
+                <TextBox Grid.Row="2"
+                         Grid.Column="2"
+                         HorizontalAlignment="Center"
+                         IsReadOnly="False"
+                         Text="{Binding MaskContactVelocity, Mode=TwoWay}" />
+                <Button Grid.Row="2"
+                        Grid.Column="3"
+                        Width="150"
+                        Height="50"
+                        HorizontalAlignment="Center"
+                        Command="{Binding MoveToMaskContactPositionCommand}"
+                        Content="移动" />
+
+
+                <TextBox Grid.Row="3"
+                         Grid.Column="1"
+                         HorizontalAlignment="Center"
+                         IsReadOnly="False"
+                         Text="{Binding MaskPrintHeight, Mode=TwoWay}" />
+                <TextBox Grid.Row="3"
+                         Grid.Column="2"
+                         HorizontalAlignment="Center"
+                         IsReadOnly="False"
+                         Text="{Binding MaskPrintVelocity, Mode=TwoWay}" />
+                <Button Grid.Row="3"
+                        Grid.Column="3"
+                        Width="150"
+                        Height="50"
+                        HorizontalAlignment="Center"
+                        Command="{Binding MoveToMaskPrintPositionCommand}"
+                        Content="移动" />
+
+
+                <TextBox Grid.Row="4"
+                         Grid.Column="1"
+                         HorizontalAlignment="Center"
+                         IsReadOnly="False"
+                         Text="{Binding MaskDemoldHeight, Mode=TwoWay}" />
+                <TextBox Grid.Row="4"
+                         Grid.Column="2"
+                         HorizontalAlignment="Center"
+                         IsReadOnly="False"
+                         Text="{Binding MaskDemoldVelocity, Mode=TwoWay}" />
+                <Button Grid.Row="4"
+                        Grid.Column="3"
+                        Width="150"
+                        Height="50"
+                        HorizontalAlignment="Center"
+                        Command="{Binding MoveToMaskDemoldPositionCommand}"
+                        Content="移动" />
+
+                <TextBox Grid.Row="5"
+                         Grid.Column="1"
+                         HorizontalAlignment="Center"
+                         IsReadOnly="False"
+                         Text="{Binding CameraWaitHeight, Mode=TwoWay}" />
+                <TextBox Grid.Row="5"
+                         Grid.Column="2"
+                         HorizontalAlignment="Center"
+                         IsReadOnly="False"
+                         Text="{Binding CameraZWorkVel, Mode=TwoWay}" />
+                <Button Grid.Row="5"
+                        Grid.Column="3"
+                        Width="150"
+                        Height="50"
+                        HorizontalAlignment="Center"
+                        Command="{Binding MoveToCameraWaitPositionCommand}"
+                        Content="移动" />
+
+                <TextBox Grid.Row="6"
+                         Grid.Column="1"
+                         HorizontalAlignment="Center"
+                         IsReadOnly="False"
+                         Text="{Binding CameraTakePictureHeight, Mode=TwoWay}" />
+                <TextBox Grid.Row="6"
+                         Grid.Column="2"
+                         HorizontalAlignment="Center"
+                         IsReadOnly="False"
+                         Text="{Binding CameraZWorkVel, Mode=TwoWay}" />
+                <Button Grid.Row="6"
+                        Grid.Column="3"
+                        Width="150"
+                        Height="50"
+                        HorizontalAlignment="Center"
+                        Command="{Binding MoveToCameraTaskPictureHeightCommand}"
+                        Content="移动" />
+
+                <TextBox Grid.Row="7"
+                         Grid.Column="1"
+                         HorizontalAlignment="Center"
+                         IsReadOnly="False"
+                         Text="{Binding UVWaitPosition, Mode=TwoWay}" />
+                <TextBox Grid.Row="7"
+                         Grid.Column="2"
+                         HorizontalAlignment="Center"
+                         IsReadOnly="False"
+                         Text="{Binding UVXWorkVel, Mode=TwoWay}" />
+                <Button Grid.Row="7"
+                        Grid.Column="3"
+                        Width="150"
+                        Height="50"
+                        HorizontalAlignment="Center"
+                        Command="{Binding MoveToUVWaitPositionCommand}"
+                        Content="移动" />
+                <TextBox Grid.Row="8"
+                         Grid.Column="1"
+                         HorizontalAlignment="Center"
+                         IsReadOnly="False"
+                         Text="{Binding UVIrradiationPosition, Mode=TwoWay}" />
+                <TextBox Grid.Row="8"
+                         Grid.Column="2"
+                         HorizontalAlignment="Center"
+                         IsReadOnly="False"
+                         Text="{Binding UVXWorkVel, Mode=TwoWay}" />
+                <Button Grid.Row="8"
+                        Grid.Column="3"
+                        Width="150"
+                        Height="50"
+                        HorizontalAlignment="Center"
+                        Command="{Binding MoveToUVIrradiationPositionCommand}"
+                        Content="移动" />
+
+                <UniformGrid Grid.Row="9"
+                             Grid.ColumnSpan="4"
+                             Margin="10"
                              Columns="4">
-                    <Button Width="160"
+                    <Button Width="120"
                             Height="60"
                             HorizontalAlignment="Center"
-                            Command="{Binding MoveToMaskPreprintPositionCommand}"
-                            Content="移动预压印位" />
-                    <Button Width="170"
+                            Command="{Binding MaskZGoHomeCommand}"
+                            Content="回零" />
+                    <Button Width="120"
                             Height="60"
                             HorizontalAlignment="Center"
-                            Command="{Binding MoveToMaskWaitPositionCommand}"
-                            Content="移动压印等待位" />
-                    <Button Width="160"
+                            Command="{Binding ResetAlarmCommand}"
+                            Content="清除报警" />
+                    <Button Grid.Row="2"
+                            Grid.Column="0"
+                            Width="140"
                             Height="60"
                             HorizontalAlignment="Center"
-                            Command="{Binding MoveToCameraTakePicturePositionCommand}"
-                            Content="移动拍照位" />
-                    <Button Width="170"
+                            Command="{Binding SaveParamCommand}"
+                            Content="保存参数" />
+                    <Button Grid.Row="2"
+                            Grid.Column="1"
+                            Width="140"
                             Height="60"
                             HorizontalAlignment="Center"
-                            Command="{Binding MoveToCameraWaitPositionCommand}"
-                            Content="移动相机等待位" />
+                            Command="{Binding ReloadParamCommand}"
+                            Content="重载参数" />
                 </UniformGrid>
             </Grid>
         </GroupBox>
 
         <GroupBox Grid.Row="1"
-                  Grid.Column="1"
+                  Grid.Column="2"
                   Margin="10"
-                  Header="UV平台"
+                  Header="平台参数"
                   Style="{StaticResource GroupBox.DefaultStyle}">
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="1.5*" />
                     <RowDefinition Height="1*" />
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1.5*" />
                 </Grid.RowDefinitions>
 
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="1*" />
-                </Grid.ColumnDefinitions>
+                <GroupBox Margin="0,20,0,20" Header="UV灯">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*" />
+                            <RowDefinition Height="1*" />
+                            <RowDefinition Height="1*" />
+                        </Grid.RowDefinitions>
 
-                <ces:ParameterDisplayControl Margin="30,10,5,10"
-                                             ParamName="X轴等待位"
-                                             ParamUnit="mm"
-                                             ParamValue="{Binding UVWaitPosition, Mode=TwoWay}" />
+                        <UniformGrid Grid.Row="0"
+                                     Margin="10"
+                                     Columns="2">
+                            <StackPanel Margin="30,0,0,0" Orientation="Horizontal">
+                                <Label Content="UV串口：" />
+                                <ComboBox x:Name="cbComIndex"
+                                          BorderBrush="White"
+                                          DisplayMemberPath="."
+                                          ItemsSource="{Binding PortNames}"
+                                          SelectedItem="{Binding UVPortName, Mode=TwoWay}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="DropDownOpened">
+                                            <prism:InvokeCommandAction Command="{Binding RefreshPortNamesCommand}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
+                            </StackPanel>
 
-                <ces:ParameterDisplayControl Grid.Row="0"
-                                             Grid.Column="1"
-                                             Margin="40,10,5,10"
-                                             ParamName="X轴照射位"
-                                             ParamUnit="mm/s"
-                                             ParamValue="{Binding UVIrradiationPosition, Mode=TwoWay}" />
+                            <Button Width="100"
+                                    Height="50"
+                                    HorizontalAlignment="Center"
+                                    Command="{Binding ConnectedUVControlCommand}"
+                                    Content="连接" />
+                        </UniformGrid>
 
-                <ces:ParameterDisplayControl x:Name="tbUVXWorkVel"
-                                             Grid.Row="1"
-                                             Grid.Column="0"
-                                             Margin="5"
-                                             ParamName="X轴工作速度"
-                                             ParamUnit="mm"
-                                             ParamValue="{Binding UVXWorkVel, Mode=TwoWay}" />
-                <ces:ParameterDisplayControl x:Name="tbUVPreheatTime"
-                                             Grid.Row="3"
-                                             Grid.Column="0"
-                                             Margin="5"
-                                             ParamName="UV照射时间"
-                                             ParamUnit="s"
-                                             ParamValue="{Binding UVIrradiationTime, Mode=TwoWay}" />
-                <ces:ParameterDisplayControl x:Name="tbUVExposureTime"
-                                             Grid.Row="3"
-                                             Grid.Column="1"
-                                             Margin="35,5,0,5"
-                                             ParamName="UV功率"
-                                             ParamUnit="%"
-                                             ParamValue="{Binding UVPowerPercentage, Mode=TwoWay}" />
+                        <StackPanel Grid.Row="1"
+                                    Margin="5"
+                                    Orientation="Horizontal">
+                            <ces:ParameterDisplayControl x:Name="tbUVPreheatTime"
+                                                         Grid.Row="1"
+                                                         Grid.Column="0"
+                                                         Margin="20,0"
+                                                         ParamName="时间"
+                                                         ParamUnit="s"
+                                                         ParamValue="{Binding UVIrradiationTime, Mode=TwoWay}" />
+                            <ces:ParameterDisplayControl x:Name="tbUVExposureTime"
+                                                         Grid.Row="1"
+                                                         Grid.Column="1"
+                                                         Margin="30,0"
+                                                         ParamName="功率"
+                                                         ParamUnit="%"
+                                                         ParamValue="{Binding UVPowerPercentage, Mode=TwoWay}" />
+                            <Button Width="120"
+                                    Height="50"
+                                    HorizontalAlignment="Center"
+                                    Command="{Binding WriteUVParameterCommand}"
+                                    Content="写入参数" />
+                        </StackPanel>
 
-                <UniformGrid Grid.Row="5"
-                             Grid.ColumnSpan="4"
-                             Columns="4">
-                    <Button Width="140"
-                            Height="60"
-                            HorizontalAlignment="Center"
-                            Command="{Binding MoveToUVWaitPositionCommand}"
-                            Content="移动等待位" />
-                    <Button Width="140"
-                            Height="60"
-                            HorizontalAlignment="Center"
-                            Command="{Binding MoveToUVIrradiationPositionCommand}"
-                            Content="移动照射位" />
-                </UniformGrid>
-            </Grid>
-        </GroupBox>
+                        <UniformGrid Grid.Row="2" Columns="2">
+                            <Button Width="120"
+                                    Height="50"
+                                    HorizontalAlignment="Center"
+                                    Command="{Binding OpenUVLightCommand}"
+                                    Content="打开" />
+                            <Button Width="120"
+                                    Height="50"
+                                    HorizontalAlignment="Center"
+                                    Command="{Binding CloseUVLightCommand}"
+                                    Content="关闭" />
+                        </UniformGrid>
 
 
-        <GroupBox Grid.Row="2"
-                  FontSize="24"
-                  Header="轴操作">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="1*" />
-                </Grid.RowDefinitions>
-                <cvs:AxisControl Grid.Row="0" Axes="{Binding Axes}" />
-            </Grid>
-        </GroupBox>
+                    </Grid>
+                </GroupBox>
 
-        <StackPanel Grid.Column="1"
-                    Grid.Row="2"
-                    Orientation="Vertical">
-            <GroupBox Header="压力传感器">
-                <UniformGrid Columns="2"
-                             Margin="10">
-                    <StackPanel Grid.Column="1"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Orientation="Horizontal">
-                        <Label Content="力传感器串口：" />
-                        <ComboBox BorderBrush="White"
-                                  DisplayMemberPath="."
-                                  ItemsSource="{Binding PortNames}"
-                                  SelectedItem="{Binding ForceSensorPortName, Mode=TwoWay}">
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="DropDownOpened">
-                                    <prism:InvokeCommandAction Command="{Binding RefreshPortNamesCommand}" />
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
-                        </ComboBox>
-                    </StackPanel>
-                   
-                    <Button Grid.Row="1"
-                            Grid.Column="1"
-                            Width="180"
-                            Height="60"
-                            HorizontalAlignment="Center"
-                            Command="{Binding ConnectedForceControlCommand}"
-                            Content="连接压力传感器" />
-                </UniformGrid>
-            </GroupBox >
-
-            <GroupBox Header="UV灯">
-                <StackPanel Orientation="Vertical">
-                    <UniformGrid Columns="2"
-                                 Margin="10">
-                        <StackPanel Orientation="Horizontal"
-                                    Margin="90,0,0,0">
-                            <Label Content="UV串口：" />
-                            <ComboBox x:Name="cbComIndex"
-                                      BorderBrush="White"
+                <GroupBox Grid.Row="1" Header="压力传感器"
+                          Margin="0,10">
+                    <UniformGrid Margin="10" Columns="2">
+                        <StackPanel Grid.Column="1"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+                            <Label Content="力传感器串口：" />
+                            <ComboBox BorderBrush="White"
                                       DisplayMemberPath="."
                                       ItemsSource="{Binding PortNames}"
-                                      SelectedItem="{Binding UVPortName, Mode=TwoWay}">
+                                      SelectedItem="{Binding ForceSensorPortName, Mode=TwoWay}">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="DropDownOpened">
                                         <prism:InvokeCommandAction Command="{Binding RefreshPortNamesCommand}" />
@@ -245,62 +381,23 @@
                             </ComboBox>
                         </StackPanel>
 
-                        <Button Width="180"
-                                Height="60"
+                        <Button Grid.Row="1"
+                                Grid.Column="1"
+                                Width="120"
+                                Height="50"
                                 HorizontalAlignment="Center"
-                                Command="{Binding ConnectedUVControlCommand}"
-                                Content="连接UV控制器" />
+                                Command="{Binding ConnectedForceControlCommand}"
+                                Content="连接" />
                     </UniformGrid>
-                    <UniformGrid Columns="3"
-                                 Margin="30,5">
-                        <Button Width="140"
-                                Height="60"
-                                Margin="20"
-                                HorizontalAlignment="Center"
-                                Command="{Binding OpenUVLightCommand}"
-                                Content="打开UV灯" />
-                        <Button Width="140"
-                                Height="60"
-                                HorizontalAlignment="Center"
-                                Command="{Binding CloseUVLightCommand}"
-                                Content="关闭UV灯" />
-                        <Button Width="140"
-                                Height="60"
-                                HorizontalAlignment="Center"
-                                Command="{Binding WriteUVParameterCommand}"
-                                Content="写入参数" />
-                    </UniformGrid>
-                </StackPanel>
-            </GroupBox>
+                </GroupBox>
 
-            <UniformGrid Columns="4"
-                         Margin="10">
-                <Button Width="120"
-                        Height="60"
-                        HorizontalAlignment="Center"
-                        Command="{Binding MaskZGoHomeCommand}"
-                        Content="回零" />
-                <Button Width="120"
-                        Height="60"
-                        HorizontalAlignment="Center"
-                        Command="{Binding ResetAlarmCommand}"
-                        Content="清除报警" />
-                <Button Grid.Row="2"
-                        Grid.Column="0"
-                        Width="140"
-                        Height="60"
-                        HorizontalAlignment="Center"
-                        Command="{Binding SaveParamCommand}"
-                        Content="保存参数" />
-                <Button Grid.Row="2"
-                        Grid.Column="1"
-                        Width="140"
-                        Height="60"
-                        HorizontalAlignment="Center"
-                        Command="{Binding ReloadParamCommand}"
-                        Content="重载参数" />
-            </UniformGrid>
-       
-        </StackPanel>
+                <GroupBox Grid.Row="2"
+                          Margin="0,10,0,20"
+                          FontSize="24"
+                          Header="轴操作">
+                    <cvs:AxisControl Grid.Row="0" Axes="{Binding Axes}" />
+                </GroupBox>
+            </Grid>
+        </GroupBox>
     </Grid>
 </UserControl>

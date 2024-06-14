@@ -61,11 +61,15 @@ namespace WestLakeShape.Motion.Device
         public void ReloadConfig()
         {
             if (_piezoPort.IsConnected)
+            {
                 Disconnected();
-
-            _piezoPort.PortName = _config.PortName;
-
-            _piezoPort.Connected();
+                _piezoPort.PortName = _config.PortName;
+                _piezoPort.Connected();
+            }
+            else
+            {
+                _piezoPort.PortName = _config.PortName;
+            }
         }
 
         public void SetClosedLoop(int channelNo,bool isClosedLoop)

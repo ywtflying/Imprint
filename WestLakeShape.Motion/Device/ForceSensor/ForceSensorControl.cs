@@ -105,11 +105,15 @@ namespace WestLakeShape.Motion.Device
         public void ReloadConfig()
         {
             if (_port.IsOpen)
+            {
                 Disconnected();
-
-            _port.PortName = _config.PortName;
-            
-            Connected();
+                _port.PortName = _config.PortName;
+                Connected();
+            }
+            else
+            {
+                _port.PortName = _config.PortName;
+            }
         }
 
         public void ClearZero()

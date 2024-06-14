@@ -56,12 +56,16 @@ namespace WestLakeShape.Motion.Device
             try
             {
                 if (_isConnected)
+                {
                     OnDisconnecting();
-
-                _port.PortName = _config.PortName;
-
-                OnConnecting();
-                _log.Information($"UV串口更改成{_config.PortName}");
+                    _port.PortName = _config.PortName;
+                    OnConnecting();
+                    _log.Information($"UV串口更改成{_config.PortName}");
+                }
+                else 
+                {
+                    _port.PortName = _config.PortName;
+                }
             }
             catch (Exception e)
             {
@@ -84,7 +88,7 @@ namespace WestLakeShape.Motion.Device
         {
             _port.WriteSingleHoldingRegister(Slave_ID, 0x9C41, channelNo);
         }
-        public void Close(int channelNo)
+        public void Closed(int channelNo)
         {
             _port.WriteSingleHoldingRegister(Slave_ID, 0x9C41, channelNo * 2);
         }

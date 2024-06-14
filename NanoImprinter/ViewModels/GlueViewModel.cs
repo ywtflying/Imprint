@@ -23,13 +23,17 @@ namespace NanoImprinter.ViewModels
         private bool _isAlaram;      //Z轴是否报警
 
         private int _openTime;        //开阀时间
-        private int _closeTime;       //关阀时间
+        private int _closedTime;       //关阀时间
         private int _openIntensity;   //开阀力度
-        private int _temperature;     //当前温度
+        private int _closedIntensity;  //关阀力度
+        private int _gluePoints;      //胶水点数
+        private int _glueCycle;       //点胶频率
+        private int _targetTemperature;     //当前温度
+        private int _currentTemperature;    //当前温度
+     
         private double _waitPosition;
         private double _gluePosition;
         private double _workVel;
-
 
         #region property
         public string PortName
@@ -72,10 +76,10 @@ namespace NanoImprinter.ViewModels
             get => _openTime;
             set => SetProperty(ref _openTime, value);
         }
-        public int CloseTime
+        public int ClosedTime
         {
-            get => _closeTime;
-            set => SetProperty(ref _closeTime, value);
+            get => _closedTime;
+            set => SetProperty(ref _closedTime, value);
         }
 
         public int OpenIntensity
@@ -83,11 +87,34 @@ namespace NanoImprinter.ViewModels
             get => _openIntensity;
             set => SetProperty(ref _openIntensity, value);
         }
-
-        public int Temperature
+        public int ClosedIntensity
         {
-            get => _temperature;
-            set => SetProperty(ref _temperature, value);
+            get => _closedIntensity;
+            set => SetProperty(ref _closedIntensity, value);
+        }
+
+        public int GluePoints
+        {
+            get => _gluePoints;
+            set => SetProperty(ref _gluePoints, value);
+        }
+
+        public int GlueCycle
+        {
+            get => _glueCycle;
+            set => SetProperty(ref _glueCycle, value);
+        }
+
+        public int TargetTemperature
+        {
+            get => _targetTemperature;
+            set => SetProperty(ref _targetTemperature, value);
+        }
+
+        public int CurrentTemperature
+        {
+            get => _currentTemperature;
+            set => SetProperty(ref _currentTemperature,value);
         }
 
         public ObservableCollection<IAxis> Axes { get; set; }
@@ -101,9 +128,13 @@ namespace NanoImprinter.ViewModels
         public DelegateCommand MoveToGluePositionCommand => new DelegateCommand(MoveToTakePicturePosition).ObservesCanExecute(() => IsReady);
         public DelegateCommand SaveParamCommand => new DelegateCommand(SaveParam);
         public DelegateCommand ReloadParamCommand => new DelegateCommand(ReloadParam);
-        public DelegateCommand GlueCommand => new DelegateCommand(Glue);
+        public DelegateCommand GlueControlTestCommand => new DelegateCommand(GlueControlTest);
         public DelegateCommand RefreshPortNamesCommand => new DelegateCommand(RefreshPortNames);
         public DelegateCommand ConnectedCommand => new DelegateCommand(Connected);
+        public DelegateCommand WriteGlueControlParamCommand => new DelegateCommand(WriteGlueControlParam);
+        public DelegateCommand ClearGlueControlPointsCommand => new DelegateCommand(ClearGlueControlPoints);
+        public DelegateCommand StartGlueControlHeartActionCommand => new DelegateCommand(StartHeartAction);
+        public DelegateCommand StopGlueControlHeartActionCommand => new DelegateCommand(StopHeartAction);
 
         #endregion
 
@@ -131,7 +162,6 @@ namespace NanoImprinter.ViewModels
         }
         private void ResetAlarm()
         {
-           
             //_gluePlatform.ResetAxesAlarm();
         }
 
@@ -156,11 +186,7 @@ namespace NanoImprinter.ViewModels
             _platformConfig.WaitPosition = WaitPosition;
             _platformConfig.GluePosition = GluePosition;
             _platformConfig.WorkVel = WorkVel;
-            _platformConfig.GlueConfig.PortName = PortName;
-            _platformConfig.GlueConfig.OpenValveTime = OpenTime;
-            _platformConfig.GlueConfig.OpenValveIntensity = OpenIntensity;
-            _platformConfig.GlueConfig.ClosedValveTime = CloseTime;
-            _platformConfig.GlueConfig.TargetTemperatore = Temperature;
+            SetGlueControlParam();
             _deviceManager.SaveParam();
             _gluePlatform.ReloadConfig();
         }
@@ -171,15 +197,37 @@ namespace NanoImprinter.ViewModels
             GluePosition = _platformConfig.GluePosition;
             WorkVel = _platformConfig.WorkVel;
             PortName = _platformConfig.GlueConfig.PortName;
-            OpenTime = _platformConfig.GlueConfig.OpenValveTime;
-            OpenIntensity = _platformConfig.GlueConfig.OpenValveIntensity;
-            CloseTime = _platformConfig.GlueConfig.ClosedValveTime;
-            Temperature = _platformConfig.GlueConfig.TargetTemperatore;
+            OpenTime = _platformConfig.GlueConfig.OpenTime;
+            ClosedTime = _platformConfig.GlueConfig.ClosedTime;
+            OpenIntensity = _platformConfig.GlueConfig.OpenIntensity;
+            ClosedIntensity = _platformConfig.GlueConfig.ClosedIntensity;
+            GlueCycle = _platformConfig.GlueConfig.GlueCycle;
+            GluePoints =_platformConfig.GlueConfig.GluePoints;
+            TargetTemperature = _platformConfig.GlueConfig.TargetTemperatore;
+        }
+        private void ClearGlueControlPoints()
+        {
+            _gluePlatform.ClearControlPoints();
         }
 
-        private void Glue()
+        private void GlueControlTest()
         {
             _gluePlatform.Glue();
+        }
+
+        private void WriteGlueControlParam()
+        {
+            SetGlueControlParam();
+            _gluePlatform.WriteControlParam();
+        }
+
+        private void StartHeartAction()
+        {
+            _gluePlatform.StartControlHeartAction();
+        }
+        private void StopHeartAction()
+        {
+            _gluePlatform.StopControlHeartAction();
         }
 
         private void RefreshPortNames()
@@ -193,6 +241,18 @@ namespace NanoImprinter.ViewModels
         private void Connected()
         {
             _gluePlatform.Connect();
+        }
+
+        private void SetGlueControlParam()
+        {
+            _platformConfig.GlueConfig.PortName = PortName;
+            _platformConfig.GlueConfig.OpenTime = OpenTime;
+            _platformConfig.GlueConfig.ClosedTime = ClosedTime;
+            _platformConfig.GlueConfig.OpenIntensity = OpenIntensity;
+            _platformConfig.GlueConfig.ClosedIntensity = ClosedIntensity;
+            _platformConfig.GlueConfig.GlueCycle = GlueCycle;
+            _platformConfig.GlueConfig.GluePoints = GluePoints;
+            _platformConfig.GlueConfig.TargetTemperatore = TargetTemperature;
         }
     }
 }

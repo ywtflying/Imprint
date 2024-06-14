@@ -40,18 +40,10 @@ namespace WestLakeShape.Motion
     public class AxisConfig : NotifyPropertyChanged
     {
         private double _speed = 10;
+        private double _goHomeSpeed = 2;
         private string _name;
         private int _index =0;
         private short _cardIndex = 1;
-
-        [Category("Axis"), Description("当前速度"), DefaultValue(10)]
-        [RefreshProperties(RefreshProperties.All)]
-        [DisplayName("当前速度")]
-        public double Speed
-        {
-            get => _speed;
-            set => SetProperty(ref _speed, value);
-        }
 
         [Category("Axis"), Description("轴号"), DefaultValue(1)]
         [DisplayName("轴号")]
@@ -75,6 +67,26 @@ namespace WestLakeShape.Motion
         {
             get => _cardIndex;
             set => SetProperty(ref _cardIndex, value);
-        } 
+        }
+
+        [Category("Axis"), Description("当前速度"), DefaultValue(10)]
+        [RefreshProperties(RefreshProperties.All)]
+        [DisplayName("当前速度")]
+        public double Speed
+        {
+            get => _speed;
+            set => SetProperty(ref _speed, value);
+        }
+
+        [Category("Axis"), Description("回零速度"), DefaultValue(10)]
+        [RefreshProperties(RefreshProperties.All)]
+        [DisplayName("回零速度")]
+        public double GoHomeSpeed
+        {
+            get => _goHomeSpeed;
+            set => SetProperty(ref _goHomeSpeed, value);
+        }
+
+
     }
 }

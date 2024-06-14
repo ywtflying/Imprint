@@ -83,7 +83,8 @@
                      HorizontalAlignment="Center"
                      VerticalAlignment="Center"
                      IsReadOnly="False"
-                     Text="{Binding ElementName=sldJogValue, Path=Value, UpdateSourceTrigger=LostFocus, StringFormat=N4}" />
+                     Text="{Binding ElementName=sldJogValue, Path=Value, UpdateSourceTrigger=LostFocus, StringFormat=N4}" 
+                      LostFocus="TextBoxJogValue_LostFocus"/>
         </Grid>
 
         <UniformGrid Grid.Row="2" 

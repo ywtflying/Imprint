@@ -38,8 +38,8 @@ namespace WestLakeShape.Motion.Device
                 DataBits = 8,
                 StopBits = StopBits.One,
                 Parity = Parity.None,
-                ReadTimeout = 1000,
-                WriteTimeout = 1000
+                ReadTimeout = 5000,
+                WriteTimeout = 5000
             };
         }
 
@@ -74,12 +74,12 @@ namespace WestLakeShape.Motion.Device
                 var request = new byte[11]; ;
                 request[0] = Slave_ID;
                 request[1] = FunctionCodes.WriteRegisters;
-                request[2] = (byte)(address >> 8);//寄存器地址
+                request[2] = (byte)((address >> 8) & 0xff);//寄存器地址
                 request[3] = (byte)(address & 0xff);
                 request[4] = 00;//寄存器数量
                 request[5] = 01;
                 request[6] = 02;//字节数
-                request[7] = (byte)(value >> 8);
+                request[7] = (byte)((address >> 8) & 0xff);
                 request[8] = (byte)(value & 0xff);
                 SendData(request, 8);
                 return true;
@@ -116,8 +116,10 @@ namespace WestLakeShape.Motion.Device
             try
             {
                 UpdateCrc16(data);
+                System.Diagnostics.Debug.WriteLine($"{BitConverter.ToString(data)}");
                 _stream.Write(data, 0, data.Length);
                 var ret = DataReceived(receiveDataSize);
+                System.Diagnostics.Debug.WriteLine("数据接受完成");
                 return ret;
             }
             catch (Exception e)
@@ -133,12 +135,12 @@ namespace WestLakeShape.Motion.Device
 
         private byte[] DataReceived(int receiveDataSize)
         {
-            var buff = new byte[16];
+            var buff = new byte[receiveDataSize];
             var right = 0;
            
             try
             {
-                _port.DiscardInBuffer();
+                //_port.DiscardInBuffer();
                 while (right < receiveDataSize)
                 {
                     var count = buff.Length - right;
@@ -146,7 +148,6 @@ namespace WestLakeShape.Motion.Device
                         throw new BufferFullException();
 
                     var size = _stream.Read(buff, right, count);
-
                     right += size;
                     //读取不到完整的回复消息，则break
                     if (size == 0 && right != receiveDataSize)

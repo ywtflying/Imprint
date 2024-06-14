@@ -35,7 +35,7 @@ namespace NanoImprinter.Procedures
             if (!CheckWorkStatus())
                 return false;
             ///移动到预压印高度，等待相机拍照
-            _imprintPlatform.MoveToMaskPreprintHeight();
+            _imprintPlatform.MoveToMaskPrintHeight();
 
             return true;
         }

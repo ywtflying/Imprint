@@ -248,6 +248,8 @@ namespace NanoImprinter.Model
         OrangeLight,  //三色灯黄灯out8
         GreenLight,   //三色灯绿灯out9
         BlueLight,    //三色灯蓝灯out10
-        Buzzer        //三色灯蜂鸣器out11
+        Buzzer,       //三色灯蜂鸣器out11
+        Lighting,     //设备照明
+        Relay,        //备用继电器
     }
 }

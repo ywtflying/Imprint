@@ -73,7 +73,12 @@ namespace WestLakeShape.Motion.Device
             double datumIOIndex;
             double fwdIOIndex;//正限位IO端口号
             double revIOIndex;//负限位IO端口号
-            
+
+            var acc = _config.GoHomeSpeed * 10;     //加速度=10*Vel
+            SetAxisParameter(AxisParameter.ACCEL, acc);
+            SetAxisParameter(AxisParameter.DECEL, acc);
+            SetAxisParameter(AxisParameter.SPEED, _config.GoHomeSpeed);
+
             //获取轴的回零模式
             var ret =_trioPC.GetAxisParameter(AxisParameter.AXISSTATUS, _config.Index, out value);
             CheckException(ret);
@@ -104,7 +109,6 @@ namespace WestLakeShape.Motion.Device
                     {
                         ret = _trioPC.GetAxisParameter(AxisParameter.MTYPE, _config.Index, out value);
                         CheckException(ret);
-
                     }
                     if (value != 0)
                         isHomeFinish = true;
