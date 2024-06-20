@@ -1,0 +1,336 @@
+﻿<UserControl x:Class="NanoImprinter.Views.MicroView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ces="clr-namespace:NanoImprinter.ControlExtensions"
+             xmlns:cts="clr-namespace:NanoImprinter.Converters"
+             xmlns:cvs="clr-namespace:NanoImprinter.ControlViews"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:local="clr-namespace:NanoImprinter.Views"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:prism="http://prismlibrary.com/"
+             d:DesignHeight="1010"
+             d:DesignWidth="1670"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             Background="AliceBlue"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <cts:BoolToContentConverter x:Key="BoolConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height=" 35" />
+            <RowDefinition Height=" 1*" />
+            <RowDefinition Height=" 1*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1.5*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Row="0"
+              Grid.Column="0"
+              Grid.ColumnSpan="2"
+              Style="{StaticResource Grid.ViewTitle.BorderTextBlock}">
+            <Border />
+            <TextBlock Text="微动模块" />
+        </Grid>
+
+        <GroupBox Grid.Row="1"
+                  Margin="10"
+                  Header="位置参数"
+                  Style="{StaticResource GroupBox.DefaultStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="5*" />
+                    <RowDefinition Height="2*" />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Column="0"
+                           HorizontalAlignment="Center"
+                           Content="位置名称" />
+                    <Label Grid.Column="1"
+                           HorizontalAlignment="Center"
+                           Content="Z方向" />
+                    <Label Grid.Column="2"
+                           HorizontalAlignment="Center"
+                           Content="RX方向" />
+                    <Label Grid.Column="3"
+                           HorizontalAlignment="Center"
+                           Content="RY方向" />
+                    <Label Grid.Row="1"
+                           HorizontalAlignment="Center"
+                           Content="调平位置" />
+                    <TextBox x:Name="tbMicroLevelPositionZ"
+                             Grid.Row="1"
+                             Grid.Column="1"
+                             IsReadOnly="False"
+                             HorizontalAlignment="Center"
+                             Text="{Binding LevelPositionZ}" />
+                    <TextBox x:Name="tbMicroLevelPositionRX"
+                             Grid.Row="1"
+                             Grid.Column="2"
+                             IsReadOnly="False"
+                             HorizontalAlignment="Center"
+                             Text="{Binding LevelPositionRX}" />
+                    <TextBox x:Name="tbMicroLevelPositionRY"
+                             Grid.Row="1"
+                             Grid.Column="3"
+                             IsReadOnly="False"
+                             HorizontalAlignment="Center"
+                             Text="{Binding LevelPositionRY}" />
+
+                    <Label Grid.Row="2"
+                           HorizontalAlignment="Center"
+                           Content="脱模位置" />
+                    <TextBox x:Name="tbMicroDemoldPositionZ"
+                             Grid.Row="2"
+                             Grid.Column="1"
+                             IsReadOnly="False"
+                             HorizontalAlignment="Center"
+                             Text="{Binding DemoldPositionZ}" />
+                    <TextBox x:Name="tbMicroDemoldPositionRX"
+                             Grid.Row="2"
+                             Grid.Column="2"
+                             IsReadOnly="False"
+                             HorizontalAlignment="Center"
+                             Text="{Binding DemoldPositionRX}" />
+                    <TextBox x:Name="tbMicroDemoldPositionRY"
+                             Grid.Row="2"
+                             Grid.Column="3"
+                             IsReadOnly="False"
+                             HorizontalAlignment="Center"
+                             Text="{Binding DemoldPositionRY}" />
+
+                    <Label Grid.Row="3"
+                           HorizontalAlignment="Center"
+                           Content="接触位置" />
+                    <TextBox x:Name="tbContactPositionZ"
+                             Grid.Row="3"
+                             Grid.Column="1"
+                             IsReadOnly="False"
+                             HorizontalAlignment="Center"
+                             Text="{Binding ContactPosition}" />
+                    <TextBox x:Name="tbContactPositionRX"
+                             Grid.Row="3"
+                             Grid.Column="2"
+                             IsReadOnly="False"
+                             HorizontalAlignment="Center"
+                             Text="{Binding DemoldPosition.Y}" />
+                    <TextBox x:Name="tbContactPositionRY"
+                             Grid.Row="3"
+                             Grid.Column="3"
+                             IsReadOnly="False"
+                             HorizontalAlignment="Center"
+                             Text="{Binding DemoldPosition.Z}" />
+                </Grid>
+
+                <UniformGrid Grid.Row="1" Columns="4">
+                    <Button Width="160"
+                            Height="60"
+                            HorizontalAlignment="Center"
+                            Command="{Binding MoveToLevelPositionCommand}"
+                            Content="移动调平位" />
+                    <Button Width="160"
+                            Height="60"
+                            HorizontalAlignment="Center"
+                            Command="{Binding MoveToDemoldPositionCommand}"
+                            Content="移动脱模位" />
+                    <Button Width="100"
+                            Height="60"
+                            HorizontalAlignment="Center"
+                            Command="{Binding GoHomeCommand}"
+                            Content="回零" />
+                    <Button Width="120"
+                            Height="60"
+                            HorizontalAlignment="Center"
+                            Command="{Binding SaveParamCommand}"
+                            Content="保存参数" />
+                </UniformGrid>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Grid.Row="1"
+                  Grid.Column="1"
+                  Margin="10"
+                  FontSize="24"
+                  Header="运动参数"
+                  Style="{StaticResource GroupBox.DefaultStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+
+                <ces:ParameterDisplayControl Grid.Row="0"
+                                             ParamName="蠕动距离"
+                                             ParamUnit="nm"
+                                             ParamValue="{Binding ZCreepDistance, Mode=TwoWay}" />
+                <ces:ParameterDisplayControl Grid.Row="1"
+                                             ParamName="压力值上限"
+                                             ParamUnit="N"
+                                             ParamValue="{Binding MaxPressure, Mode=TwoWay}" />
+                <ces:ParameterDisplayControl Grid.Row="2"
+                                             ParamName="压力值下限"
+                                             ParamUnit="N"
+                                             ParamValue="{Binding MinPressure, Mode=TwoWay}" />
+                <ces:ParameterDisplayControl Grid.Row="3"
+                                             ParamName="当前压力值"
+                                             ParamUnit="N"
+                                             ParamValue="{Binding CurrentPressure, Mode=TwoWay}" />
+
+            </Grid>
+        </GroupBox>
+
+
+        <GroupBox Grid.Row="2"
+                  Grid.Column="0"
+                  Margin="10"
+                  FontSize="24"
+                  Header="单通道操作"
+                  Style="{StaticResource GroupBox.DefaultStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="2*" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Margin="0,10" Orientation="Horizontal">
+                    <Label Content="Com端口号：" />
+                    <ComboBox x:Name="cbComIndex"
+                              BorderBrush="White"
+                              DisplayMemberPath="."
+                              ItemsSource="{Binding PortNames}"
+                              SelectedItem="{Binding PortName, Mode=TwoWay}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="DropDownOpened">
+                                <prism:InvokeCommandAction Command="{Binding RefreshPortNamesCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ComboBox>
+                </StackPanel>
+
+                <UniformGrid Grid.Column="1"
+                             Grid.ColumnSpan="2"
+                             Columns="2">
+                    <Button Width="120"
+                            Height="60"
+                            HorizontalAlignment="Center"
+                            Command="{Binding ConnectedCommand}"
+                            Content="连接" />
+                    <CheckBox HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              Content="{Binding IsChecked, RelativeSource={RelativeSource Self}, Converter={StaticResource BoolConverter}, ConverterParameter='开环:闭环'}"
+                              IsChecked="{Binding IsClosedLoop}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Checked">
+                                <i:InvokeCommandAction Command="{Binding ChangedLoopCommand}" />
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="Unchecked">
+                                <i:InvokeCommandAction Command="{Binding ChangedLoopCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </CheckBox>
+                </UniformGrid>
+
+                <StackPanel Grid.Row="1"
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+                    <Label Content="通道号：" />
+                    <ComboBox x:Name="cbChannelIndex"
+                              BorderBrush="White"
+                              DisplayMemberPath="."
+                              ItemsSource="{Binding ChannelIndex}"
+                              SelectedItem="{Binding SelectedChannel, Mode=TwoWay}" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="1"
+                            Grid.Column="2"
+                            Margin="25,10"
+                            Orientation="Horizontal">
+                    <Label Content="距离" />
+                    <TextBox x:Name="tbMicroJogDistance" Text="{Binding MoveDistance}" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="5"
+                            Orientation="Horizontal">
+                    <Label Grid.Column="0"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           Content="值:" />
+                    <Slider x:Name="sldJogValue"
+                            Width="150"
+                            Height="25"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Maximum="200"
+                            TickFrequency="20"
+                            TickPlacement="TopLeft"
+                            Value="{Binding SelectedValue, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                    <Label Margin="0,0,5,0"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center"
+                           Content="{Binding UnitName, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                </StackPanel>
+
+
+                <UniformGrid Grid.Row="2"
+                             Grid.ColumnSpan="3"
+                             Columns="3">
+                    <Button Width="160"
+                            Height="60"
+                            HorizontalAlignment="Center"
+                            Command="{Binding JogForwardCommand}"
+                            Content="Jog+" />
+                    <Button 
+                            Width="160"
+                            Height="60"
+                            HorizontalAlignment="Center"
+                            Command="{Binding JogBackwardCommand}"
+                            Content="Jog-" />
+                    <Button
+                            Width="160"
+                            Height="60"
+                            HorizontalAlignment="Center"
+                            Command="{Binding CreepCommand}"
+                            Content="蠕动" />
+                </UniformGrid>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</UserControl>

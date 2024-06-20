@@ -1,0 +1,173 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:ces="clr-namespace:NanoImprinter.ControlExtensions">
+
+    <!--  GUI右上角的系统操作  -->
+    <Style x:Key="IconButton.WindowOperator" TargetType="ces:IconButton">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ces:IconButton">
+                    <Grid>
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="0">
+                            <Path Data="{Binding PathData, RelativeSource={RelativeSource AncestorType={x:Type ces:IconButton}}}"
+                                  Fill="{Binding PathFill, RelativeSource={RelativeSource AncestorType={x:Type ces:IconButton}}}"
+                                  StrokeEndLineCap="Round"
+                                  StrokeStartLineCap="Round"
+                                  StrokeThickness="5" />
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  左面图标，右面文字  -->
+    <Style x:Key="IconButton.LeftRight" TargetType="ces:IconButton">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="FontFamily" Value="{StaticResource Harmony.Regular}" />
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ces:IconButton">
+                    <Border x:Name="border"
+                            Background="Transparent"
+                            BorderBrush="Black"
+                            BorderThickness="2"
+                            CornerRadius="10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Path Grid.Column="0"
+                                  Margin="10"
+                                  Data="{TemplateBinding PathData}"
+                                  Fill="{TemplateBinding PathFill}"
+                                  Stretch="Uniform"
+                                  StrokeEndLineCap="Round"
+                                  StrokeStartLineCap="Round"
+                                  StrokeThickness="5" />
+                            <TextBlock Grid.Column="1"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Foreground="Black"
+                                       Text="{TemplateBinding TextContent}"
+                                       TextAlignment="Center" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="Transparent" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter TargetName="border" Property="Background" Value="lightgray" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  导航栏按钮设置  -->
+    <Style x:Key="IconButton.Navigation" TargetType="ces:IconButton">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="FontFamily" Value="{StaticResource Harmony.Medium}" />
+        <Setter Property="FontSize" Value="32" />
+        <Setter Property="Margin" Value="5" />
+        <Setter Property="Height" Value="80" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ces:IconButton">
+                    <Border x:Name="border"
+                            Background="#616e89"
+                            BorderBrush="#9DA2AC"
+                            BorderThickness="2"
+                            CornerRadius="5">
+                        <Border.Effect>
+                            <DropShadowEffect Opacity="0.25" ShadowDepth="3" />
+                        </Border.Effect>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="30" />
+                            </Grid.ColumnDefinitions>
+                            <Path Grid.Column="0"
+                                  Height="40"
+                                  Margin="5,0,0,0"
+                                  HorizontalAlignment="Left"
+                                  VerticalAlignment="Center"
+                                  Data="{Binding PathData, RelativeSource={RelativeSource AncestorType={x:Type ces:IconButton}}}"
+                                  Fill="{Binding PathFill, RelativeSource={RelativeSource AncestorType={x:Type ces:IconButton}}}"
+                                  Stretch="Uniform" />
+                            <TextBlock Grid.Column="1"
+                                       Margin="15,5,0,0"
+                                       VerticalAlignment="Center"
+                                       Background="{TemplateBinding Background}"
+                                       FontSize="{TemplateBinding FontSize}"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       Text="{Binding TextContent, RelativeSource={RelativeSource AncestorType={x:Type ces:IconButton}}}"
+                                       TextAlignment="Left" />
+                            <Path Grid.Column="2"
+                                  Height="30"
+                                  VerticalAlignment="Center"
+                                  Data="m 10.248269,5.782555 0.03206,0.030261 4.949747,4.949747 c 0.66918,0.66918 0.683121,1.745472 0.04182,2.431615 l -0.04182,0.04326 -4.949747,4.949747 c -0.128873,0.128873 -0.2929776,0.201042 -0.4613098,0.216507 l -0.04599,0.0028 h -0.04606 C 9.542776,18.400892 9.360259,18.327762 9.2196702,18.187173 8.9372375,17.904741 8.9271506,17.453094 9.1894092,17.158574 l 0.030261,-0.03206 4.5961938,-4.596194 c 0.282433,-0.282433 0.29252,-0.734079 0.03026,-1.028599 L 13.815864,11.46967 9.2196699,6.8734758 c -0.2928932,-0.2928932 -0.2928932,-0.7677669 0,-1.0606601 0.1412164,-0.1412164 0.3247363,-0.2143463 0.509767,-0.2193898 l 0.046266,1.576e-4 c 0.1695827,0.00578 0.3375781,0.06877 0.4725661,0.1889715 z"
+                                  Fill="#B5B5B5"
+                                  Stretch="Uniform" />
+                        </Grid>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="SkyBlue" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter TargetName="border" Property="Background" Value="Transparent" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    <!--  左面图标，右面文字  -->
+    <Style x:Key="IconButton.LoginStyle" TargetType="ces:IconButton">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="FontFamily" Value="{StaticResource Harmony.Regular}" />
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ces:IconButton">
+                    <Border Background="Transparent"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Path Grid.Column="0"
+                                  Data="{Binding PathData, RelativeSource={RelativeSource AncestorType={x:Type ces:IconButton}}}"
+                                  Fill="{Binding PathFill, RelativeSource={RelativeSource AncestorType={x:Type ces:IconButton}}}"
+                                  Stretch="Uniform"
+                                  StrokeEndLineCap="Round"
+                                  StrokeStartLineCap="Round"
+                                  StrokeThickness="5" />
+                            <TextBlock Grid.Column="1"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       Text="{Binding TextContent, RelativeSource={RelativeSource AncestorType={x:Type ces:IconButton}}}"
+                                       TextAlignment="Center" />
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

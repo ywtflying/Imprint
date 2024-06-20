@@ -1,0 +1,206 @@
+﻿<UserControl x:Class="NanoImprinter.Views.OtherView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ces="clr-namespace:NanoImprinter.ControlExtensions"
+             xmlns:cts="clr-namespace:NanoImprinter.Converters"
+             xmlns:cvs="clr-namespace:NanoImprinter.ControlViews"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:NanoImprinter.Views"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:prism="http://prismlibrary.com/"
+             d:DesignHeight="1010"
+             d:DesignWidth="1670"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             Background="White"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <cts:NameToLineMarginConverter x:Key="NameToLineConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height=" 35" />
+            <RowDefinition Height=" 1*" />
+            <RowDefinition Height=" 1*" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0"
+              Grid.Column="0"
+              Grid.ColumnSpan="2"
+              Style="{StaticResource Grid.ViewTitle.BorderTextBlock}">
+            <Border />
+            <TextBlock Text="微动模块" />
+        </Grid>
+
+        <Grid Grid.Row="1"
+              Grid.Column="0"
+              Margin="5,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Label Margin="50,0,0,0"
+                   Content="输入IO名称(Input)" />
+            <Label Grid.Column="1"
+                   Margin="0,0,100,0"
+                   HorizontalAlignment="Right"
+                   Content="IO值" />
+            
+            <ListBox Grid.Row="1"
+                     Grid.ColumnSpan="2"
+                     ItemsSource="{Binding IOManager.InputIOs}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="200" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="150" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock HorizontalAlignment="Left"
+                                       VerticalAlignment="Center"
+                                       FontSize="16"
+                                       Text="{Binding Description}" />
+                            <Line Grid.Column="1"
+                                  Margin="{Binding BindingGroupName, Converter={StaticResource NameToLineConverter}}"
+                                  Stroke="Black"
+                                  StrokeDashArray="2, 4"
+                                  StrokeThickness="2"
+                                  X1="0"
+                                  X2="100"
+                                  Y1="20"
+                                  Y2="20" />
+                            <ces:SwitchButton Grid.Column="2"
+                                              HorizontalAlignment="Center"
+                                              IsChecked="{Binding IsOn, Mode=TwoWay}"
+                                              IsEnabled="False"
+                                              Style="{StaticResource SwitchButton.OnAndOff}"
+                                              TextA="ON"
+                                              TextABackground="Green"
+                                              TextB="OFF"
+                                              TextBBackground="Gray" />
+
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+
+        <GroupBox Grid.Row="1"
+                  Grid.Column="1"
+                  Header="其他"
+                  Style="{StaticResource GroupBox.DefaultStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="80" />
+                    <RowDefinition Height="80" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <Label Margin="10,0"
+                           Content="参数文件名:" />
+                    <TextBox Width="300"
+                             IsReadOnly="False"
+                             Text="{Binding ConfigFileName, Mode=TwoWay}" />
+                    <Button Width="100"
+                            Margin="30,0"
+                            Command="{Binding OpenFileCommand}"
+                            Content="浏览" />
+                    <Button Width="150"
+                            Margin="30,0"
+                            Command="{Binding SaveConfigFileNameCommand}"
+                            Content="保存文件名" />
+                </StackPanel>
+                <UniformGrid Grid.Row="1"
+                             Columns="3">
+                    <Button Width="100"
+                            Margin="10,0"
+                            HorizontalAlignment="Center"
+                            Command="{Binding SaveParamCommand}"
+                            Content="保存参数" />
+                    <Button Width="100"
+                            Margin="10,0"
+                            HorizontalAlignment="Center"
+                            Command="{Binding ReloadParamCommand}"
+                            Content="加载参数" />
+                </UniformGrid>
+            </Grid>
+        </GroupBox>
+
+        <Grid Grid.Row="2"
+              Grid.Column="0"
+              Margin="5,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Label Margin="50,0,0,0"
+                   Content="输出IO名称(Output)" />
+            <Label Grid.Column="1"
+                   Margin="0,0,100,0"
+                   HorizontalAlignment="Right"
+                   Content="IO值" />
+            <ListBox Grid.Row="1"
+                     Grid.ColumnSpan="2"
+                     ItemsSource="{Binding IOManager.OutputIOs, Mode=TwoWay}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="200" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="200" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock HorizontalAlignment="Left"
+                                       VerticalAlignment="Center"
+                                       FontSize="16"
+                                       Grid.Column="0"
+                                       Text="{Binding Description}" />
+                            <Line Stroke="Black"
+                                  Grid.Column="1"
+                                  StrokeDashArray="2, 4"
+                                  StrokeThickness="1"
+                                  X1="0"
+                                  X2="300"
+                                  Y1="25"
+                                  Y2="25" />
+                            <StackPanel Grid.Column="2"
+                                        Orientation="Horizontal">
+                                <Label HorizontalAlignment="Right"
+                                       VerticalAlignment="Center"
+                                       FontSize="14"
+                                       Content="Off" />
+                                <ToggleButton FontSize="16"
+                                              Width="80"
+                                              Height="40"
+                                              HorizontalAlignment="Center"
+                                              Command="{Binding DataContext.SetOutputValueCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                              CommandParameter="{Binding Name}"
+                                              IsChecked="{Binding IsOn, Mode=TwoWay}"
+                                              Template="{StaticResource ToggleButtonTemplate}" />
+                                <Label FontSize="14"
+                                       HorizontalAlignment="Left"
+                                       VerticalAlignment="Center"
+                                       Content="On" />
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+
+    </Grid>
+</UserControl>
