@@ -184,9 +184,9 @@ namespace NanoImprinter.Model
         private bool MoveBy(double x, double y, double r)
         {
             var xMovement = Task.Run(() => XAxis.MoveTo(x));
-            //var yMovement = Task.Run(() => YAxis.MoveTo(y));
+            var yMovement = Task.Run(() => YAxis.MoveTo(y));
             //var rMovement = Task.Run(() => RAxis.MoveTo(r));
-            //Task.WaitAll(xMovement, yMovement, rMovement);
+            //Task.WaitAll(xMovement, yMovement);
             //Task.WaitAll(xMovement, rMovement);
             return true;
         }
